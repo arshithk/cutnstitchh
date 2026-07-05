@@ -56,7 +56,7 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative overflow-hidden bg-background pt-16 pb-10 sm:pt-24 sm:pb-14 lg:min-h-screen lg:pt-24 lg:pb-16"
+      className="relative overflow-hidden bg-background pt-[5.5rem] pb-10 sm:pt-24 sm:pb-14 lg:min-h-screen lg:pt-24 lg:pb-16"
     >
       <TextileSimulation />
 
@@ -70,7 +70,7 @@ export default function Hero() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="flex flex-col gap-4 sm:gap-5"
           >
-            <div className="mt-1 inline-flex w-fit items-center gap-2 rounded-full border border-accent-custom/25 bg-accent-custom/10 px-3 py-1 sm:mt-0">
+            <div className="mt-3 inline-flex w-fit items-center gap-2 rounded-full border border-accent-custom/25 bg-accent-custom/10 px-3 py-1 sm:mt-0">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-custom" />
               <span className="text-[10px] font-bold uppercase tracking-wider text-accent-custom sm:text-[11px]">
                 Premium Apparel Manufacturer
