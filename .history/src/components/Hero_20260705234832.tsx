@@ -54,10 +54,7 @@ export default function Hero() {
   };
 
   return (
-    <section
-      id="top"
-      className="relative overflow-hidden bg-background pt-32 pb-10 sm:pt-24 sm:pb-14 lg:min-h-screen lg:pt-24 lg:pb-16"
-    >
+    <section className="relative overflow-hidden bg-background pt-28 pb-10 sm:pt-24 sm:pb-14 lg:min-h-screen lg:pt-24 lg:pb-16">
       <TextileSimulation />
 
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(184,156,114,0.05)_1px,transparent_1px)] bg-size-[24px_24px] opacity-60" />

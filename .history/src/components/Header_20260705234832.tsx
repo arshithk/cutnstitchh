@@ -63,7 +63,7 @@ export default function Header() {
         </div>
 
         <div
-          className={`${
+          className={`$${
             isMenuOpen ? "flex" : "hidden"
           } flex-col gap-3 rounded-xl border border-border-custom/60 bg-background/95 p-3 shadow-sm sm:flex sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-6 sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none sm:text-base`}
         >
