@@ -56,7 +56,7 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative overflow-hidden bg-background pt-20 pb-10 sm:pt-24 md:pt-26 md:pb-14 lg:min-h-[calc(100vh-5rem)] lg:pt-16 lg:pb-16 xl:pt-20"
+      className="relative overflow-hidden bg-background pt-24 pb-10 sm:pt-28 md:pt-30 md:pb-14 lg:min-h-[calc(100vh-5rem)] lg:pt-20 lg:pb-16 xl:pt-24"
     >
       <TextileSimulation />
 
