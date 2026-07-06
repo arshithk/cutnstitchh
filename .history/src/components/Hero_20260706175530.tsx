@@ -29,7 +29,7 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative overflow-hidden bg-transparent pt-20 pb-4 sm:pt-24 sm:pb-5 md:pt-26 md:pb-6 lg:min-h-[calc(100vh-5rem)] lg:pt-16 lg:pb-6 xl:pt-20"
+      className="relative overflow-hidden bg-background pt-20 pb-10 sm:pt-24 md:pt-26 md:pb-14 lg:min-h-[calc(100vh-5rem)] lg:pt-16 lg:pb-16 xl:pt-20"
     >
       <TextileSimulation />
 
@@ -66,26 +66,24 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="flex flex-col gap-3 lg:pt-2"
+            className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 lg:pt-2"
           >
-            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-              <a
-                href="#contact"
-                onClick={(e) => handleScroll(e, "#contact")}
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-custom px-6 py-3.5 text-base font-semibold text-primary-foreground-custom shadow-lg transition-all hover:scale-[1.02] hover:bg-accent-custom hover:text-white sm:w-auto sm:px-8"
-              >
-                Request a Quote
-                <ArrowRight size={16} />
-              </a>
+            <a
+              href="#contact"
+              onClick={(e) => handleScroll(e, "#contact")}
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-custom px-6 py-3.5 text-base font-semibold text-primary-foreground-custom shadow-lg transition-all hover:scale-[1.02] hover:bg-accent-custom hover:text-white sm:w-auto sm:px-8"
+            >
+              Request a Quote
+              <ArrowRight size={16} />
+            </a>
 
-              <a
-                href="#products"
-                onClick={(e) => handleScroll(e, "#products")}
-                className="flex w-full items-center justify-center rounded-full border border-border-custom px-6 py-3.5 text-base font-semibold transition-all hover:scale-[1.02] hover:bg-foreground/5 sm:w-auto sm:px-8"
-              >
-                View Products
-              </a>
-            </div>
+            <a
+              href="#products"
+              onClick={(e) => handleScroll(e, "#products")}
+              className="flex w-full items-center justify-center rounded-full border border-border-custom px-6 py-3.5 text-base font-semibold transition-all hover:scale-[1.02] hover:bg-foreground/5 sm:w-auto sm:px-8"
+            >
+              View Products
+            </a>
           </motion.div>
         </div>
 

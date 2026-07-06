@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Scissors } from "lucide-react";
 import TextileSimulation from "./TextileSimulation";
 
 export default function Hero() {
@@ -29,7 +29,7 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative overflow-hidden bg-transparent pt-20 pb-4 sm:pt-24 sm:pb-5 md:pt-26 md:pb-6 lg:min-h-[calc(100vh-5rem)] lg:pt-16 lg:pb-6 xl:pt-20"
+      className="relative overflow-hidden bg-background pt-20 pb-10 sm:pt-24 md:pt-26 md:pb-14 lg:min-h-[calc(100vh-5rem)] lg:pt-16 lg:pb-16 xl:pt-20"
     >
       <TextileSimulation />
 
@@ -86,6 +86,29 @@ export default function Hero() {
                 View Products
               </a>
             </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+              whileHover={{ y: -5, scale: 1.01, boxShadow: "0 18px 50px -22px rgba(184, 156, 114, 0.45)" }}
+              className="glass flex max-w-xl flex-col gap-3 rounded-2xl border border-border-custom/60 p-4 shadow-[0_16px_50px_-22px_rgba(0,0,0,0.24)] sm:flex-row sm:items-start sm:gap-4 sm:p-5"
+            >
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-custom/10 text-accent-custom">
+                <Scissors size={20} />
+              </div>
+
+              <div>
+                <p className="text-base font-semibold text-foreground">
+                  48-Hour Rapid Sample Development
+                </p>
+                <p className="mt-1 text-sm leading-6 text-muted-custom">
+                  From your design to a high-quality garment sample in just 48
+                  hours, helping you approve styles and start bulk production
+                  faster.
+                </p>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
 

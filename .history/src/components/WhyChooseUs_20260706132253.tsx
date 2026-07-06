@@ -73,10 +73,10 @@ export default function WhyChooseUs() {
   ];
 
   return (
-    <section id="why-choose-us" ref={ref} className="scroll-mt-20 relative overflow-hidden bg-background py-8 sm:py-10 lg:py-12">
+    <section id="why-choose-us" ref={ref} className="scroll-mt-20 relative overflow-hidden bg-background py-10 sm:py-12 lg:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header Block */}
-        <div className="mx-auto mb-6 flex max-w-2xl flex-col gap-3 text-center sm:mb-8 lg:mb-10">
+        <div className="mx-auto mb-8 flex max-w-2xl flex-col gap-3 text-center sm:mb-10 lg:mb-12">
           <span className="text-xs uppercase font-bold tracking-widest text-accent-custom">
             Core Competencies
           </span>

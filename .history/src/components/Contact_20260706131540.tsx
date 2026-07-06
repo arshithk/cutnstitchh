@@ -118,7 +118,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="scroll-mt-20 relative border-y border-border-custom/50 bg-card/25 py-8 sm:py-10 lg:py-12">
+    <section id="contact" className="scroll-mt-20 relative border-y border-border-custom/50 bg-card/25 py-10 sm:py-12 lg:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-8 xl:gap-10">
           
@@ -131,8 +131,8 @@ export default function Contact() {
               <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground">
                 Let's Build Your Collection.
               </h2>
-<p className="text-base text-muted-custom leading-relaxed">
-                Fill out the manufacturing inquiry form. Our merchandising desk will review your specifications and email a production timeline and price quotation within 24 business hours.
+              <p className="text-base text-muted-custom leading-relaxed">
+within 24 business hours.
               </p>
             </div>
 

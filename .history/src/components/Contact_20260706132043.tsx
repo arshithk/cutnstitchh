@@ -118,7 +118,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="scroll-mt-20 relative border-y border-border-custom/50 bg-card/25 py-8 sm:py-10 lg:py-12">
+    <section id="contact" className="scroll-mt-20 relative border-y border-border-custom/50 bg-card/25 py-10 sm:py-12 lg:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-8 xl:gap-10">
           

@@ -2,10 +2,37 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { Sparkles, Layers, ShieldCheck, Truck, ArrowRight } from "lucide-react";
 import TextileSimulation from "./TextileSimulation";
 
 export default function Hero() {
+  const stats = [
+    {
+      icon: <Sparkles className="text-accent-custom" size={22} />,
+      value: "1000+",
+      label: "Custom Designs",
+      desc: "Ready to manufacture catalog",
+    },
+    {
+      icon: <Layers className="text-accent-custom" size={22} />,
+      value: "Bulk Scale",
+      label: "High Capacity",
+      desc: "Optimized production lines",
+    },
+    {
+      icon: <ShieldCheck className="text-accent-custom" size={22} />,
+      value: "100%",
+      label: "Quality Assured",
+      desc: "Double-stage QC inspection",
+    },
+    {
+      icon: <Truck className="text-accent-custom" size={22} />,
+      value: "PAN India/Overseas",
+      label: "Doorstep Delivery",
+      desc: "Reliable logistics partners",
+    },
+  ];
+
   const handleScroll = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string
@@ -29,7 +56,7 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative overflow-hidden bg-transparent pt-20 pb-4 sm:pt-24 sm:pb-5 md:pt-26 md:pb-6 lg:min-h-[calc(100vh-5rem)] lg:pt-16 lg:pb-6 xl:pt-20"
+      className="relative overflow-hidden bg-background pt-20 pb-10 sm:pt-24 md:pt-26 md:pb-14 lg:min-h-[calc(100vh-5rem)] lg:pt-16 lg:pb-16 xl:pt-20"
     >
       <TextileSimulation />
 
@@ -66,31 +93,62 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="flex flex-col gap-3 lg:pt-2"
+            className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 lg:pt-2"
           >
-            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-              <a
-                href="#contact"
-                onClick={(e) => handleScroll(e, "#contact")}
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-custom px-6 py-3.5 text-base font-semibold text-primary-foreground-custom shadow-lg transition-all hover:scale-[1.02] hover:bg-accent-custom hover:text-white sm:w-auto sm:px-8"
-              >
-                Request a Quote
-                <ArrowRight size={16} />
-              </a>
+            <a
+              href="#contact"
+              onClick={(e) => handleScroll(e, "#contact")}
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-custom px-6 py-3.5 text-base font-semibold text-primary-foreground-custom shadow-lg transition-all hover:scale-[1.02] hover:bg-accent-custom hover:text-white sm:w-auto sm:px-8"
+            >
+              Request a Quote
+              <ArrowRight size={16} />
+            </a>
 
-              <a
-                href="#products"
-                onClick={(e) => handleScroll(e, "#products")}
-                className="flex w-full items-center justify-center rounded-full border border-border-custom px-6 py-3.5 text-base font-semibold transition-all hover:scale-[1.02] hover:bg-foreground/5 sm:w-auto sm:px-8"
-              >
-                View Products
-              </a>
-            </div>
+
+
+            <a
+              href="#products"
+              onClick={(e) => handleScroll(e, "#products")}
+              className="flex w-full items-center justify-center rounded-full border border-border-custom px-6 py-3.5 text-base font-semibold transition-all hover:scale-[1.02] hover:bg-foreground/5 sm:w-auto sm:px-8"
+            >
+              View Products
+            </a>
           </motion.div>
         </div>
 
         <div className="relative flex items-center justify-center lg:col-span-5">
           <div className="pointer-events-none absolute h-64 w-64 rounded-full bg-accent-custom/5 blur-[80px] sm:h-72 sm:w-72" />
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+            className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6"
+          >
+            {stats.map((stat, idx) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 + idx * 0.1 }}
+                className="glass flex min-h-46.25 flex-col gap-4 rounded-2xl border border-border-custom/50 p-5 shadow-[0_16px_50px_-22px_rgba(0,0,0,0.24)] hover-lift sm:p-6"
+              >
+                <div className="w-fit rounded-xl bg-accent-custom/10 p-3">
+                  {stat.icon}
+                </div>
+
+                <div>
+                  <p className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
+                    {stat.value}
+                  </p>
+                  <p className="mt-1 text-sm font-bold text-foreground/80">
+                    {stat.label}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-custom">{stat.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </div>
 

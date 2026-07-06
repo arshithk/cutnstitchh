@@ -17,9 +17,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="relative min-h-screen bg-background text-foreground">
         <ThemeProvider>
-          <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-transparent">
+          <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-background">
             <TextileSimulation />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(184,156,114,0.08),transparent_45%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(184,156,114,0.09),transparent_45%)]" />
           </div>
 
           <div className="relative z-10">{children}</div>
