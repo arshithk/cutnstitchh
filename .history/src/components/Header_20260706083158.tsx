@@ -41,7 +41,7 @@ export default function Header() {
             <a href="#top" className="text-lg font-bold text-foreground sm:text-3xl">
               CutnStitch
             </a>
-            <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-accent-custom sm:mt-1.5 sm:text-[11px]">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-accent-custom sm:text-[11px]">
               Premium Apparel Manufacturer
             </span>
           </div>
