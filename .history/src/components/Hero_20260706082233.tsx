@@ -56,15 +56,14 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative overflow-hidden bg-background pt-24 pb-10 sm:pt-28 md:pt-30 md:pb-14 lg:min-h-[calc(100vh-5rem)] lg:pt-20 lg:pb-16 xl:pt-24"
+      className="relative overflow-hidden bg-background pt-36 pb-10 sm:pt-40 md:pt-44 md:pb-14 lg:min-h-screen lg:pt-40 lg:pb-16 xl:pt-48"
     >
       <TextileSimulation />
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top_left,rgba(184,156,114,0.16),transparent_60%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(184,156,114,0.05)_1px,transparent_1px)] bg-size-[24px_24px] opacity-60" />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-6 px-4 sm:px-6 md:gap-8 lg:grid-cols-12 lg:gap-12 lg:px-8 lg:py-10">
-        <div className="flex flex-col gap-5 lg:col-span-7 lg:gap-6 lg:pr-8">
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-6 px-4 sm:px-6 md:gap-8 lg:grid-cols-12 lg:gap-10 lg:px-8">
+        <div className="flex flex-col gap-5 lg:col-span-7 lg:gap-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -100,7 +99,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 lg:pt-2"
+            className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3"
           >
             <a
               href="#contact"
@@ -136,7 +135,7 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 + idx * 0.1 }}
-                className="glass flex min-h-46.25 flex-col gap-4 rounded-2xl border border-border-custom/50 p-5 shadow-[0_16px_50px_-22px_rgba(0,0,0,0.24)] hover-lift sm:p-6"
+                className="glass flex min-h-46.25 flex-col gap-4 rounded-2xl border border-border-custom/50 p-5 shadow-sm hover-lift sm:p-6"
               >
                 <div className="w-fit rounded-xl bg-accent-custom/10 p-3">
                   {stat.icon}
