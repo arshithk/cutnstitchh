@@ -272,18 +272,6 @@ export default function ProductCategories() {
     setImageErrors((prev) => ({ ...prev, [name]: true }));
   };
 
-  const openStockModal = (productName: string) => {
-    setActiveStockProduct(productName);
-    setIsStockModalOpen(true);
-  };
-
-  const closeStockModal = () => {
-    setIsStockModalOpen(false);
-    setActiveStockProduct(null);
-  };
-
-  const selectedStock = activeStockProduct ? productStockData[activeStockProduct] ?? null : null;
-
   const handleInquireClick = (productName: string) => {
     // Scroll to contact form
     const target = document.querySelector("#contact");
