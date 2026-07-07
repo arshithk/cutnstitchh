@@ -1,21 +1,94 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { Yellowtail } from "next/font/google";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
+const yellowtail = Yellowtail({
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
 function BrandWordmark() {
   return (
-    <div className="flex items-center bg-transparent pl-0 md:pl-0">
-      <Image
-        src="/images/cut-n-stitch-logo.png"
-        alt="Cut n Stitch Apparel"
-        width={520}
-        height={120}
-        priority
-        className="h-14 w-auto object-contain mix-blend-screen sm:h-16 md:h-17"
-      />
+    <div className="flex items-center whitespace-nowrap text-left leading-none">
+      <span
+        className="text-[1.15rem] text-[#f6efe1] sm:text-[1.55rem] lg:text-[1.85rem]"
+        style={{ fontFamily: yellowtail.style.fontFamily }}
+      >
+        cut
+      </span>
+
+      <span
+        className="ml-1 text-[1.15rem] text-accent-custom sm:ml-1.5 sm:text-[1.55rem] lg:text-[1.85rem]"
+        style={{ fontFamily: yellowtail.style.fontFamily }}
+      >
+        n
+      </span>
+
+      <span
+        className="ml-0.5 flex items-center text-[1.15rem] text-[#f6efe1] sm:ml-1 sm:text-[1.55rem] lg:text-[1.85rem]"
+        style={{ fontFamily: yellowtail.style.fontFamily }}
+      >
+        <span>st</span>
+        <span className="mx-[0.08em] inline-flex h-[1.05em] w-[0.22em] items-center justify-center align-middle sm:w-[0.24em]">
+          <svg
+            viewBox="0 0 24 34"
+            className="h-full w-full text-accent-custom"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M12.3 2.5V20.3"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+            />
+            <path
+              d="M10.2 5.8C10.2 4.1 11.3 2.8 12.8 2.8H13.1C14.2 2.8 15.2 3.4 15.7 4.4C16.2 5.3 15.9 6.3 15 7.1L12.7 9.2"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="12.4" cy="3.1" r="1.15" fill="currentColor" />
+            <path
+              d="M11.8 3.3C12.4 4.4 12 5.8 10.9 6.2"
+              stroke="currentColor"
+              strokeWidth="1.3"
+              strokeLinecap="round"
+            />
+            <path
+              d="M13.5 20.9C13.9 22.3 13.3 23.7 12.2 24.5"
+              stroke="#d4af37"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+            />
+            <path
+              d="M14.4 21.2C13.4 22.1 12.2 22.4 11 22"
+              stroke="#d4af37"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+            />
+            <path
+              d="M10.9 6.2C10.2 6.8 9.9 7.7 9.8 8.7"
+              stroke="#d4af37"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </span>
+        <span>tchapparel</span>
+      </span>
+
+      <span
+        className="ml-1 text-[0.9rem] text-accent-custom sm:ml-1.5 sm:text-[1.05rem] lg:text-[1.15rem]"
+        style={{ fontFamily: yellowtail.style.fontFamily }}
+      >
+        .com
+      </span>
     </div>
   );
 }
@@ -47,15 +120,15 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 z-50 w-full border-b border-black/10 bg-black/95 px-3 py-2 shadow-sm backdrop-blur transition-transform duration-300 ease-out supports-backdrop-filter:bg-black/90 sm:px-6 sm:py-5 lg:px-8 dark:border-white/10 ${
+      className={`fixed top-0 z-50 w-full border-b border-black/10 bg-background/95 px-3 py-2 shadow-sm backdrop-blur transition-transform duration-300 ease-out supports-backdrop-filter:bg-background/80 sm:px-6 sm:py-5 lg:px-8 dark:border-white/10 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex w-full items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3">
           <a
             href="#top"
-            className="group flex items-center justify-start text-left transition-all duration-300 hover:brightness-110"
+            className="group flex items-center text-left transition-all duration-300 hover:brightness-110"
             aria-label="cut n stitchapparel.com"
           >
             <BrandWordmark />

@@ -7,14 +7,14 @@ import { useTheme } from "@/context/ThemeContext";
 
 function BrandWordmark() {
   return (
-    <div className="flex items-center bg-transparent pl-0 md:pl-0">
+    <div className="flex items-center bg-transparent pl-4 md:pl-6">
       <Image
         src="/images/cut-n-stitch-logo.png"
         alt="Cut n Stitch Apparel"
         width={520}
         height={120}
         priority
-        className="h-14 w-auto object-contain mix-blend-screen sm:h-16 md:h-17"
+        className="h-14 w-auto object-contain mix-blend-screen sm:h-16 md:h-18"
       />
     </div>
   );
@@ -52,10 +52,10 @@ export default function Header() {
       }`}
     >
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex w-full items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3">
           <a
             href="#top"
-            className="group flex items-center justify-start text-left transition-all duration-300 hover:brightness-110"
+            className="group flex items-center text-left transition-all duration-300 hover:brightness-110"
             aria-label="cut n stitchapparel.com"
           >
             <BrandWordmark />

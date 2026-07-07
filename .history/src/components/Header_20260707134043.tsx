@@ -14,7 +14,7 @@ function BrandWordmark() {
         width={520}
         height={120}
         priority
-        className="h-14 w-auto object-contain mix-blend-screen sm:h-16 md:h-17"
+        className="h-13 w-auto object-contain mix-blend-screen sm:h-15 md:h-16"
       />
     </div>
   );

@@ -7,15 +7,10 @@ import { useTheme } from "@/context/ThemeContext";
 
 function BrandWordmark() {
   return (
-    <div className="flex items-center bg-transparent pl-0 md:pl-0">
-      <Image
-        src="/images/cut-n-stitch-logo.png"
-        alt="Cut n Stitch Apparel"
-        width={520}
-        height={120}
-        priority
-        className="h-14 w-auto object-contain mix-blend-screen sm:h-16 md:h-17"
-      />
+    <div className="flex items-center bg-transparent pl-4 md:pl-6">
+      <span className="text-xl font-semibold tracking-wide text-white sm:text-2xl md:text-[1.7rem]">
+        Cut <span className="text-accent-custom">n</span> Stitch
+      </span>
     </div>
   );
 }
@@ -47,15 +42,15 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 z-50 w-full border-b border-black/10 bg-black/95 px-3 py-2 shadow-sm backdrop-blur transition-transform duration-300 ease-out supports-backdrop-filter:bg-black/90 sm:px-6 sm:py-5 lg:px-8 dark:border-white/10 ${
+      className={`fixed top-0 z-50 w-full border-b border-black/10 bg-background/95 px-3 py-2 shadow-sm backdrop-blur transition-transform duration-300 ease-out supports-backdrop-filter:bg-background/80 sm:px-6 sm:py-5 lg:px-8 dark:border-white/10 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex w-full items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3">
           <a
             href="#top"
-            className="group flex items-center justify-start text-left transition-all duration-300 hover:brightness-110"
+            className="group flex items-center text-left transition-all duration-300 hover:brightness-110"
             aria-label="cut n stitchapparel.com"
           >
             <BrandWordmark />

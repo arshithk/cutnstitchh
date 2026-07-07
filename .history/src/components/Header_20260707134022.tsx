@@ -14,7 +14,7 @@ function BrandWordmark() {
         width={520}
         height={120}
         priority
-        className="h-14 w-auto object-contain mix-blend-screen sm:h-16 md:h-17"
+        className="h-13 w-auto object-contain mix-blend-screen sm:h-15 md:h-16"
       />
     </div>
   );
@@ -52,10 +52,10 @@ export default function Header() {
       }`}
     >
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex w-full items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3">
           <a
             href="#top"
-            className="group flex items-center justify-start text-left transition-all duration-300 hover:brightness-110"
+            className="group flex items-center text-left transition-all duration-300 hover:brightness-110"
             aria-label="cut n stitchapparel.com"
           >
             <BrandWordmark />
