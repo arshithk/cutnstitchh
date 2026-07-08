@@ -31,9 +31,9 @@ export default function ProductCategories() {
               transition={{ duration: 0.45, delay: idx * 0.05 }}
               className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-border-custom/60 bg-card/80 shadow-[0_20px_50px_rgba(0,0,0,0.16)] transition-all duration-300 hover:-translate-y-1 hover:border-accent-custom/50 hover:shadow-[0_30px_70px_rgba(0,0,0,0.22)]"
             >
-              <div className="relative aspect-4/5 overflow-hidden">
+              <div className="relative aspect-[4/5] overflow-hidden">
                 <Image src={product.heroImage} alt={product.name} fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover transition duration-500 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               </div>
 
               <div className="flex flex-1 flex-col p-6">
