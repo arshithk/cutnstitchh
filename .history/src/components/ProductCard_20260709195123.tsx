@@ -15,9 +15,7 @@ export default function ProductCard({ product, category }: ProductCardProps) {
   const description = product?.description ?? category?.description ?? "";
   const heroImage = product?.heroImage ?? category?.heroImage ?? "/images/regular-fit-tshirt-white.jpg";
   const tag = product?.category ?? "Merchandise";
-  const href = category
-    ? `/products/${category.slug}`
-    : `/products/details/${product?.slug ?? ""}`;
+  const href = category ? `/products/${category.slug}` : `/products/${getCatalogCategorySlugByLegacyProductSlug(product?.slug ?? "") ?? product?.slug ?? ""}`;
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-border-custom/60 bg-card/80 shadow-[0_20px_50px_rgba(0,0,0,0.16)] transition-all duration-300 hover:-translate-y-1 hover:border-accent-custom/50 hover:shadow-[0_30px_70px_rgba(0,0,0,0.22)]">

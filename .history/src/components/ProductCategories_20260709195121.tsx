@@ -2,14 +2,12 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { catalogCategories, products } from "@/data/products";
+import { catalogCategories } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 
 export default function ProductCategories() {
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true, margin: "-50px" });
-  const legacyProducts = products.filter((product) => !["regular-fit-t-shirts", "polo-t-shirts", "oversized-t-shirts"].includes(product.slug));
-  const catalogCards = [...catalogCategories.map((category) => ({ type: "category" as const, item: category })), ...legacyProducts.map((product) => ({ type: "product" as const, item: product }))];
 
   return (
     <section id="products" className="scroll-mt-20 relative overflow-hidden bg-background py-8 sm:py-10 lg:py-12" ref={containerRef}>
@@ -23,14 +21,14 @@ export default function ProductCategories() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {catalogCards.map((card, idx) => (
+          {catalogCategories.map((category, idx) => (
             <motion.div
-              key={card.type === "category" ? card.item.slug : card.item.slug}
+              key={category.slug}
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.45, delay: idx * 0.05 }}
             >
-              {card.type === "category" ? <ProductCard category={card.item} /> : <ProductCard product={card.item} />}
+              <ProductCard category={category} />
             </motion.div>
           ))}
         </div>

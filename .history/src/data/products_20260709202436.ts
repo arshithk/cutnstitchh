@@ -82,7 +82,7 @@ export const catalogCategories: CatalogCategory[] = [
     slug: "regular-fit",
     name: "Regular Fit T-Shirt",
     description: "Soft, everyday essentials crafted for premium brands, uniforms, and corporate merchandising.",
-    heroImage: "/images/regular-fit-tshirt-white.jpg",
+    heroImage: "/images/products/regular-fit/cotton-180gsm.jpg",
     variants: [
       {
         slug: "cotton-180gsm",
@@ -91,8 +91,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Cotton",
         fit: "Regular Fit",
         description: "A breathable cotton staple for premium casualwear and repeat branded apparel orders.",
-        heroImage: "/images/regular-fit-tshirt-white.jpg",
-        thumbnailImage: "/images/regular-fit-tshirt-white.jpg",
+        heroImage: "/images/products/regular-fit/cotton-180gsm.jpg",
+        thumbnailImage: "/images/products/regular-fit/cotton-180gsm.jpg",
         colors: [
           { name: "White", hex: "#f7f7f2", imagePath: "/images/regular-fit-tshirt-white.jpg" },
           { name: "Black", hex: "#111111", imagePath: "/images/regular-fit-tshirt-black.jpg" },
@@ -111,8 +111,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "PolyCotton",
         fit: "Regular Fit",
         description: "A versatile blend tee that offers resilience and comfort for larger production runs.",
-        heroImage: "/images/regular-fit-tshirt-grey.jpg",
-        thumbnailImage: "/images/regular-fit-tshirt-grey.jpg",
+        heroImage: "/images/products/regular-fit/polycotton-180gsm.jpg",
+        thumbnailImage: "/images/products/regular-fit/polycotton-180gsm.jpg",
         colors: [
           { name: "White", hex: "#f7f7f2", imagePath: "/images/regular-fit-tshirt-white.jpg" },
           { name: "Grey", hex: "#6b7280", imagePath: "/images/regular-fit-tshirt-grey.jpg" },
@@ -131,8 +131,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Polyester",
         fit: "Regular Fit",
         description: "A lightweight option suitable for high-volume custom merchandise and promotional kits.",
-        heroImage: "/images/regular-fit-tshirt-red.jpg",
-        thumbnailImage: "/images/regular-fit-tshirt-red.jpg",
+        heroImage: "/images/products/regular-fit/polyester-100gsm.jpg",
+        thumbnailImage: "/images/products/regular-fit/polyester-100gsm.jpg",
         colors: [
           { name: "White", hex: "#f7f7f2", imagePath: "/images/regular-fit-tshirt-white.jpg" },
           { name: "Red", hex: "#a52424", imagePath: "/images/regular-fit-tshirt-red.jpg" },
@@ -151,8 +151,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Polyester",
         fit: "Regular Fit",
         description: "A slightly heavier polyester tee designed for comfortable, durable everyday wear.",
-        heroImage: "/images/regular-fit-tshirt-navy-blue.jpg",
-        thumbnailImage: "/images/regular-fit-tshirt-navy-blue.jpg",
+        heroImage: "/images/products/regular-fit/polyester-110gsm.jpg",
+        thumbnailImage: "/images/products/regular-fit/polyester-110gsm.jpg",
         colors: [
           { name: "Navy Blue", hex: "#20354d", imagePath: "/images/regular-fit-tshirt-navy-blue.jpg" },
           { name: "Black", hex: "#111111", imagePath: "/images/regular-fit-tshirt-black.jpg" },
@@ -171,8 +171,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Dri Fit Mars",
         fit: "Regular Fit",
         description: "A performance-led tee with moisture management and an elevated sportswear feel.",
-        heroImage: "/images/regular-fit-tshirt-yellow.jpg",
-        thumbnailImage: "/images/regular-fit-tshirt-yellow.jpg",
+        heroImage: "/images/products/regular-fit/dri-fit-mars-200gsm.jpg",
+        thumbnailImage: "/images/products/regular-fit/dri-fit-mars-200gsm.jpg",
         colors: [
           { name: "Yellow", hex: "#f2c94c", imagePath: "/images/regular-fit-tshirt-yellow.jpg" },
           { name: "Black", hex: "#111111", imagePath: "/images/regular-fit-tshirt-black.jpg" },
@@ -191,8 +191,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Dot Knit",
         fit: "Regular Fit",
         description: "A soft knit tee with a premium texture suited to fashion and everyday branding pieces.",
-        heroImage: "/images/regular-fit-tshirt-purple.jpg",
-        thumbnailImage: "/images/regular-fit-tshirt-purple.jpg",
+        heroImage: "/images/products/regular-fit/dot-knit-160gsm.jpg",
+        thumbnailImage: "/images/products/regular-fit/dot-knit-160gsm.jpg",
         colors: [
           { name: "Purple", hex: "#6b3fa0", imagePath: "/images/regular-fit-tshirt-purple.jpg" },
           { name: "Grey", hex: "#6b7280", imagePath: "/images/regular-fit-tshirt-grey.jpg" },
@@ -210,7 +210,7 @@ export const catalogCategories: CatalogCategory[] = [
     slug: "polo",
     name: "Polo T-Shirt",
     description: "Refined collar styles and premium knits for hospitality, corporate gifting, and retail-ready apparel.",
-    heroImage: "/images/polo-tshirt-white.jpg",
+    heroImage: "/images/products/polo/cotton-220gsm.jpg",
     variants: [
       {
         slug: "cotton-220gsm",
@@ -219,8 +219,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Cotton",
         fit: "Polo Fit",
         description: "A polished cotton polo designed for smart casual and premium branding needs.",
-        heroImage: "/images/polo-tshirt-white.jpg",
-        thumbnailImage: "/images/polo-tshirt-white.jpg",
+        heroImage: "/images/products/polo/cotton-220gsm.jpg",
+        thumbnailImage: "/images/products/polo/cotton-220gsm.jpg",
         colors: [
           { name: "White", hex: "#f5f5f2", imagePath: "/images/polo-tshirt-white.jpg" },
           { name: "Navy Blue", hex: "#22334d", imagePath: "/images/polo-tshirt-navy-blue.jpg" },
@@ -239,8 +239,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Cotton",
         fit: "Polo Fit",
         description: "A premium dual-tipping polo with a refined finish for elevated corporate apparel.",
-        heroImage: "/images/polo-tshirt-dark-blue.jpg",
-        thumbnailImage: "/images/polo-tshirt-dark-blue.jpg",
+        heroImage: "/images/products/polo/cotton-220gsm-dual-tipping.jpg",
+        thumbnailImage: "/images/products/polo/cotton-220gsm-dual-tipping.jpg",
         colors: [
           { name: "Dark Blue", hex: "#1f3b64", imagePath: "/images/polo-tshirt-dark-blue.jpg" },
           { name: "White", hex: "#f5f5f2", imagePath: "/images/polo-tshirt-white.jpg" },
@@ -259,8 +259,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Cotton",
         fit: "Polo Fit",
         description: "A heavyweight polo with a premium hand feel and structured silhouette.",
-        heroImage: "/images/polo-tshirt-maroon.jpg",
-        thumbnailImage: "/images/polo-tshirt-maroon.jpg",
+        heroImage: "/images/products/polo/cotton-240gsm.jpg",
+        thumbnailImage: "/images/products/polo/cotton-240gsm.jpg",
         colors: [
           { name: "Maroon", hex: "#6d2c2c", imagePath: "/images/polo-tshirt-maroon.jpg" },
           { name: "Navy Blue", hex: "#22334d", imagePath: "/images/polo-tshirt-navy-blue.jpg" },
@@ -279,8 +279,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Cotton",
         fit: "Polo Fit",
         description: "A premium tipping polo with a sharp collar and strong presentation quality.",
-        heroImage: "/images/polo-tshirt-red.jpg",
-        thumbnailImage: "/images/polo-tshirt-red.jpg",
+        heroImage: "/images/products/polo/cotton-240gsm-tipping.jpg",
+        thumbnailImage: "/images/products/polo/cotton-240gsm-tipping.jpg",
         colors: [
           { name: "Red", hex: "#a52424", imagePath: "/images/polo-tshirt-red.jpg" },
           { name: "Dark Blue", hex: "#1f3b64", imagePath: "/images/polo-tshirt-dark-blue.jpg" },
@@ -299,8 +299,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Premium Cotton",
         fit: "Polo Fit",
         description: "A luxury-weight polo created for elevated retail presentation and premium branding.",
-        heroImage: "/images/polo-tshirt-brown.jpg",
-        thumbnailImage: "/images/polo-tshirt-brown.jpg",
+        heroImage: "/images/products/polo/premium-cotton-240gsm.jpg",
+        thumbnailImage: "/images/products/polo/premium-cotton-240gsm.jpg",
         colors: [
           { name: "Brown", hex: "#6f4b2f", imagePath: "/images/polo-tshirt-brown.jpg" },
           { name: "Navy Blue", hex: "#22334d", imagePath: "/images/polo-tshirt-navy-blue.jpg" },
@@ -319,8 +319,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "PolyCotton",
         fit: "Polo Fit",
         description: "A durable polo fabric that combines comfort, structure, and excellent print performance.",
-        heroImage: "/images/polo-tshirt-grey.jpg",
-        thumbnailImage: "/images/polo-tshirt-grey.jpg",
+        heroImage: "/images/products/polo/polycotton-220gsm.jpg",
+        thumbnailImage: "/images/products/polo/polycotton-220gsm.jpg",
         colors: [
           { name: "Grey", hex: "#6b7280", imagePath: "/images/polo-tshirt-grey.jpg" },
           { name: "White", hex: "#f5f5f2", imagePath: "/images/polo-tshirt-white.jpg" },
@@ -339,8 +339,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Polyester",
         fit: "Polo Fit",
         description: "A lightweight polo knit for fast-moving promo programs and sportswear launches.",
-        heroImage: "/images/polo-tshirt-orange.jpg",
-        thumbnailImage: "/images/polo-tshirt-orange.jpg",
+        heroImage: "/images/products/polo/polyester-110gsm.jpg",
+        thumbnailImage: "/images/products/polo/polyester-110gsm.jpg",
         colors: [
           { name: "Orange", hex: "#c96a17", imagePath: "/images/polo-tshirt-orange.jpg" },
           { name: "White", hex: "#f5f5f2", imagePath: "/images/polo-tshirt-white.jpg" },
@@ -359,8 +359,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Polyester",
         fit: "Polo Fit",
         description: "A balanced polyester polo that performs well for branded uniforms and event wear.",
-        heroImage: "/images/polo-tshirt-yellow.jpg",
-        thumbnailImage: "/images/polo-tshirt-yellow.jpg",
+        heroImage: "/images/products/polo/polyester-140gsm.jpg",
+        thumbnailImage: "/images/products/polo/polyester-140gsm.jpg",
         colors: [
           { name: "Yellow", hex: "#f2c94c", imagePath: "/images/polo-tshirt-yellow.jpg" },
           { name: "Black", hex: "#111111", imagePath: "/images/polo-tshirt-black.jpg" },
@@ -379,8 +379,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Dri Fit Mars",
         fit: "Polo Fit",
         description: "A performance polo with a polished finish and moisture-wicking comfort.",
-        heroImage: "/images/polo-tshirt-purple.jpg",
-        thumbnailImage: "/images/polo-tshirt-purple.jpg",
+        heroImage: "/images/products/polo/dri-fit-mars-200gsm.jpg",
+        thumbnailImage: "/images/products/polo/dri-fit-mars-200gsm.jpg",
         colors: [
           { name: "Purple", hex: "#6b3fa0", imagePath: "/images/polo-tshirt-purple.jpg" },
           { name: "White", hex: "#f5f5f2", imagePath: "/images/polo-tshirt-white.jpg" },
@@ -399,8 +399,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Dot Knit",
         fit: "Polo Fit",
         description: "A premium textured polo with standout visual quality and a soft hand feel.",
-        heroImage: "/images/polo-tshirt-dark-blue.jpg",
-        thumbnailImage: "/images/polo-tshirt-dark-blue.jpg",
+        heroImage: "/images/products/polo/dot-knit-180gsm.jpg",
+        thumbnailImage: "/images/products/polo/dot-knit-180gsm.jpg",
         colors: [
           { name: "Dark Blue", hex: "#1f3b64", imagePath: "/images/polo-tshirt-dark-blue.jpg" },
           { name: "White", hex: "#f5f5f2", imagePath: "/images/polo-tshirt-white.jpg" },
@@ -419,8 +419,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Honeycomb",
         fit: "Polo Fit",
         description: "A lightweight textured polo designed for elevated casualwear and branded uniforms.",
-        heroImage: "/images/polo-tshirt-grey.jpg",
-        thumbnailImage: "/images/polo-tshirt-grey.jpg",
+        heroImage: "/images/products/polo/honeycomb-160gsm.jpg",
+        thumbnailImage: "/images/products/polo/honeycomb-160gsm.jpg",
         colors: [
           { name: "Grey", hex: "#6b7280", imagePath: "/images/polo-tshirt-grey.jpg" },
           { name: "White", hex: "#f5f5f2", imagePath: "/images/polo-tshirt-white.jpg" },
@@ -438,7 +438,7 @@ export const catalogCategories: CatalogCategory[] = [
     slug: "oversized",
     name: "Oversized T-Shirt",
     description: "Statement silhouettes with premium comfort, structure, and elevated casualwear appeal.",
-    heroImage: "/images/oversized-tshirt-white.jpg",
+    heroImage: "/images/products/oversized/cotton-oversized-220gsm.jpg",
     variants: [
       {
         slug: "cotton-oversized-220gsm",
@@ -447,8 +447,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "Cotton",
         fit: "Oversized Fit",
         description: "A relaxed oversized tee with strong structure and a modern streetwear finish.",
-        heroImage: "/images/oversized-tshirt-white.jpg",
-        thumbnailImage: "/images/oversized-tshirt-white.jpg",
+        heroImage: "/images/products/oversized/cotton-oversized-220gsm.jpg",
+        thumbnailImage: "/images/products/oversized/cotton-oversized-220gsm.jpg",
         colors: [
           { name: "White", hex: "#f5f5f2", imagePath: "/images/oversized-tshirt-white.jpg" },
           { name: "Black", hex: "#0f1115", imagePath: "/images/oversized-tshirt-black.jpg" },
@@ -467,8 +467,8 @@ export const catalogCategories: CatalogCategory[] = [
         fabric: "French Terry",
         fit: "Oversized Fit",
         description: "A heavyweight French Terry oversized tee with warmth, texture, and elevated comfort.",
-        heroImage: "/images/oversized-tshirt-brown.jpg",
-        thumbnailImage: "/images/oversized-tshirt-brown.jpg",
+        heroImage: "/images/products/oversized/french-terry-240gsm.jpg",
+        thumbnailImage: "/images/products/oversized/french-terry-240gsm.jpg",
         colors: [
           { name: "Brown", hex: "#6f4b2f", imagePath: "/images/oversized-tshirt-brown.jpg" },
           { name: "Maroon", hex: "#6d2c2c", imagePath: "/images/oversized-tshirt-maroon.jpg" },

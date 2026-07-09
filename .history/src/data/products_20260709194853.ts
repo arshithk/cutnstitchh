@@ -213,7 +213,7 @@ export const catalogCategories: CatalogCategory[] = [
     heroImage: "/images/polo-tshirt-white.jpg",
     variants: [
       {
-        slug: "cotton-220gsm",
+        slug: "cotton-220gsm-polo",
         name: "Cotton 220 GSM Polo Neck T-Shirt",
         gsm: "220 GSM",
         fabric: "Cotton",
@@ -253,7 +253,7 @@ export const catalogCategories: CatalogCategory[] = [
         categorySlug: "polo",
       },
       {
-        slug: "cotton-240gsm",
+        slug: "cotton-240gsm-polo",
         name: "Cotton 240 GSM Polo Neck T-Shirt",
         gsm: "240 GSM",
         fabric: "Cotton",
@@ -333,7 +333,7 @@ export const catalogCategories: CatalogCategory[] = [
         categorySlug: "polo",
       },
       {
-        slug: "polyester-110gsm",
+        slug: "polyester-110gsm-polo",
         name: "Polyester 110 GSM Polo Neck T-Shirt",
         gsm: "110 GSM",
         fabric: "Polyester",
@@ -353,7 +353,7 @@ export const catalogCategories: CatalogCategory[] = [
         categorySlug: "polo",
       },
       {
-        slug: "polyester-140gsm",
+        slug: "polyester-140gsm-polo",
         name: "Polyester 140 GSM Polo Neck T-Shirt",
         gsm: "140 GSM",
         fabric: "Polyester",
@@ -373,7 +373,7 @@ export const catalogCategories: CatalogCategory[] = [
         categorySlug: "polo",
       },
       {
-        slug: "dri-fit-mars-200gsm",
+        slug: "dri-fit-mars-200gsm-polo",
         name: "Dri Fit Mars 200 GSM Polo Neck T-Shirt",
         gsm: "200 GSM",
         fabric: "Dri Fit Mars",
@@ -393,7 +393,7 @@ export const catalogCategories: CatalogCategory[] = [
         categorySlug: "polo",
       },
       {
-        slug: "dot-knit-180gsm",
+        slug: "dot-knit-180gsm-polo",
         name: "Dot Knit 180 GSM Polo Neck T-Shirt",
         gsm: "180 GSM",
         fabric: "Dot Knit",
@@ -413,7 +413,7 @@ export const catalogCategories: CatalogCategory[] = [
         categorySlug: "polo",
       },
       {
-        slug: "honeycomb-160gsm",
+        slug: "honeycomb-160gsm-polo",
         name: "Honeycomb 160 GSM Polo Neck T-Shirt",
         gsm: "160 GSM",
         fabric: "Honeycomb",
@@ -486,16 +486,6 @@ export const catalogCategories: CatalogCategory[] = [
 
 export function getCatalogCategoryBySlug(slug: string) {
   return catalogCategories.find((category) => category.slug === slug);
-}
-
-export function getCatalogCategorySlugByLegacyProductSlug(slug: string) {
-  const mapping: Record<string, string> = {
-    "regular-fit-t-shirts": "regular-fit",
-    "polo-t-shirts": "polo",
-    "oversized-t-shirts": "oversized",
-  };
-
-  return mapping[slug];
 }
 
 export function getCatalogVariantBySlug(categorySlug: string, variantSlug: string) {

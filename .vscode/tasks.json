@@ -9,6 +9,36 @@
 				"$tsc"
 			],
 			"group": "build"
+		},
+		{
+			"label": "generate-catalog-images",
+			"type": "shell",
+			"command": "python tmp_generate_catalog_images.py",
+			"group": "build"
+		},
+		{
+			"label": "build-site",
+			"type": "shell",
+			"command": "npm run build",
+			"group": "build"
+		},
+		{
+			"label": "restore-catalog-images",
+			"type": "shell",
+			"command": "python restore_catalog_images.py",
+			"group": "build"
+		},
+		{
+			"label": "restore-catalog-images-direct",
+			"type": "shell",
+			"command": "python restore_catalog_images_direct.py",
+			"group": "build"
+		},
+		{
+			"label": "restore-catalog-images-direct",
+			"type": "shell",
+			"command": "python restore_catalog_images_direct.py",
+			"group": "build"
 		}
 	]
 }
