@@ -2,6 +2,28 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "build-site-cmd",
+			"type": "shell",
+			"command": "cmd /c \"cd /d C:\\Users\\arshu\\OneDrive\\Desktop\\CutnStitch && node node_modules\\next\\dist\\bin\\next.js build\"",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-site-node",
+			"type": "process",
+			"command": "node",
+			"args": ["node_modules/next/dist/bin/next", "build"],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
 			"label": "build-site",
 			"type": "shell",
 			"command": "npm run build",
