@@ -21,7 +21,9 @@ export interface ProductFeature {
 const GENERAL_KEYWORDS = [
   "Screen Printing",
   "Embroidery",
-  "Heat Transfer Printing",
+  "Heat Transfer",
+  "Puff Printing",
+  "Vinyl Printing",
   "Corporate Uniforms",
   "School Uniforms",
   "College Uniforms",
@@ -93,6 +95,8 @@ const KEYWORDS_PREMIUM_COTTON_180 = [
   "DTF Printing",
   "DTG Printing",
   "Screen Printing",
+  "Puff Printing",
+  "Vinyl Printing",
   "Heat Transfer Printing",
   "Embroidery",
   "Custom Logo Printing",
@@ -123,6 +127,7 @@ const KEYWORDS_POLYCOTTON_180 = [
   "Screen Printing",
   "Heat Transfer Printing",
   "Embroidery",
+  "Vinyl Printing",
   "Corporate Uniforms",
   "School Uniforms",
   "Promotional Apparel",
@@ -226,11 +231,11 @@ const KEYWORDS_DRI_FIT_180 = [
 // Additional sets (honeycomb, saleena, polos, hoodies, oversized) — keep concise
 const KEYWORDS_HONEYCOMB_160 = ["Honeycomb Knit Fabric", "160 GSM", "Textured Fabric", "DTF Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms"];
 const KEYWORDS_SALEENA_160 = ["Selena Knit Fabric", "160 GSM", "DTF Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms"];
-const KEYWORDS_POLY_Polo_220 = ["Poly Cotton Blend", "220 GSM", "DTF Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms"];
-const KEYWORDS_COTTON_POLO = ["100% Premium Cotton", "Bio Washed", "DTF Printing", "DTG Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms", "Premium Brand Merchandise"];
+const KEYWORDS_POLY_Polo_220 = ["Poly Cotton Blend", "220 GSM", "DTF Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery", "Vinyl Printing", "Corporate Uniforms"];
+const KEYWORDS_COTTON_POLO = ["100% Premium Cotton", "Bio Washed", "DTF Printing", "DTG Printing", "Screen Printing", "Puff Printing", "Vinyl Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms", "Premium Brand Merchandise"];
 const KEYWORDS_POLY_HOODIES = ["Poly Cotton Blend", "Heavy GSM", "Soft Fleece", "Warm Fabric", "DTF Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery"];
-const KEYWORDS_COTTON_HOODIES = ["100% Cotton", "Bio Washed", "Heavy GSM", "Soft Brushed Interior", "DTG Printing", "DTF Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery"];
-const KEYWORDS_OVERSIZED = ["Oversized Fit", "Relaxed Fit", "Streetwear", "DTF Printing", "DTG Printing", "Screen Printing", "Sublimation", "Heat Transfer Printing", "Embroidery"];
+const KEYWORDS_COTTON_HOODIES = ["100% Cotton", "Bio Washed", "Heavy GSM", "Soft Brushed Interior", "DTG Printing", "DTF Printing", "Screen Printing", "Puff Printing", "Heat Transfer Printing", "Vinyl Printing", "Embroidery"];
+const KEYWORDS_OVERSIZED = ["Oversized Fit", "Relaxed Fit", "Streetwear", "DTF Printing", "DTG Printing", "Screen Printing", "Puff Printing", "Sublimation", "Heat Transfer Printing", "Embroidery"];
 
 function getProductKeywords(variant: CatalogVariant): string[] {
   const name = (variant.name ?? "").toLowerCase();
@@ -334,7 +339,7 @@ const standardAvailableColorPalette: Omit<ProductColor, "imagePath">[] = [
   { name: "Brown", hex: "#6f4b2f" },
   { name: "Grey", hex: "#6b7280" },
   { name: "Yellow", hex: "#f2c94c" },
-  { name: "Golden Yellow", hex: "#b88c12" },
+  { name: "Dark Yellow (Mustard)", hex: "#b88c12" },
   { name: "Purple", hex: "#6b3fa0" },
 ];
 
@@ -386,135 +391,6 @@ function buildAvailableColors(colors: ProductColor[], fallbackImagePath: string,
   }));
 }
 
-// Helper: generate printing compatibility list based on fabric
-function generatePrintingCompatibility(fabric?: string, name?: string) {
-  const f = (fabric ?? "").toLowerCase();
-  const n = (name ?? "").toLowerCase();
-
-  const join = (arr: string[]) => arr.join(", ");
-
-  // Cotton-based
-  if (f.includes("100% cotton") || f.includes("cotton") || f.includes("premium cotton") || f.includes("bio washed")) {
-    return join(["Screen Printing", "DTF Printing", "DTG Printing", "Heat Transfer Printing"]);
-  }
-
-  // French Terry Cotton
-  if (f.includes("french terry") && !f.includes("polycotton")) {
-    return join(["Screen Printing", "DTF Printing", "DTG Printing", "Heat Transfer Printing"]);
-  }
-
-  // Cotton Fleece
-  if (f.includes("fleece") && !f.includes("polycotton")) {
-    return join(["Screen Printing", "DTF Printing", "DTG Printing", "Heat Transfer Printing"]);
-  }
-
-  // PolyCotton variants
-  if (f.includes("polycotton") || f.includes("poly cotton") || f.includes("poly cotton")) {
-    return join(["Screen Printing", "DTF Printing", "Heat Transfer Printing"]);
-  }
-
-  // PolyCotton French Terry / PolyCotton Fleece
-  if (f.includes("polycotton") && (f.includes("french terry") || f.includes("fleece"))) {
-    return join(["Screen Printing", "DTF Printing", "Heat Transfer Printing"]);
-  }
-
-  // Polyester and performance fabrics
-  if (f.includes("polyester") || f.includes("pique") || f.includes("dri fit") || f.includes("dri-fit") || f.includes("mars") || f.includes("dot knit") || f.includes("lycra")) {
-    // Sublimation only relevant as "White garments only" — include the note
-    return join([
-      "Screen Printing",
-      "DTF Printing",
-      "Heat Transfer Printing",
-      "Sublimation Printing (White garments only)",
-    ]);
-  }
-
-  // Fallback conservative list
-  return join(["Screen Printing", "DTF Printing", "Heat Transfer Printing"]);
-}
-
-// Helper: embroidery compatibility paragraph
-function generateEmbroideryCompatibility(fabric?: string) {
-  const f = (fabric ?? "").toLowerCase();
-
-  if (f.includes("polycotton") || f.includes("poly cotton")) {
-    return "The polycotton blend offers reliable embroidery performance with sharp logo definition and excellent durability.";
-  }
-
-  if (f.includes("polyester") || f.includes("pique") || f.includes("lycra") || f.includes("dri fit") || f.includes("dri-fit") || f.includes("dot knit") || f.includes("mars")) {
-    return "Compatible with professional embroidery, providing clean stitching, excellent logo clarity, and durable branding.";
-  }
-
-  // Cotton, fleece, french terry
-  if (f.includes("french terry") || f.includes("fleece") || f.includes("cotton") || f.includes("premium cotton") || f.includes("100% cotton") || f.includes("bio washed")) {
-    return "Premium cotton fabric delivers excellent stitch definition, clean logo detailing, and long-lasting embroidery performance.";
-  }
-
-  // Default
-  return "Premium cotton fabric delivers excellent stitch definition, clean logo detailing, and long-lasting embroidery performance.";
-}
-
-// Helper: generate a unique product description per variant
-function generateProductDescription(variant: any, product: any) {
-  const fabric = (variant.fabric ?? product.fabric ?? "").toString();
-  const gsm = (variant.gsm ?? variant.gsmRange ?? product.gsmRange ?? "").toString();
-  const fit = (variant.fit ?? product.fit ?? "").toString();
-  const type = product.name ?? product.tagline ?? "Product";
-  const features: string[] = [];
-  const f = fabric.toLowerCase();
-
-  if (f.includes("cotton")) {
-    features.push("premium cotton", "soft hand feel", "breathable", "durable");
-  }
-  if (f.includes("polycotton")) {
-    features.push("soft", "durable", "reduced shrinkage", "shape retention");
-  }
-  if (f.includes("polyester") && !f.includes("pique")) {
-    features.push("lightweight", "moisture wicking", "quick dry", "durable");
-  }
-  if (f.includes("pique")) {
-    features.push("structured knit", "breathable", "polished finish");
-  }
-  if (f.includes("french terry")) {
-    features.push("premium comfort", "soft loop knit interior", "breathable");
-  }
-  if (f.includes("fleece")) {
-    features.push("warm", "soft brushed interior", "comfortable");
-  }
-  if (f.includes("lycra") || f.includes("stretch")) {
-    features.push("stretch", "flexible movement", "athletic performance");
-  }
-  if (f.includes("dri fit") || f.includes("dri-fit") || f.includes("mars")) {
-    features.push("moisture management", "sweat wicking", "quick dry", "performance wear");
-  }
-  if (f.includes("dot knit")) {
-    features.push("enhanced airflow", "breathable", "sports performance");
-  }
-
-  // Deduplicate features and craft sentence
-  const uniqueFeatures = Array.from(new Set(features));
-  const featureSentence = uniqueFeatures.length ? `${uniqueFeatures.slice(0, 4).join(", ")}` : "premium construction";
-
-  // Choose suitable uses based on product category
-  const name = (product.name ?? "").toString().toLowerCase();
-  const uses: string[] = [];
-  if (name.includes("polo") || name.includes("corporate") || name.includes("uniform")) {
-    uses.push("corporate uniforms", "hospitality uniforms", "team wear");
-  } else if (name.includes("hoodie") || name.includes("sweatshirt") || name.includes("joggers") || name.includes("shorts")) {
-    uses.push("team wear", "sportswear", "loungewear");
-  } else if (name.includes("t-shirt") || name.includes("tshirts") || name.includes("t shirts") || name.includes("regular") || name.includes("oversized")) {
-    uses.push("promotional apparel", "event merchandise", "corporate uniforms");
-  } else {
-    uses.push("promotional apparel", "team wear");
-  }
-
-  const usageSentence = `Ideal for ${uses.slice(0, 3).join(", ")} where consistent quality and finish matter.`;
-
-  const desc = `A ${gsm} ${fabric} ${fit ? `${fit.toLowerCase()} ` : ""}${product.name || "garment"} offering ${featureSentence}. ${usageSentence} Proudly Made in India.`;
-
-  return desc.replace(/\s+/g, " ").trim();
-}
-
 const baseCatalogCategories: CatalogCategory[] = [
   {
     id: "regular-fit",
@@ -527,7 +403,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-180gsm",
         name: "Cotton 180 GSM Round Neck T-Shirt",
         gsm: "180 GSM",
-        fabric: "100% Cotton S-Jersey",
+        fabric: "Cotton Jersey (BIO WASHED)",
         fit: "Regular Fit",
         description: "A breathable cotton staple for premium casualwear and repeat branded apparel orders.",
         heroImage: "/images/regular-fit-tshirt-white.jpg",
@@ -553,7 +429,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polycotton-180gsm",
         name: "PolyCotton 180 GSM Round Neck T-Shirt",
         gsm: "180 GSM",
-        fabric: "PolyCotton Blend",
+        fabric: "Poly Cotton Jersey",
         fit: "Regular Fit",
         description: "A versatile blend tee that offers resilience and comfort for larger production runs.",
         heroImage: "/images/regular-fit-tshirt-grey.jpg",
@@ -578,7 +454,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polyester-90gsm",
         name: "Polyester 90 GSM Round Neck T-Shirt",
         gsm: "90 GSM",
-        fabric: "100% Polyester",
+        fabric: "Polyester Jersey",
         fit: "Regular Fit",
         description: "A lightweight option suitable for high-volume custom merchandise and promotional kits.",
         heroImage: "/images/regular-fit-tshirt-red.jpg",
@@ -603,7 +479,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polyester-140gsm",
         name: "Polyester 140 GSM Round Neck T-Shirt",
         gsm: "140 GSM",
-        fabric: "100% Polyester",
+        fabric: "Polyester Jersey",
         fit: "Regular Fit",
         description: "A balanced polyester tee that offers better structure and durability for premium everyday wear.",
         heroImage: "/images/regular-fit-tshirt-navy-blue.jpg",
@@ -628,7 +504,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polyester-110gsm",
         name: "Polyester 110 GSM Round Neck T-Shirt",
         gsm: "110 GSM",
-        fabric: "100% Polyester",
+        fabric: "Polyester Jersey",
         fit: "Regular Fit",
         description: "A slightly heavier polyester tee designed for comfortable, durable everyday wear.",
         heroImage: "/images/regular-fit-tshirt-navy-blue.jpg",
@@ -653,7 +529,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "dri-fit-mars-200gsm",
         name: "Dri Fit Mars 200 GSM Round Neck T-Shirt",
         gsm: "200 GSM",
-        fabric: "Dri Fit Mars Polyester",
+        fabric: "Mars Dri Fit Fabric",
         fit: "Regular Fit",
         description: "A performance-led tee with moisture management and an elevated sportswear feel.",
         heroImage: "/images/regular-fit-tshirt-yellow.jpg",
@@ -678,7 +554,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "dot-knit-160gsm",
         name: "Dot Knit 160 GSM Round Neck T-Shirt",
         gsm: "160 GSM",
-        fabric: "Dot Knit Polyester",
+        fabric: "Dot Knit",
         fit: "Regular Fit",
         description: "A soft knit tee with a premium texture suited to fashion and everyday branding pieces.",
         heroImage: "/images/regular-fit-tshirt-purple.jpg",
@@ -712,7 +588,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-220gsm",
         name: "Cotton 220 GSM Polo Neck T-Shirt",
         gsm: "220 GSM",
-        fabric: "100% Cotton Piqué",
+        fabric: "Cotton Piqué (BIO WASHED)",
         fit: "Polo Fit",
         description: "A polished cotton polo designed for smart casual and premium branding needs.",
         heroImage: "/images/polo-tshirt-white.jpg",
@@ -737,7 +613,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-240gsm",
         name: "Cotton 240 GSM Polo Neck T-Shirt",
         gsm: "240 GSM",
-        fabric: "100% Cotton Piqué",
+        fabric: "Premium Cotton Piqué (BIO WASHED)",
         fit: "Polo Fit",
         description: "A heavyweight polo with a premium hand feel and structured silhouette.",
         heroImage: "/images/polo-tshirt-maroon.jpg",
@@ -762,7 +638,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-240gsm-tipping",
         name: "Cotton 240 GSM Tipping Polo Neck T-Shirt",
         gsm: "240 GSM",
-        fabric: "100% Cotton Piqué",
+        fabric: "Cotton",
         fit: "Polo Fit",
         description: "A premium tipping polo with a sharp collar and strong presentation quality.",
         heroImage: "/images/polo-tshirt-red.jpg",
@@ -787,7 +663,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-220gsm-dual-tipping",
         name: "Cotton 220 GSM Dual Tipping Polo Neck T-Shirt",
         gsm: "220 GSM",
-        fabric: "100% Cotton Piqué",
+        fabric: "Cotton Piqué (BIO WASHED)",
         fit: "Polo Fit",
         description: "A refined dual-tipping polo with a distinctive finish and premium presentation.",
         heroImage: "/images/cotton-dual-tipping-polo-white.jpeg",
@@ -797,8 +673,6 @@ const baseCatalogCategories: CatalogCategory[] = [
           { name: "Navy Blue", hex: "#22334d", imagePath: "/images/cotton-dual-tipping-polo-navy-blue.jpeg" },
           { name: "Maroon", hex: "#6d2c2c", imagePath: "/images/cotton-dual-tipping-polo-maroon.jpeg" },
           { name: "Red", hex: "#a52424", imagePath: "/images/cotton-dual-tipping-polo-red.jpeg" },
-          { name: "Royal Blue", hex: "#1f3b64", imagePath: "/images/cotton-dual-tipping-polo-royal-blue.jpeg" },
-          { name: "Golden Yellow", hex: "#b88c12", imagePath: "/images/cotton-dual-tipping-polo-dark-yellow.jpeg" },
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
@@ -815,7 +689,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "premium-cotton-240gsm",
         name: "Premium Cotton 240 GSM Polo Neck T-Shirt",
         gsm: "240 GSM",
-        fabric: "Premium Cotton Piqué",
+        fabric: "Premium Cotton Piqué (BIO WASHED)",
         fit: "Polo Fit",
         description: "A luxury-weight polo created for elevated retail presentation and premium branding.",
         heroImage: "/images/polo-tshirt-brown.jpg",
@@ -840,7 +714,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polycotton-220gsm",
         name: "PolyCotton 220 GSM Polo Neck T-Shirt",
         gsm: "220 GSM",
-        fabric: "PolyCotton Piqué",
+        fabric: "Poly Cotton Piqué (Polo Knit)",
         fit: "Polo Fit",
         description: "A durable polo fabric that combines comfort, structure, and excellent print performance.",
         heroImage: "/images/polo-tshirt-grey.jpg",
@@ -865,7 +739,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polyester-110gsm",
         name: "Polyester 110 GSM Polo Neck T-Shirt",
         gsm: "110 GSM",
-        fabric: "pp-Polyester",
+        fabric: "Polyester Piqué (Polo Airtex)",
         fit: "Polo Fit",
         description: "A lightweight polo knit for fast-moving promo programs and sportswear launches.",
         heroImage: "/images/polo-tshirt-orange.jpg",
@@ -890,7 +764,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polyester-140gsm",
         name: "Polyester 140 GSM Polo Neck T-Shirt",
         gsm: "140 GSM",
-        fabric: "pp-Polyester",
+        fabric: "Polyester Piqué (Polo Airtex)",
         fit: "Polo Fit",
         description: "A balanced polyester polo that performs well for branded uniforms and event wear.",
         heroImage: "/images/polo-tshirt-yellow.jpg",
@@ -915,7 +789,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "dri-fit-mars-200gsm",
         name: "Dri Fit Mars 200 GSM Polo Neck T-Shirt",
         gsm: "200 GSM",
-        fabric: "Dri Fit Mars Polyester",
+        fabric: "Mars Dri Fit Fabric",
         fit: "Polo Fit",
         description: "A performance polo with a polished finish and moisture-wicking comfort.",
         heroImage: "/images/polo-tshirt-purple.jpg",
@@ -940,7 +814,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "dot-knit-180gsm",
         name: "Dot Knit 180 GSM Polo Neck T-Shirt",
         gsm: "180 GSM",
-        fabric: "Dot Knit Polyester",
+        fabric: "Dot Knit",
         fit: "Polo Fit",
         description: "A premium textured polo with standout visual quality and a soft hand feel.",
         heroImage: "/images/polo-tshirt-dark-blue.jpg",
@@ -965,7 +839,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "saleena-polo-160gsm",
         name: "Saleena Polo 160 GSM Polo Neck T-Shirt",
         gsm: "160 GSM",
-        fabric: "Saleena Knit Polyester",
+        fabric: "Selena Knit Fabric",
         fit: "Polo Fit",
         description: "A lightweight textured polo designed for elevated casualwear and branded uniforms.",
         heroImage: "/images/polo-tshirt-grey.jpg",
@@ -986,31 +860,6 @@ const baseCatalogCategories: CatalogCategory[] = [
         productDescription: "The saleena polo knit gives this polo excellent texture and a premium hand feel for modern corporate and retail merchandise.",
         categorySlug: "polo",
       },
-      {
-        slug: "honeycomb-160gsm-polo",
-        name: "Honeycomb 160 GSM Polo Neck T-Shirt",
-        gsm: "160 GSM",
-        fabric: "Honeycomb Knit Polyester",
-        fit: "Polo Fit",
-        description: "A lightweight honeycomb polo with subtle texture and premium branding appeal.",
-        heroImage: "/images/polo-tshirt-grey.jpg",
-        thumbnailImage: "/images/polo-tshirt-grey.jpg",
-        colors: [
-          { name: "Grey", hex: "#6b7280", imagePath: "/images/polo-tshirt-grey.jpg" },
-          { name: "White", hex: "#f5f5f2", imagePath: "/images/polo-tshirt-white.jpg" },
-          { name: "Black", hex: "#111111", imagePath: "/images/polo-tshirt-black.jpg" },
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        moq: "100 Pieces",
-        pricing: [
-          { min: 100, max: 1000, price: 115 },
-          { min: 1001, max: 5000, price: 114 },
-          { min: 5001, price: 113 },
-        ],
-        printingCompatibility: "Ideal for embroidery, screen printing, and premium collar-branding applications.",
-        productDescription: "The honeycomb polo knit gives a textured appearance and premium hand feel, perfect for modern corporate uniforms and promotional programs.",
-        categorySlug: "polo",
-      },
     ],
   },
   {
@@ -1024,7 +873,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-oversized-220gsm",
         name: "Cotton Oversized Round Neck 220 GSM T-Shirt",
         gsm: "220 GSM",
-        fabric: "100% Cotton S-Jersey",
+        fabric: "Heavy Cotton Jersey (BIO WASHED)",
         fit: "Oversized Fit",
         description: "A relaxed oversized tee with strong structure and a modern streetwear finish.",
         heroImage: "/images/oversized-tshirt-white.jpg",
@@ -1050,7 +899,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-180gsm-oversized",
         name: "Cotton 180 GSM Oversized Round Neck T-Shirt",
         gsm: "180 GSM",
-        fabric: "100% Cotton S-Jersey",
+        fabric: "Cotton Jersey (BIO WASHED)",
         fit: "Oversized Fit",
         description: "A lightweight oversized round neck tee for casualwear and premium prints.",
         heroImage: "/images/oversized-tshirt-white.jpg",
@@ -1076,7 +925,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "french-terry-240gsm",
         name: "Cotton Oversized 240 GSM French Terry T-Shirt",
         gsm: "240 GSM",
-        fabric: "100% Cotton French Terry",
+        fabric: "French Terry (BIO WASHED)",
         fit: "Oversized Fit",
         description: "A heavyweight French Terry oversized tee with warmth, texture, and elevated comfort.",
         heroImage: "/images/oversized-tshirt-brown.jpg",
@@ -1089,9 +938,9 @@ const baseCatalogCategories: CatalogCategory[] = [
         sizes: ["S", "M", "L", "XL", "2XL", "3XL"],
         moq: "100 Pieces",
         pricing: [
-          { min: 100, max: 999, price: 430 },
-          { min: 1000, max: 5000, price: 427 },
-          { min: 5000, price: 425 },
+          { min: 100, max: 999, price: 260 },
+          { min: 1000, max: 5000, price: 258 },
+          { min: 5000, price: 255 },
         ],
         printingCompatibility: "Ideal for embroidery and premium print placement with a substantial fabric handfeel.",
         embroideryCompatibility: "This heavier French Terry base is well suited to textured embroidery and bold statement branding.",
@@ -1111,7 +960,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-fleece-300gsm-hoodie-with-zip",
         name: "Cotton Fleece 300 GSM Hoodie (With Zip)",
         gsm: "300 GSM",
-        fabric: "100% Cotton Fleece",
+        fabric: "Cotton Fleece (BIO WASHED)",
         fit: "Regular Fit",
         description: "A premium cotton fleece hoodie with zip detailing for elevated branded outerwear collections.",
         heroImage: "/images/hoodie-white.jpg",
@@ -1124,9 +973,9 @@ const baseCatalogCategories: CatalogCategory[] = [
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
         pricing: [
-          { min: 100, max: 1000, price: 549 },
-          { min: 1001, max: 5000, price: 547 },
-          { min: 5001, price: 545 },
+          { min: 100, max: 1000, price: 499 },
+          { min: 1001, max: 5000, price: 497 },
+          { min: 5001, price: 496 },
         ],
         printingCompatibility: "Screen printing, embroidery, and heat transfer all work well on this durable fleece base.",
         embroideryCompatibility: "Excellent for chest logos and premium stitched branding.",
@@ -1137,7 +986,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-fleece-300gsm-hoodie-without-zip",
         name: "Cotton Fleece 300 GSM Hoodie (Without Zip)",
         gsm: "300 GSM",
-        fabric: "100% Cotton Fleece",
+        fabric: "Cotton Fleece",
         fit: "Regular Fit",
         description: "A premium cotton fleece hoodie without zip for classic everyday branding and casualwear.",
         heroImage: "/images/hoodie-grey.jpg",
@@ -1163,7 +1012,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-fleece-360gsm-hoodie-with-zip",
         name: "Cotton Fleece 360 GSM Hoodie (With Zip)",
         gsm: "360 GSM",
-        fabric: "100% Cotton Fleece",
+        fabric: "Heavy Cotton Fleece (BIO WASHED)",
         fit: "Regular Fit",
         description: "A heavyweight cotton fleece hoodie with zip detailing designed for premium outerwear presentation.",
         heroImage: "/images/hoodie-brown.jpg",
@@ -1184,7 +1033,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-fleece-360gsm-hoodie-without-zip",
         name: "Cotton Fleece 360 GSM Hoodie (Without Zip)",
         gsm: "360 GSM",
-        fabric: "100% Cotton Fleece",
+        fabric: "Cotton Fleece",
         fit: "Regular Fit",
         description: "A heavyweight cotton fleece hoodie without zip for premium comfort and versatile branding.",
         heroImage: "/images/hoodie-red.jpg",
@@ -1192,7 +1041,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         colors: [
           { name: "Red", hex: "#a52424", imagePath: "/images/hoodie-red.jpg" },
           { name: "Yellow", hex: "#f2c94c", imagePath: "/images/hoodie-yellow.jpg" },
-          { name: "Golden Yellow", hex: "#c89b17", imagePath: "/images/hoodie-dark-yellow.jpg" },
+          { name: "Dark Yellow (Mustard)", hex: "#c89b17", imagePath: "/images/hoodie-dark-yellow.jpg" },
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
@@ -1205,7 +1054,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polycotton-fleece-300gsm-hoodie-with-zip",
         name: "PolyCotton Fleece 300 GSM Hoodie (With Zip)",
         gsm: "300 GSM",
-        fabric: "PolyCotton Fleece",
+        fabric: "Poly Cotton Fleece",
         fit: "Regular Fit",
         description: "A resilient polycotton fleece hoodie with zip detailing for functional brand merchandise.",
         heroImage: "/images/hoodie-maroon.jpg",
@@ -1231,7 +1080,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polycotton-fleece-300gsm-hoodie-without-zip",
         name: "PolyCotton Fleece 300 GSM Hoodie (Without Zip)",
         gsm: "300 GSM",
-        fabric: "PolyCotton Fleece",
+        fabric: "Poly Cotton Fleece",
         fit: "Regular Fit",
         description: "A durable polycotton fleece hoodie without zip for practical, premium custom apparel.",
         heroImage: "/images/hoodie-dark-blue.jpg",
@@ -1257,7 +1106,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polycotton-fleece-340gsm-hoodie-with-zip",
         name: "PolyCotton Fleece 340 GSM Hoodie (With Zip)",
         gsm: "340 GSM",
-        fabric: "PolyCotton Fleece",
+        fabric: "Poly Cotton Fleece",
         fit: "Regular Fit",
         description: "A premium polycotton fleece hoodie with zip designed for branded outerwear.",
         heroImage: "/images/hoodie-black.jpg",
@@ -1283,7 +1132,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polycotton-fleece-340gsm-hoodie-without-zip",
         name: "PolyCotton Fleece 340 GSM Hoodie (Without Zip)",
         gsm: "340 GSM",
-        fabric: "PolyCotton Fleece",
+        fabric: "Poly Cotton Fleece",
         fit: "Regular Fit",
         description: "A premium polycotton fleece hoodie without zip for versatile, premium branded apparel.",
         heroImage: "/images/hoodie-black.jpg",
@@ -1318,7 +1167,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-french-terry-240gsm-sweatshirt",
         name: "Cotton French Terry 240 GSM Sweatshirt",
         gsm: "240 GSM",
-        fabric: "100% Cotton French Terry",
+        fabric: "Cotton French Terry",
         fit: "Regular Fit",
         description: "A soft cotton French Terry sweatshirt with premium comfort and everyday versatility.",
         heroImage: "/images/sweatshirt-white.jpg",
@@ -1330,11 +1179,6 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
-        pricing: [
-          { min: 100, max: 999, price: 430 },
-          { min: 1000, max: 5000, price: 427 },
-          { min: 5000, price: 425 },
-        ],
         printingCompatibility: "Screen printing and embroidery are ideal for bold brand placement.",
         embroideryCompatibility: "Perfect for chest logos and sleeve detailing.",
         productDescription: "This regular-fit sweatshirt offers warmth, resilience, and a polished finish for premium merch programs.",
@@ -1344,7 +1188,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-fleece-280gsm-sweatshirt",
         name: "Cotton Fleece 300 GSM Sweatshirt",
         gsm: "300 GSM",
-        fabric: "100% Cotton Fleece",
+        fabric: "Cotton Fleece",
         fit: "Regular Fit",
         description: "A premium cotton fleece sweatshirt with a comfortable hand feel and strong structure.",
         heroImage: "/images/sweatshirt-cotton-fleece-white.png",
@@ -1356,11 +1200,6 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
-        pricing: [
-          { min: 100, max: 999, price: 449 },
-          { min: 1000, max: 5000, price: 447 },
-          { min: 5000, price: 445 },
-        ],
         printingCompatibility: "Supports screen printing and heat transfer with reliable clarity.",
         embroideryCompatibility: "Strong for chest and sleeve embroidered branding.",
         productDescription: "The cotton fleece construction provides lasting shape retention and dependable comfort for repeat orders.",
@@ -1382,11 +1221,6 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
-        pricing: [
-          { min: 100, max: 999, price: 249 },
-          { min: 1000, max: 5000, price: 247 },
-          { min: 5000, price: 245 },
-        ],
         printingCompatibility: "Great for screen printing and embroidery on a durable everyday base.",
         embroideryCompatibility: "Supports clean logo placement and premium finishing details.",
         productDescription: "The polycotton French Terry blend balances softness, durability, and structure for high-volume apparel programs.",
@@ -1396,7 +1230,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polycotton-fleece-300gsm-sweatshirt",
         name: "PolyCotton Fleece 300 GSM Sweatshirt",
         gsm: "300 GSM",
-        fabric: "PolyCotton Fleece",
+        fabric: "Poly Cotton Fleece",
         fit: "Regular Fit",
         description: "A resilient fleece sweatshirt offering warmth, durability, and polished presentation for custom branding.",
         heroImage: "/images/sweatshirt-cotton-fleece-white.png",
@@ -1414,11 +1248,6 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
-        pricing: [
-          { min: 100, max: 999, price: 299 },
-          { min: 1000, max: 5000, price: 297 },
-          { min: 5000, price: 295 },
-        ],
         printingCompatibility: "Well suited to screen printing and transfer work on a structured fleece base.",
         embroideryCompatibility: "Strong for bold embroidered branding and sleeve detailing.",
         productDescription: "The polycotton fleece construction delivers premium warmth and repeat-wear durability for premium staff and merch collections.",
@@ -1437,7 +1266,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-french-terry-240gsm-shorts",
         name: "Cotton French Terry 240 GSM Shorts",
         gsm: "240 GSM",
-        fabric: "100% Cotton French Terry",
+        fabric: "Cotton French Terry",
         fit: "Relaxed Fit",
         description: "A soft cotton French Terry short with premium comfort and everyday versatility.",
         heroImage: "/images/shorts-white.jpeg",
@@ -1458,7 +1287,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         productDescription: "The cotton French Terry construction gives these shorts a soft feel, strong structure, and modern casual appeal.",
         categorySlug: "shorts",
-      },
+      }
       {
         slug: "polycotton-french-terry-240gsm-shorts",
         name: "PolyCotton French Terry 240 GSM Shorts",
@@ -1484,12 +1313,12 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         productDescription: "The polycotton blend adds durability and shape retention while keeping the shorts comfortable and stylish.",
         categorySlug: "shorts",
-      },
+      }
       {
         slug: "two-way-lycra-polyester-190gsm-shorts",
         name: "2-Way Lycra Polyester 190 GSM Shorts",
         gsm: "190 GSM",
-        fabric: "Polyester with 2-Way Stretch Lycra",
+        fabric: "2-Way Lycra Polyester",
         fit: "Athletic Fit",
         description: "A high-mobility short with stretch and performance-driven comfort for activewear branding.",
         heroImage: "/images/lycra-shorts-navy-blue.jpeg",
@@ -1510,12 +1339,12 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         productDescription: "The stretch polyester construction makes these shorts ideal for sportswear, active merch, and performance-driven branding campaigns.",
         categorySlug: "shorts",
-      },
+      }
       {
         slug: "four-way-lycra-polyester-220gsm-shorts",
         name: "4-Way Lycra Polyester 220 GSM Shorts",
         gsm: "220 GSM",
-        fabric: "Polyester with 4-Way Stretch Lycra",
+        fabric: "4-Way Lycra Polyester",
         fit: "Athletic Fit",
         description: "A premium stretch short designed for movement, shape retention, and modern performance wear.",
         heroImage: "/images/lycra-shorts-bottle-green.jpeg",
@@ -1551,7 +1380,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "cotton-french-terry-240gsm-joggers",
         name: "Cotton French Terry 240 GSM Joggers",
         gsm: "240 GSM",
-        fabric: "100% Cotton French Terry",
+        fabric: "Cotton French Terry",
         fit: "Relaxed Fit",
         description: "A soft cotton jogger with premium comfort and an easygoing everyday silhouette.",
         heroImage: "/images/joggers-white.jpeg",
@@ -1572,7 +1401,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         productDescription: "These cotton joggers give a premium look and feel for branded casualwear, events, and loungewear merch.",
         categorySlug: "joggers",
-      },
+      }
       {
         slug: "polycotton-french-terry-240gsm-joggers",
         name: "PolyCotton French Terry 240 GSM Joggers",
@@ -1598,12 +1427,12 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         productDescription: "The polycotton blend balances softness and durability, making these joggers a practical choice for larger orders.",
         categorySlug: "joggers",
-      },
+      }
       {
         slug: "two-way-lycra-polyester-190gsm-joggers",
         name: "2-Way Lycra Polyester 190 GSM Joggers",
         gsm: "190 GSM",
-        fabric: "Polyester with 2-Way Stretch Lycra",
+        fabric: "2-Way Lycra Polyester",
         fit: "Athletic Fit",
         description: "A flexible performance jogger with stretch and a sporty, streamlined silhouette.",
         heroImage: "/images/lycra-joggers-navy-blue.jpeg",
@@ -1624,12 +1453,12 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         productDescription: "These performance joggers are ideal for sportswear and active merch that need flexibility, comfort, and a modern finish.",
         categorySlug: "joggers",
-      },
+      }
       {
         slug: "four-way-lycra-polyester-220gsm-joggers",
         name: "4-Way Lycra Polyester 220 GSM Joggers",
         gsm: "220 GSM",
-        fabric: "Polyester with 4-Way Stretch Lycra",
+        fabric: "4-Way Lycra Polyester",
         fit: "Athletic Fit",
         description: "A premium stretch jogger with structure, comfort, and a polished performance finish.",
         heroImage: "/images/lycra-joggers-bottle-green.jpeg",
@@ -1669,9 +1498,7 @@ export const catalogCategories: CatalogCategory[] = baseCatalogCategories.map((c
     return {
       ...variant,
       sizes,
-      productDescription: generateProductDescription(variant, { name: category.name, fabric: variant.fabric, gsmRange: variant.gsm }),
-      printingCompatibility: generatePrintingCompatibility(variant.fabric, variant.name),
-      embroideryCompatibility: generateEmbroideryCompatibility(variant.fabric),
+      productDescription: enrichDescription(variant.productDescription, variant.fabric, getProductKeywords(variant)),
       colors: buildAvailableColors(variant.colors, variant.heroImage, {
         categorySlug: category.slug,
         productSlug: category.slug,
@@ -1905,7 +1732,7 @@ const baseProducts: ProductDetail[] = [
       { name: "Brown", hex: "#6f4b2f", imagePath: "/images/oversized tshirt.jpg" },
       { name: "Grey", hex: "#6b7280", imagePath: "/images/oversized tshirt.jpg" },
       { name: "Yellow", hex: "#f2c94c", imagePath: "/images/oversized tshirt.jpg" },
-      { name: "Golden Yellow", hex: "#b88c12", imagePath: "/images/oversized tshirt.jpg" },
+      { name: "Dark Yellow (Mustard)", hex: "#b88c12", imagePath: "/images/oversized tshirt.jpg" },
       { name: "Purple", hex: "#6b3fa0", imagePath: "/images/oversized tshirt.jpg" },
     ],
     sizes: ["S", "M", "L", "XL", "2XL", "3XL"],
@@ -1919,7 +1746,7 @@ const baseProducts: ProductDetail[] = [
         id: "oversized-180-cotton",
         name: "180 GSM Cotton",
         gsmRange: "180 GSM",
-        fabric: "100% Cotton S-Jersey",
+        fabric: "100% Cotton",
         description: "A lightweight oversized tee for premium everyday wear and flexible bulk production.",
         heroImage: "/images/oversized-tshirt-white.jpg",
         thumbnailImage: "/images/oversized-tshirt-white.jpg",
@@ -1940,7 +1767,7 @@ const baseProducts: ProductDetail[] = [
         id: "cotton-180gsm-oversized",
         name: "180 GSM Cotton (Oversized)",
         gsmRange: "180 GSM",
-        fabric: "100% Cotton S-Jersey",
+        fabric: "100% Cotton",
         description: "A lightweight oversized round neck tee for casualwear and premium prints.",
         heroImage: "/images/oversized-tshirt-white.jpg",
         thumbnailImage: "/images/oversized-tshirt-white.jpg",
@@ -1961,7 +1788,7 @@ const baseProducts: ProductDetail[] = [
         id: "oversized-220-cotton",
         name: "220 GSM Cotton",
         gsmRange: "220 GSM",
-        fabric: "100% Cotton S-Jersey",
+        fabric: "100% Cotton",
         description: "A structured oversized fit designed for premium retail and modern streetwear capsules.",
         heroImage: "/images/oversized-tshirt-white.jpg",
         thumbnailImage: "/images/oversized-tshirt-white.jpg",
@@ -2035,7 +1862,7 @@ const baseProducts: ProductDetail[] = [
       { name: "Brown", hex: "#6f4b2f", imagePath: "/images/regular fit tshirt.jpg" },
       { name: "Grey", hex: "#6b7280", imagePath: "/images/regular fit tshirt.jpg" },
       { name: "Yellow", hex: "#f2c94c", imagePath: "/images/regular fit tshirt.jpg" },
-      { name: "Golden Yellow", hex: "#b88c12", imagePath: "/images/regular fit tshirt.jpg" },
+      { name: "Dark Yellow (Mustard)", hex: "#b88c12", imagePath: "/images/regular fit tshirt.jpg" },
       { name: "Purple", hex: "#6b3fa0", imagePath: "/images/regular fit tshirt.jpg" },
     ],
     sizes: ["S", "M", "L", "XL", "2XL"],
@@ -2144,7 +1971,7 @@ const baseProducts: ProductDetail[] = [
       { name: "Brown", hex: "#6f4b2f", imagePath: "/images/polo-tshirt-brown.jpg" },
       { name: "Grey", hex: "#6b7280", imagePath: "/images/polo-tshirt-grey.jpg" },
       { name: "Yellow", hex: "#f2c94c", imagePath: "/images/polo-tshirt-yellow.jpg" },
-      { name: "Golden Yellow", hex: "#b88c12", imagePath: "/images/polo-tshirt-dark-yellow.jpg" },
+      { name: "Dark Yellow (Mustard)", hex: "#b88c12", imagePath: "/images/polo-tshirt-dark-yellow.jpg" },
       { name: "Purple", hex: "#6b3fa0", imagePath: "/images/polo-tshirt-purple.jpg" },
     ],
     sizes: ["S", "M", "L", "XL", "2XL", "3XL"],
@@ -2421,9 +2248,6 @@ export const products: ProductDetail[] = baseProducts.map((product) => {
     variants: product.variants?.map((variant) => ({
       ...variant,
       description: enrichDescription(variant.description),
-      printingCompatibility: generatePrintingCompatibility(variant.fabric, variant.name),
-      embroideryCompatibility: generateEmbroideryCompatibility(variant.fabric),
-      productDescription: generateProductDescription(variant, product),
     })),
   };
 

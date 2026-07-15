@@ -134,7 +134,7 @@ export default function Header() {
             <Link
               href="/live-stock"
               onClick={() => setIsMenuOpen(false)}
-              className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white px-3 py-2 text-center text-xs font-semibold text-black transition duration-300 ease-out hover:-translate-y-0.5 hover:border-accent-custom hover:bg-accent-custom hover:text-black whitespace-nowrap"
+              className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white px-3 py-2 text-center text-xs font-semibold text-black transition duration-300 ease-out hover:-translate-y-0.5 hover:border-accent-custom hover:bg-accent-custom/10 hover:text-black whitespace-nowrap"
             >
               Live Stock
             </Link>

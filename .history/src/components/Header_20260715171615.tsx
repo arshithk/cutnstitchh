@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -73,7 +72,7 @@ export default function Header() {
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex w-full items-center justify-between gap-3">
           <a
-            href="/"
+            href="#top"
             className="group flex items-center justify-start text-left transition-all duration-300 hover:brightness-110"
             aria-label="cut n stitchapparel.com"
           >
@@ -107,7 +106,7 @@ export default function Header() {
           } flex-col gap-4 rounded-xl border border-border-custom/60 bg-background/95 p-4 shadow-sm sm:flex sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-5 sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none sm:text-base`}
         >
           <a
-            href="/#about"
+            href="#about"
             onClick={() => setIsMenuOpen(false)}
             className="transition hover:text-accent-custom sm:px-2"
           >
@@ -115,15 +114,15 @@ export default function Header() {
           </a>
 
           <a
-            href="/#products"
+            href="#industries"
             onClick={() => setIsMenuOpen(false)}
             className="transition hover:text-accent-custom sm:px-2"
           >
-            Products
+            Industries
           </a>
 
           <a
-            href="/#contact"
+            href="#contact"
             onClick={() => setIsMenuOpen(false)}
             className="transition hover:text-accent-custom sm:px-2"
           >
@@ -134,13 +133,13 @@ export default function Header() {
             <Link
               href="/live-stock"
               onClick={() => setIsMenuOpen(false)}
-              className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white px-3 py-2 text-center text-xs font-semibold text-black transition duration-300 ease-out hover:-translate-y-0.5 hover:border-accent-custom hover:bg-accent-custom hover:text-black whitespace-nowrap"
+              className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white px-3 py-2 text-center text-xs font-semibold text-black transition duration-300 ease-out hover:-translate-y-0.5 hover:border-accent-custom hover:bg-accent-custom/10 hover:text-black whitespace-nowrap"
             >
               Live Stock
             </Link>
 
             <a
-              href="/#contact"
+              href="#contact"
               onClick={() => setIsMenuOpen(false)}
               className="inline-flex items-center justify-center rounded-xl border border-accent-custom bg-white px-3 py-2 text-center text-xs font-semibold text-black transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-accent-custom hover:text-black whitespace-nowrap"
             >

@@ -200,6 +200,30 @@ export function getProductImagePath(context: ProductImageContext, colorName: str
   return `/images/${imageBaseName}-${imageColor}${ext}`;
 }
 
+  // hoodie-without-zip: dark-blue, orange, yellow were uploaded as .jpeg; rest are .png
+  if (imageBaseName === "hoodie-without-zip") {
+    const ext = HOODIE_WITHOUT_ZIP_JPEG_COLORS.has(normalizedColor) ? ".jpeg" : ".png";
+    return `/images/${imageBaseName}-${normalizedColor}${ext}`;
+  }
+
+  // Cotton joggers have mixed uploaded formats.
+  if (imageBaseName === "joggers") {
+    const ext = new Set(["white", "dark-grey"]).has(normalizedColor) ? ".jpeg" : ".png";
+    return `/images/${imageBaseName}-${normalizedColor}${ext}`;
+  }
+
+  // sweatshirt-cotton-fleece: some colors were uploaded as .jpeg while most
+  // are .png. Prefer .jpeg for known jpeg colors to match actual files.
+  if (imageBaseName === "sweatshirt-cotton-fleece") {
+    const JPEG_COLORS = new Set(["maroon", "orange", "red", "yellow"]);
+    const ext = JPEG_COLORS.has(normalizedColor) ? ".jpeg" : ".png";
+    return `/images/${imageBaseName}-${normalizedColor}${ext}`;
+  }
+
+  const ext = PREFERRED_EXTENSION[imageBaseName] ?? ".jpg";
+  return `/images/${imageBaseName}-${normalizedColor}${ext}`;
+}
+
 export async function resolveImagePath(candidates: string[], fallbackImagePath = "") {
   if (typeof window === "undefined") {
     return candidates[0] ?? fallbackImagePath;
