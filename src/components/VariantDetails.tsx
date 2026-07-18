@@ -67,9 +67,38 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
   const previewImage = activeColor?.imagePath ?? variant.heroImage;
   const isJoggersPreview = previewImage.toLowerCase().includes("/images/joggers-") || previewImage.toLowerCase().includes("/images/lycra-joggers-");
 
+  const rawFabric = variant.fabric;
+  
+  let pillFabricText = rawFabric;
+  let gridFabricText = rawFabric;
+  
+  if (rawFabric.toLowerCase().includes("100% cotton s-jersey")) {
+    pillFabricText = rawFabric.replace(/100% Cotton S-Jersey/gi, "100% Cotton (Bio Washed)");
+    gridFabricText = rawFabric.replace(/100% Cotton S-Jersey/gi, "S/Jersey");
+  } else if (rawFabric.toLowerCase().includes("100% cotton piqué") || rawFabric.toLowerCase().includes("100% cotton pique")) {
+    pillFabricText = rawFabric.replace(/100% Cotton Piqu[é|e]/gi, "100% Cotton (Bio Washed)");
+    gridFabricText = rawFabric.replace(/100% Cotton Piqu[é|e]/gi, "Airtex");
+  } else if (rawFabric.toLowerCase().includes("premium cotton piqué") || rawFabric.toLowerCase().includes("premium cotton pique")) {
+    pillFabricText = rawFabric.replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)");
+    gridFabricText = rawFabric.replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton Airtex");
+  } else if (rawFabric.toLowerCase() === "dri fit mars") {
+    pillFabricText = "Dri Fit Mars Polyester";
+  } else if (rawFabric.toLowerCase().includes("dot knit polyester")) {
+    gridFabricText = rawFabric.replace(/Dot Knit Polyester/gi, "Dot Knit");
+  } else if (rawFabric.toLowerCase().includes("honeycomb knit polyester")) {
+    gridFabricText = rawFabric.replace(/Honeycomb Knit Polyester/gi, "Honeycomb Knit");
+  } else if (rawFabric.toLowerCase().includes("saleena knit polyester")) {
+    gridFabricText = rawFabric.replace(/Saleena Knit Polyester/gi, "Saleena Knit");
+  }
+
+  const displayDescription = variant.description
+    .replace(/100% Cotton S-Jersey/gi, "100% Cotton (Bio Washed)")
+    .replace(/100% Cotton Piqu[é|e]/gi, "100% Cotton (Bio Washed)")
+    .replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)");
+
   const detailItems = [
     { label: "MOQ", value: variant.moq },
-    { label: "Fabric", value: variant.fabric },
+    { label: "Fabric", value: gridFabricText },
     { label: "GSM", value: variant.gsm },
     { label: "Fit", value: variant.fit },
     { label: "Sizes", value: variant.sizes.join(", ") },
@@ -84,7 +113,7 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
             Back to Variants
           </Link>
           <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">{variant.name}</h1>
-          <p className="mt-3 max-w-3xl text-base leading-7 text-muted-custom">{variant.description}</p>
+          <p className="mt-3 max-w-3xl text-base leading-7 text-muted-custom">{displayDescription}</p>
         </div>
         <div className="flex items-center gap-3 rounded-full border border-accent-custom/20 bg-accent-custom/10 px-4 py-2 text-sm font-semibold text-accent-custom">
           <Shirt size={16} />
@@ -187,7 +216,7 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
               {variant.gsm}
             </span>
             <span className="rounded-full border border-border-custom/70 px-3 py-1 text-xs font-medium text-muted-custom">
-              {variant.fabric}
+              {pillFabricText}
             </span>
           </div>
 
@@ -211,7 +240,14 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
             </div>
             <div>
               <h2 className="text-sm font-semibold uppercase tracking-[0.25em] text-accent-custom">Product Description</h2>
-              <p className="mt-2 text-sm leading-7 text-muted-custom">{variant.productDescription}</p>
+              <p className="mt-2 text-sm leading-7 text-muted-custom">
+                {variant.productDescription != null
+                  ? variant.productDescription
+                      .replace(/100% Cotton S-Jersey/gi, "100% Cotton (Bio Washed)")
+                      .replace(/100% Cotton Piqu[é|e]/gi, "100% Cotton (Bio Washed)")
+                      .replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)")
+                  : ""}
+              </p>
             </div>
           </div>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">

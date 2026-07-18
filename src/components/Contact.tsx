@@ -52,7 +52,7 @@ export default function Contact() {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = "Full name is required";
     if (!formData.company.trim()) newErrors.company = "Company name is required";
-    
+
     if (!formData.email.trim()) {
       newErrors.email = "Email address is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -94,6 +94,19 @@ export default function Contact() {
 
     setStatus("loading");
 
+    // Generate mailto link
+    const subject = encodeURIComponent(`Production Inquiry: ${formData.product} from ${formData.name}`);
+    const body = encodeURIComponent(
+      `Name: ${formData.name}\n` +
+      `Company: ${formData.company}\n` +
+      `Email: ${formData.email}\n` +
+      `Phone: ${formData.phone}\n` +
+      `Garment Category: ${formData.product}\n` +
+      `Target Quantity: ${formData.quantity}\n\n` +
+      `Spec Details / Message:\n${formData.message}`
+    );
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=mahimaintl2009@gmail.com&su=${subject}&body=${body}`, "_blank");
+
     // Simulate API request delay
     setTimeout(() => {
       setStatus("success");
@@ -110,14 +123,14 @@ export default function Contact() {
     const text = encodeURIComponent(
       `Hi Cut n Stitch team, my name is ${formData.name || "[Name]"} from ${formData.company || "[Company]"}. We are looking to manufacture custom ${formData.product} (Target Qty: ${formData.quantity || "100"} pcs). Please connect us with a merchant.`
     );
-    window.open(`https://wa.me/919999999999?text=${text}`, "_blank");
+    window.open(`https://wa.me/919342936939?text=${text}`, "_blank");
   };
 
   return (
     <section id="contact" className="scroll-mt-20 relative border-y border-border-custom/50 bg-card/25 py-8 sm:py-10 lg:py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-8 xl:gap-10">
-          
+
           {/* Left Column: Context Card */}
           <div className="flex flex-col gap-8 lg:col-span-5">
             <div className="flex flex-col gap-4">
@@ -150,9 +163,9 @@ export default function Contact() {
               </div>
 
               {/* Direct Call Card */}
-              <a
-                href="mailto:info@cutnstitch.com"
-                className="bg-background border border-border-custom p-6 rounded-2xl flex flex-col gap-3 hover:border-accent-custom/40 transition-colors group"
+              <div
+                onClick={() => window.open("https://mail.google.com/mail/?view=cm&fs=1&to=mahimaintl2009@gmail.com", "_blank")}
+                className="bg-background border border-border-custom p-6 rounded-2xl flex flex-col gap-3 cursor-pointer hover:border-accent-custom/40 transition-colors group"
               >
                 <div className="p-3 bg-accent-custom/10 text-accent-custom rounded-xl w-fit group-hover:scale-105 transition-transform">
                   <Mail size={20} />
@@ -162,7 +175,7 @@ export default function Contact() {
                 <span className="text-[11px] font-bold text-accent-custom mt-2 block group-hover:translate-x-1 transition-transform">
                   Send Mail &rarr;
                 </span>
-              </a>
+              </div>
             </div>
           </div>
 
@@ -212,9 +225,8 @@ export default function Contact() {
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="e.g. Rohan Malhotra"
-                      className={`py-3 px-4 rounded-xl border bg-card/25 text-sm transition-colors focus:bg-background focus:outline-none ${
-                        errors.name ? "border-red-500/50 focus:border-red-500" : "border-border-custom focus:border-accent-custom"
-                      }`}
+                      className={`py-3 px-4 rounded-xl border bg-card/25 text-sm transition-colors focus:bg-background focus:outline-none ${errors.name ? "border-red-500/50 focus:border-red-500" : "border-border-custom focus:border-accent-custom"
+                        }`}
                     />
                     {errors.name && (
                       <span className="text-[10px] text-red-500 flex items-center gap-1 mt-0.5">
@@ -235,9 +247,8 @@ export default function Contact() {
                       value={formData.company}
                       onChange={handleChange}
                       placeholder="e.g. Aether Clothing"
-                      className={`py-3 px-4 rounded-xl border bg-card/25 text-sm transition-colors focus:bg-background focus:outline-none ${
-                        errors.company ? "border-red-500/50 focus:border-red-500" : "border-border-custom focus:border-accent-custom"
-                      }`}
+                      className={`py-3 px-4 rounded-xl border bg-card/25 text-sm transition-colors focus:bg-background focus:outline-none ${errors.company ? "border-red-500/50 focus:border-red-500" : "border-border-custom focus:border-accent-custom"
+                        }`}
                     />
                     {errors.company && (
                       <span className="text-[10px] text-red-500 flex items-center gap-1 mt-0.5">
@@ -260,9 +271,8 @@ export default function Contact() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="e.g. rohan@aether.com"
-                      className={`py-3 px-4 rounded-xl border bg-card/25 text-sm transition-colors focus:bg-background focus:outline-none ${
-                        errors.email ? "border-red-500/50 focus:border-red-500" : "border-border-custom focus:border-accent-custom"
-                      }`}
+                      className={`py-3 px-4 rounded-xl border bg-card/25 text-sm transition-colors focus:bg-background focus:outline-none ${errors.email ? "border-red-500/50 focus:border-red-500" : "border-border-custom focus:border-accent-custom"
+                        }`}
                     />
                     {errors.email && (
                       <span className="text-[10px] text-red-500 flex items-center gap-1 mt-0.5">
@@ -283,9 +293,8 @@ export default function Contact() {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="e.g. +91 99999 99999"
-                      className={`py-3 px-4 rounded-xl border bg-card/25 text-sm transition-colors focus:bg-background focus:outline-none ${
-                        errors.phone ? "border-red-500/50 focus:border-red-500" : "border-border-custom focus:border-accent-custom"
-                      }`}
+                      className={`py-3 px-4 rounded-xl border bg-card/25 text-sm transition-colors focus:bg-background focus:outline-none ${errors.phone ? "border-red-500/50 focus:border-red-500" : "border-border-custom focus:border-accent-custom"
+                        }`}
                     />
                     {errors.phone && (
                       <span className="text-[10px] text-red-500 flex items-center gap-1 mt-0.5">
@@ -328,9 +337,8 @@ export default function Contact() {
                       value={formData.quantity}
                       onChange={handleChange}
                       placeholder="Min. 100 Pcs"
-                      className={`py-3 px-4 rounded-xl border bg-card/25 text-sm transition-colors focus:bg-background focus:outline-none ${
-                        errors.quantity ? "border-red-500/50 focus:border-red-500" : "border-border-custom focus:border-accent-custom"
-                      }`}
+                      className={`py-3 px-4 rounded-xl border bg-card/25 text-sm transition-colors focus:bg-background focus:outline-none ${errors.quantity ? "border-red-500/50 focus:border-red-500" : "border-border-custom focus:border-accent-custom"
+                        }`}
                     />
                     {errors.quantity && (
                       <span className="text-[10px] text-red-500 flex items-center gap-1 mt-0.5">
@@ -377,7 +385,7 @@ export default function Contact() {
               </form>
             )}
           </div>
-          
+
         </div>
       </div>
     </section>

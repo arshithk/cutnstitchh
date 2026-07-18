@@ -36,21 +36,74 @@ const getProductTypes = () => {
     }));
 };
 
+function VariantCard({ variant }: { variant: any }) {
+  const [selectedColor, setSelectedColor] = useState("All");
+
+  const displayQuantity = selectedColor === "All" 
+    ? variant.quantity 
+    : variant.colors.find((c: any) => c.color === selectedColor)?.quantity ?? 0;
+
+  const displayFabric = variant.fabric
+    .replace(/100% Cotton S-Jersey/gi, "100% Cotton (Bio Washed)")
+    .replace(/100% Cotton Piqu[é|e]/gi, "100% Cotton (Bio Washed)")
+    .replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)");
+
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-[#F8FAFC] p-5 text-sm text-slate-900 shadow-sm dark:border-slate-700 dark:bg-slate-950/80 dark:text-slate-100 flex flex-col justify-between">
+      <div>
+        <p className="font-semibold text-base">{variant.gsm}</p>
+        <p className="mt-1 text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">
+          {displayFabric}
+        </p>
+      </div>
+
+      <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-4 dark:border-slate-700/50">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[#8A6A1F] dark:text-[#D4AF37]">
+          Color Availability
+        </p>
+        <div className="flex flex-wrap gap-2 items-center">
+          <button
+            onClick={() => setSelectedColor("All")}
+            className={`py-1.5 px-3 rounded-full text-[10px] font-semibold border transition-all ${
+              selectedColor === "All" 
+                ? "border-[#D4AF37] bg-[#D4AF37]/10 text-[#8A6A1F] dark:text-[#D4AF37]" 
+                : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400"
+            }`}
+          >
+             All Options
+          </button>
+          
+          {variant.colors.map((c: any) => (
+            <button
+              key={c.color}
+              title={c.color}
+              onClick={() => setSelectedColor(c.color)}
+              className={`h-7 w-7 rounded-full border-2 transition-all p-0.5 flex items-center justify-center ${
+                selectedColor === c.color 
+                  ? "border-[#D4AF37] scale-110" 
+                  : "border-slate-200 dark:border-slate-700 hover:scale-105"
+              }`}
+            >
+              <span 
+                className="w-full h-full rounded-full border border-black/10 dark:border-white/10" 
+                style={{ backgroundColor: c.hex }}
+              />
+            </button>
+          ))}
+        </div>
+        
+        <div className="mt-2 flex items-center justify-between rounded-xl bg-slate-100 px-4 py-3 dark:bg-slate-900">
+          <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            {displayQuantity} pcs <span className="font-normal text-slate-500 text-xs">ready in stock</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function LiveStockPage() {
   const [selectedCategorySlug, setSelectedCategorySlug] = useState("All");
-
-  const stockQuantityByGsm = useMemo(() => {
-    const map = new Map<string, number>();
-
-    filteredStockEntries
-      .filter((entry) => stockProductTypeToCategorySlug[entry.productType] === selectedCategorySlug)
-      .forEach((entry) => {
-        const quantity = entry.colors.reduce((sum, item) => sum + item.quantity, 0);
-        map.set(entry.gsmRange, (map.get(entry.gsmRange) ?? 0) + quantity);
-      });
-
-    return map;
-  }, [selectedCategorySlug]);
 
   const selectedCategoryName = useMemo(
     () => catalogCategories.find((category) => category.slug === selectedCategorySlug)?.name ?? "",
@@ -64,19 +117,40 @@ export default function LiveStockPage() {
     if (!category) return [];
 
     return category.variants
-      .map((variant) => ({
-        slug: variant.slug,
-        gsm: variant.gsm,
-        fabric: variant.fabric,
-        name: variant.name,
-        quantity: stockQuantityByGsm.get(variant.gsm) ?? 0,
-      }))
+      .map((variant) => {
+        // Find matching stock entry based on productType map and gsmRange
+        const stockEntry = filteredStockEntries.find(
+          entry => stockProductTypeToCategorySlug[entry.productType] === selectedCategorySlug && entry.gsmRange === variant.gsm
+        );
+        
+        // Take colors from the category variant definition (products.ts) to show all options
+        const colors = (variant.colors || []).map(vc => {
+          // Find matching stock quantity from stockEntry, if available
+          const stockColor = stockEntry?.colors.find(sc => sc.color.toLowerCase() === vc.name.toLowerCase());
+          return {
+            color: vc.name,
+            hex: vc.hex,
+            quantity: stockColor ? stockColor.quantity : 0
+          };
+        });
+        
+        const quantity = colors.reduce((sum, c) => sum + c.quantity, 0);
+
+        return {
+          slug: variant.slug,
+          gsm: variant.gsm,
+          fabric: variant.fabric,
+          name: variant.name,
+          quantity,
+          colors
+        };
+      })
       .sort((a, b) => {
         const aNum = Number(a.gsm.replace(/\D/g, ""));
         const bNum = Number(b.gsm.replace(/\D/g, ""));
         return aNum - bNum;
       });
-  }, [selectedCategorySlug, stockQuantityByGsm]);
+  }, [selectedCategorySlug]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 pb-24 pt-28 sm:px-6 lg:px-8">
@@ -111,7 +185,7 @@ export default function LiveStockPage() {
           </div>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-8 flex flex-col gap-6">
           <select
             value={selectedCategorySlug}
             onChange={(event) => setSelectedCategorySlug(event.target.value)}
@@ -125,30 +199,20 @@ export default function LiveStockPage() {
             ))}
           </select>
         </div>
+        
         {selectedCategorySlug !== "All" && availableProductVariants.length > 0 ? (
-          <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-950/80">
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#C8A64A] dark:text-[#F6D56A]">
+          <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-950/80">
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#C8A64A] dark:text-[#F6D56A] mb-4">
               Available Fabric Variants for {selectedCategoryName || selectedCategorySlug}
             </p>
-            <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {availableProductVariants.map((variant) => (
-                <div
-                  key={variant.slug}
-                  className="rounded-3xl border border-slate-200 bg-[#F8FAFC] p-4 text-sm text-slate-900 shadow-sm dark:border-slate-700 dark:bg-slate-950/80 dark:text-slate-100"
-                >
-                  <p className="font-semibold">{variant.gsm}</p>
-                  <p className="mt-2 text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">
-                    {variant.fabric}
-                  </p>
-                  <p className="mt-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
-                    {variant.quantity} pcs available
-                  </p>
-                </div>
+                <VariantCard key={variant.slug} variant={variant} />
               ))}
             </div>
           </div>
         ) : selectedCategorySlug !== "All" ? (
-          <div className="mt-4 rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-300">
+          <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-300">
             No fabric variants found for the selected product type.
           </div>
         ) : null}

@@ -54,7 +54,7 @@ export default function ProductCard({ product, category }: ProductCardProps) {
           )}
         </div>
 
-        <Link href={href} className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent-custom px-4 py-3 text-sm font-semibold text-black transition hover:brightness-110">
+        <Link href={href} className="mt-auto pt-4 inline-flex items-center gap-2 rounded-full bg-accent-custom px-4 py-3 text-sm font-semibold text-black transition hover:brightness-110">
           View Products
           <ArrowUpRight size={16} />
         </Link>

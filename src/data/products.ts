@@ -303,6 +303,12 @@ export interface ProductVariant {
   pricing?: ProductPricingTier[];
 }
 
+export interface ProductSpecSection {
+  heading: string;
+  items: string[];
+  colors?: { name: string; hex: string }[];
+}
+
 export interface ProductDetail {
   slug: string;
   name: string;
@@ -323,6 +329,7 @@ export interface ProductDetail {
   relatedSlugs: string[];
   inquiryOnly?: boolean;
   variants?: ProductVariant[];
+  specs?: ProductSpecSection[];
 }
 
 export interface CatalogVariant {
@@ -543,6 +550,10 @@ function generateProductDescription(variant: any, product: any) {
 
   const desc = `A ${gsm} ${fabric} ${fit ? `${fit.toLowerCase()} ` : ""}${product.name || "garment"} offering ${featureSentence}. ${usageSentence} Proudly Made in India.`;
 
+  if (variant.name === "Premium Cotton 240 GSM Polo Neck T-Shirt") {
+    return (desc + " Auto Jacquard colour and cuff with side slits and fancy necktape at backneck and slits").replace(/\s+/g, " ").trim();
+  }
+
   return desc.replace(/\s+/g, " ").trim();
 }
 
@@ -684,7 +695,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "dri-fit-mars-200gsm",
         name: "Dri Fit Mars 200 GSM Round Neck T-Shirt",
         gsm: "200 GSM",
-        fabric: "Dri Fit Mars Polyester",
+        fabric: "Dri Fit Mars",
         fit: "Regular Fit",
         description: "A performance-led tee with moisture management and an elevated sportswear feel.",
         heroImage: "/images/regular-fit-tshirt-yellow.jpg",
@@ -864,7 +875,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 5001, price: 335 },
         ],
         printingCompatibility: "Ideal for embroidery, monograms, and premium chest panel branding.",
-        productDescription: "Premium cotton construction and a tailored collar create a refined garment for high-end corporate and retail campaigns.",
+        productDescription: "Premium cotton construction and a tailored collar create a refined garment for high-end corporate and retail campaigns. Auto Jacquard colour and cuff with side slits and fancy necktape at backneck and slits",
         categorySlug: "polo",
       },
       {
@@ -896,7 +907,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polyester-110gsm",
         name: "Polyester 110 GSM Polo Neck T-Shirt",
         gsm: "110 GSM",
-        fabric: "pp-Polyester",
+        fabric: "PP-Polyester",
         fit: "Polo Fit",
         description: "A lightweight polo knit for fast-moving promo programs and sportswear launches.",
         heroImage: "/images/polo-tshirt-orange.jpg",
@@ -921,7 +932,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "polyester-140gsm",
         name: "Polyester 140 GSM Polo Neck T-Shirt",
         gsm: "140 GSM",
-        fabric: "pp-Polyester",
+        fabric: "PP-Polyester",
         fit: "Polo Fit",
         description: "A balanced polyester polo that performs well for branded uniforms and event wear.",
         heroImage: "/images/polo-tshirt-yellow.jpg",
@@ -946,7 +957,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         slug: "dri-fit-mars-200gsm",
         name: "Dri Fit Mars 200 GSM Polo Neck T-Shirt",
         gsm: "200 GSM",
-        fabric: "Dri Fit Mars Polyester",
+        fabric: "Dri Fit Mars",
         fit: "Polo Fit",
         description: "A performance polo with a polished finish and moisture-wicking comfort.",
         heroImage: "/images/polo-tshirt-purple.jpg",
@@ -2375,15 +2386,14 @@ const baseProducts: ProductDetail[] = [
     tagline: "Professional apparel with a refined B2B finish",
     moq: "100 Pieces",
     fabric: "Cotton / Poly Blends",
-    gsmRange: "180-220 GSM",
-    description:
-      "Elegant and durable apparel for staff uniforms, branded corporate programs, and premium office wear.",
+    gsmRange: "180–240 GSM",
+    description: "Elegant and durable apparel for staff uniforms, branded corporate programs, and premium office wear.",
     availableForBulk: true,
     premiumQuality: true,
     deliveryTimeline: "10-14 working days",
     heroImage: "/images/co-orporate-wear.jpg",
     colors: [],
-    sizes: [],
+    sizes: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
     pricing: [],
     features: [
       { title: "Branding Ready", description: "Embroidery, screen print and logo placement", icon: "BadgeCheck" },
@@ -2392,23 +2402,54 @@ const baseProducts: ProductDetail[] = [
     ],
     relatedSlugs: ["uniforms", "custom-merchandise"],
     inquiryOnly: true,
+    specs: [
+      {
+        heading: "Available Products",
+        items: ["Corporate T-Shirts", "Polo T-Shirts", "Shirts", "Hoodies", "Sweatshirts"],
+      },
+      {
+        heading: "Fabric Options",
+        items: ["Cotton Jersey", "Cotton Airtex", "Cotton Fleece", "Poly Cotton Jersey", "Poly Cotton Fleece", "Honeycomb Knit", "Selena Fabric", "PP Fabric", "Dri-Fit Mesh"],
+      },
+      {
+        heading: "Fabric Composition",
+        items: ["100% Cotton", "Poly Cotton Blend", "100% Polyester"],
+      },
+      {
+        heading: "Colour Options",
+        items: [],
+        colors: [
+          { name: "White", hex: "#f7f7f2" },
+          { name: "Black", hex: "#111111" },
+          { name: "Navy Blue", hex: "#20354d" },
+          { name: "Royal Blue", hex: "#1f3b64" },
+          { name: "Maroon", hex: "#6d2c2c" },
+          { name: "Orange", hex: "#c96a17" },
+          { name: "Red", hex: "#a52424" },
+          { name: "Brown", hex: "#6f4b2f" },
+          { name: "Grey", hex: "#6b7280" },
+          { name: "Yellow", hex: "#f2c94c" },
+          { name: "Golden Yellow", hex: "#b88c12" },
+          { name: "Purple", hex: "#6b3fa0" },
+        ],
+      },
+    ],
   },
   {
     slug: "uniforms",
     name: "Uniforms",
     category: "Uniforms",
     tagline: "Reliable uniforms tailored for teams and operations",
-    moq: "150 Pieces",
-    fabric: "Cotton / Twill",
-    gsmRange: "220-260 GSM",
-    description:
-      "Durable, clean and scalable uniforms for hospitality, retail, logistics and team-based operations.",
+    moq: "100 Pieces",
+    fabric: "Cotton / Poly Blends",
+    gsmRange: "160–300 GSM",
+    description: "Durable, clean and scalable uniforms for schools, hospitality, retail, sports and team-based operations.",
     availableForBulk: true,
     premiumQuality: true,
     deliveryTimeline: "10-14 working days",
     heroImage: "/images/uniformss.jpg",
     colors: [],
-    sizes: [],
+    sizes: ["18", "20", "22", "24", "26", "28", "30", "32", "34", "36", "38", "40", "42", "44"],
     pricing: [],
     features: [
       { title: "Operational Ready", description: "Built for repeat use and consistent presentation", icon: "Factory" },
@@ -2417,6 +2458,48 @@ const baseProducts: ProductDetail[] = [
     ],
     relatedSlugs: ["corporate-wear", "custom-merchandise"],
     inquiryOnly: true,
+    specs: [
+      {
+        heading: "T-Shirts, Polo T-Shirts, Hoodies — Colour Options",
+        items: ["T-Shirts", "Polo T-Shirts", "Hoodies"],
+        colors: [
+          { name: "White", hex: "#f7f7f2" },
+          { name: "Black", hex: "#111111" },
+          { name: "Navy Blue", hex: "#20354d" },
+          { name: "Royal Blue", hex: "#1f3b64" },
+          { name: "Maroon", hex: "#6d2c2c" },
+          { name: "Orange", hex: "#c96a17" },
+          { name: "Red", hex: "#a52424" },
+          { name: "Brown", hex: "#6f4b2f" },
+          { name: "Grey", hex: "#6b7280" },
+          { name: "Yellow", hex: "#f2c94c" },
+          { name: "Golden Yellow", hex: "#b88c12" },
+          { name: "Purple", hex: "#6b3fa0" },
+        ],
+      },
+      {
+        heading: "Shorts, Pants — Colour Options",
+        items: ["T-Shirts", "Shorts", "Pants"],
+        colors: [
+          { name: "Bottle Green", hex: "#3f6b3f" },
+          { name: "Black", hex: "#111111" },
+          { name: "Air Force Blue", hex: "#5d8aa8" },
+          { name: "Navy Blue", hex: "#20354d" },
+          { name: "Dark Grey", hex: "#4b5563" },
+          { name: "Maroon", hex: "#6d2c2c" },
+          { name: "Olive", hex: "#6b6e2d" },
+          { name: "White", hex: "#f7f7f2" },
+        ],
+      },
+      {
+        heading: "Fabric Options",
+        items: ["Cotton Jersey", "Cotton Airtex", "Cotton Fleece", "Poly Cotton Jersey", "Poly Cotton Fleece", "Polyester Mesh", "Lycra", "Honeycomb Knit", "PP Fabric", "Dri-Fit Mesh", "Super Poly (2-Way Stretch)", "Super Poly (4-Way Stretch)"],
+      },
+      {
+        heading: "Fabric Composition",
+        items: ["100% Cotton", "Poly Cotton Blend", "100% Polyester"],
+      },
+    ],
   },
   {
     slug: "custom-merchandise",
