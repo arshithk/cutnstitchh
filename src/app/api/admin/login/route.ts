@@ -52,10 +52,10 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json({ success: true });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Login error:", error);
         return NextResponse.json(
-            { error: "Internal server error" },
+            { error: error?.message || "Internal server error", stack: error?.stack },
             { status: 500 }
         );
     }
