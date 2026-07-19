@@ -9,7 +9,7 @@ interface CTASectionProps {
 export default function CTASection({ productName, inquiryOnly = false }: CTASectionProps) {
   return (
     <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-      <Link href={`https://wa.me/919342936939?text=Hello%20I%20would%20like%20to%20inquire%20about%20${encodeURIComponent(productName)}`} className="inline-flex items-center justify-center gap-2 rounded-full border border-accent-custom/40 bg-accent-custom px-5 py-3 text-sm font-semibold text-black transition hover:brightness-110">
+      <Link href={`https://wa.me/919944466311?text=Hello%20I%20would%20like%20to%20inquire%20about%20${encodeURIComponent(productName)}`} className="inline-flex items-center justify-center gap-2 rounded-full border border-accent-custom/40 bg-accent-custom px-5 py-3 text-sm font-semibold text-black transition hover:brightness-110">
         <MessageCircleMore size={16} />
         Inquire Now
       </Link>

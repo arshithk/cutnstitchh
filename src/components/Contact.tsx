@@ -552,7 +552,7 @@ export default function Contact() {
     const text = encodeURIComponent(
       `Hi Cut n Stitch team, my name is ${formData.name || "[Name]"} from ${formData.company || "[Company]"}. We are looking to manufacture custom ${formData.product} (${formData.gsm}${colorText}, Target Qty: ${formData.quantity || "100"} pcs). Please connect us with a merchant.`
     );
-    window.open(`https://wa.me/919342936939?text=${text}`, "_blank");
+    window.open(`https://wa.me/919944466311?text=${text}`, "_blank");
   };
 
   return (
