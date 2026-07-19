@@ -17,7 +17,7 @@ export default function StickyCTA({ productName }: StickyCTAProps) {
         </div>
         <div className="flex flex-col gap-2 sm:flex-row">
           <Link
-            href="#contact"
+            href="/#contact"
             className="rounded-full bg-accent-custom px-5 py-3 text-center text-sm font-semibold text-black transition hover:brightness-110"
           >
             Get Quote

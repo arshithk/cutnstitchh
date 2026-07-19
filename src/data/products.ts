@@ -19,7 +19,7 @@ export interface ProductFeature {
 }
 
 const GENERAL_KEYWORDS = [
-  "Screen Printing",
+  "",
   "Embroidery",
   "Heat Transfer Printing",
   "Corporate Uniforms",
@@ -66,7 +66,7 @@ function enrichDescription(text: string, fabric?: string, extraKeywords?: string
   }
 
   // Always add these common methods and business keywords
-  kws.add("Screen Printing");
+  kws.add("");
   GENERAL_KEYWORDS.forEach((k) => kws.add(k));
 
   // include any product-specific keywords
@@ -92,7 +92,7 @@ const KEYWORDS_PREMIUM_COTTON_180 = [
   "Comfortable Fit",
   "DTF Printing",
   "DTG Printing",
-  "Screen Printing",
+  "",
   "Heat Transfer Printing",
   "Embroidery",
   "Custom Logo Printing",
@@ -120,7 +120,7 @@ const KEYWORDS_POLYCOTTON_180 = [
   "Fade Resistant",
   "Comfortable Fit",
   "DTF Printing",
-  "Screen Printing",
+  "",
   "Heat Transfer Printing",
   "Embroidery",
   "Corporate Uniforms",
@@ -226,11 +226,11 @@ const KEYWORDS_DRI_FIT_180 = [
 // Additional sets (honeycomb, saleena, polos, hoodies, oversized) — keep concise
 const KEYWORDS_HONEYCOMB_160 = ["Honeycomb Knit Fabric", "160 GSM", "Textured Fabric", "DTF Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms"];
 const KEYWORDS_SALEENA_160 = ["Selena Knit Fabric", "160 GSM", "DTF Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms"];
-const KEYWORDS_POLY_Polo_220 = ["Poly Cotton Blend", "220 GSM", "DTF Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms"];
-const KEYWORDS_COTTON_POLO = ["100% Premium Cotton", "Bio Washed", "DTF Printing", "DTG Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms", "Premium Brand Merchandise"];
-const KEYWORDS_POLY_HOODIES = ["Poly Cotton Blend", "Heavy GSM", "Soft Fleece", "Warm Fabric", "DTF Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery"];
-const KEYWORDS_COTTON_HOODIES = ["100% Cotton", "Bio Washed", "Heavy GSM", "Soft Brushed Interior", "DTG Printing", "DTF Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery"];
-const KEYWORDS_OVERSIZED = ["Oversized Fit", "Relaxed Fit", "Streetwear", "DTF Printing", "DTG Printing", "Screen Printing", "Sublimation", "Heat Transfer Printing", "Embroidery"];
+const KEYWORDS_POLY_Polo_220 = ["Poly Cotton Blend", "220 GSM", "DTF Printing", "", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms"];
+const KEYWORDS_COTTON_POLO = ["100% Premium Cotton", "Bio Washed", "DTF Printing", "DTG Printing", "", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms", "Premium Brand Merchandise"];
+const KEYWORDS_POLY_HOODIES = ["Poly Cotton Blend", "Heavy GSM", "Soft Fleece", "Warm Fabric", "DTF Printing", "", "Heat Transfer Printing", "Embroidery"];
+const KEYWORDS_COTTON_HOODIES = ["100% Cotton", "Bio Washed", "Heavy GSM", "Soft Brushed Interior", "DTG Printing", "DTF Printing", "", "Heat Transfer Printing", "Embroidery"];
+const KEYWORDS_OVERSIZED = ["Oversized Fit", "Relaxed Fit", "Streetwear", "DTF Printing", "DTG Printing", "", "Sublimation", "Heat Transfer Printing", "Embroidery"];
 
 function getProductKeywords(variant: CatalogVariant): string[] {
   const name = (variant.name ?? "").toLowerCase();
@@ -433,34 +433,34 @@ function generatePrintingCompatibility(fabric?: string, name?: string) {
 
   // Cotton-based
   if (f.includes("100% cotton") || f.includes("cotton") || f.includes("premium cotton") || f.includes("bio washed")) {
-    return join(["Screen Printing", "DTF Printing", "DTG Printing", "Heat Transfer Printing"]);
+    return join(["", "DTF Printing", "DTG Printing", "Heat Transfer Printing"]);
   }
 
   // French Terry Cotton
   if (f.includes("french terry") && !f.includes("polycotton")) {
-    return join(["Screen Printing", "DTF Printing", "DTG Printing", "Heat Transfer Printing"]);
+    return join(["", "DTF Printing", "DTG Printing", "Heat Transfer Printing"]);
   }
 
   // Cotton Fleece
   if (f.includes("fleece") && !f.includes("polycotton")) {
-    return join(["Screen Printing", "DTF Printing", "DTG Printing", "Heat Transfer Printing"]);
+    return join(["", "DTF Printing", "DTG Printing", "Heat Transfer Printing"]);
   }
 
   // PolyCotton variants
   if (f.includes("polycotton") || f.includes("poly cotton") || f.includes("poly cotton")) {
-    return join(["Screen Printing", "DTF Printing", "Heat Transfer Printing"]);
+    return join(["", "DTF Printing", "Heat Transfer Printing"]);
   }
 
   // PolyCotton French Terry / PolyCotton Fleece
   if (f.includes("polycotton") && (f.includes("french terry") || f.includes("fleece"))) {
-    return join(["Screen Printing", "DTF Printing", "Heat Transfer Printing"]);
+    return join(["", "DTF Printing", "Heat Transfer Printing"]);
   }
 
   // Polyester and performance fabrics
   if (f.includes("polyester") || f.includes("pique") || f.includes("dri fit") || f.includes("dri-fit") || f.includes("mars") || f.includes("dot knit") || f.includes("lycra")) {
     // Sublimation only relevant as "White garments only" — include the note
     return join([
-      "Screen Printing",
+      "",
       "DTF Printing",
       "Heat Transfer Printing",
       "Sublimation Printing (White garments only)",
@@ -468,7 +468,7 @@ function generatePrintingCompatibility(fabric?: string, name?: string) {
   }
 
   // Fallback conservative list
-  return join(["Screen Printing", "DTF Printing", "Heat Transfer Printing"]);
+  return join(["", "DTF Printing", "Heat Transfer Printing"]);
 }
 
 // Helper: embroidery compatibility paragraph
@@ -581,7 +581,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL", "3XL"],
         moq: "100 Pieces",
-        printingCompatibility: "Screen printing, embroidery, heat transfer, and direct-to-garment printing.",
+        printingCompatibility: " embroidery, heat transfer, and direct-to-garment printing.",
         productDescription: "This regular fit cotton tee combines a soft hand feel with a crisp finish, making it ideal for everyday merchandise, staff uniforms, and promotional apparel.",
         pricing: [
           { min: 100, max: 999, price: 175 },
@@ -607,7 +607,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL", "3XL"],
         moq: "100 Pieces",
-        printingCompatibility: "Screen printing, embroidery, and heat transfer are all well suited to this fabric.",
+        printingCompatibility: " embroidery, and heat transfer are all well suited to this fabric.",
         productDescription: "The polycotton construction balances softness and durability, supporting consistent branding and repeat orders with a polished finish.",
         pricing: [
           { min: 100, max: 999, price: 99 },
@@ -632,7 +632,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL", "3XL"],
         moq: "100 Pieces",
-        printingCompatibility: "Ideal for screen printing and heat transfer applications with crisp results.",
+        printingCompatibility: "Ideal for heat transfer applications with crisp results.",
         productDescription: "This lightweight polyester tee is a practical choice for large-scale events, giveaways, and uniform programs where cost efficiency matters.",
         pricing: [
           { min: 100, max: 999, price: 49 },
@@ -657,7 +657,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL", "3XL"],
         moq: "100 Pieces",
-        printingCompatibility: "Well suited to sublimation, screen printing, and heat transfer techniques.",
+        printingCompatibility: "Well suited to Sublimation and heat transfer techniques.",
         productDescription: "This mid-weight polyester tee brings dependable structure and a clean finish for custom branding across teamwear and retail merchandise lines.",
         pricing: [
           { min: 100, max: 999, price: 65 },
@@ -682,7 +682,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL", "3XL"],
         moq: "100 Pieces",
-        printingCompatibility: "Well suited to sublimation, screen printing, and heat transfer techniques.",
+        printingCompatibility: "Well suited to Sublimation and heat transfer techniques.",
         productDescription: "This fabric offers dependable structure with a clean finish, supporting custom branding across teamwear and retail merchandise lines.",
         pricing: [
           { min: 100, max: 999, price: 60 },
@@ -707,7 +707,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL", "3XL"],
         moq: "100 Pieces",
-        printingCompatibility: "Excellent for screen printing and heat transfer on performance fabric bases.",
+        printingCompatibility: "Excellent for heat transfer on performance fabric bases.",
         productDescription: "The Dri Fit Mars construction is designed for activewear and sports merch that needs comfort, breathability, and a modern finish.",
         pricing: [
           { min: 100, max: 999, price: 99 },
@@ -732,7 +732,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
-        printingCompatibility: "Supports embroidery and screen printing for elevated brand presentation.",
+        printingCompatibility: "Supports embroidery and for elevated brand presentation.",
         productDescription: "This premium knit fabric offers subtle texture and a refined drape that lifts any custom merchandise collection.",
         pricing: [
           { min: 100, max: 999, price: 95 },
@@ -771,7 +771,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1001, max: 5000, price: 227 },
           { min: 5001, price: 225 },
         ],
-        printingCompatibility: "Embroidery, screen printing, and woven label application work beautifully on this knit.",
+        printingCompatibility: "Embroidery and woven label application work beautifully on this knit.",
         productDescription: "The cotton polo combines a structured collar with a comfortable body, making it ideal for premium uniforms and merchandising collections.",
         categorySlug: "polo",
       },
@@ -849,7 +849,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1001, max: 5000, price: 233 },
           { min: 5001, price: 230 },
         ],
-        printingCompatibility: "Embroidery, screen printing, and premium branding methods work beautifully on this knit.",
+        printingCompatibility: "Embroidery and premium branding methods work beautifully on this knit.",
         productDescription: "The dual-tipping detail adds a stylish edge to the classic polo silhouette, making it a standout choice for modern uniforms and branded apparel.",
         categorySlug: "polo",
       },
@@ -899,7 +899,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1001, max: 5000, price: 197 },
           { min: 5001, price: 195 },
         ],
-        printingCompatibility: "Supports screen printing and heat transfer with reliable clarity and durability.",
+        printingCompatibility: "Supports and heat transfer with reliable clarity and durability.",
         productDescription: "The polycotton construction offers a balanced blend of softness and resilience, making it a practical premium option for repeat orders.",
         categorySlug: "polo",
       },
@@ -974,7 +974,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1001, max: 5000, price: 197 },
           { min: 5001, price: 195 },
         ],
-        printingCompatibility: "Works well with screen print, heat transfer, and small logo embroidery.",
+        printingCompatibility: "Works well with screen print, heat transfer and small logo embroidery.",
         productDescription: "This performance polo is ideal for active merchandising, club apparel, and contemporary promotional collections where function matters.",
         categorySlug: "polo",
       },
@@ -1049,7 +1049,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1001, max: 5000, price: 114 },
           { min: 5001, price: 113 },
         ],
-        printingCompatibility: "Ideal for embroidery, screen printing, and premium collar-branding applications.",
+        printingCompatibility: "Ideal for embroidery and premium collar-branding applications.",
         productDescription: "The honeycomb polo knit gives a textured appearance and premium hand feel, perfect for modern corporate uniforms and promotional programs.",
         categorySlug: "polo",
       },
@@ -1083,7 +1083,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1000, max: 5000, price: 233 },
           { min: 5000, price: 230 },
         ],
-        printingCompatibility: "Screen printing, embroidery, and heat transfer all work beautifully on this oversized staple.",
+        printingCompatibility: " embroidery, and heat transfer all work beautifully on this oversized staple.",
         embroideryCompatibility: "Embroidery is a strong fit for chest logos and premium branded detailing.",
         productDescription: "This oversized cotton tee delivers a clean silhouette, soft hand feel, and premium drape that elevates fashion and streetwear collections.",
         categorySlug: "oversized",
@@ -1109,7 +1109,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1000, max: 5000, price: 233 },
           { min: 5000, price: 230 },
         ],
-        printingCompatibility: "Screen printing, embroidery, and heat transfer all work beautifully on this oversized staple.",
+        printingCompatibility: " embroidery, and heat transfer all work beautifully on this oversized staple.",
         embroideryCompatibility: "Embroidery is a strong fit for chest logos and premium branded detailing.",
         productDescription: "This oversized cotton tee delivers a clean silhouette, soft hand feel, and premium drape that elevates fashion and streetwear collections.",
         categorySlug: "oversized",
@@ -1170,7 +1170,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1001, max: 5000, price: 547 },
           { min: 5001, price: 545 },
         ],
-        printingCompatibility: "Screen printing, embroidery, and heat transfer all work well on this durable fleece base.",
+        printingCompatibility: " embroidery, and heat transfer all work well on this durable fleece base.",
         embroideryCompatibility: "Excellent for chest logos and premium stitched branding.",
         productDescription: "The cotton fleece construction brings warmth, softness, and strong structure to branded hoodie collections and seasonal merch programs.",
         categorySlug: "hoodie",
@@ -1196,7 +1196,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1001, max: 5000, price: 497 },
           { min: 5001, price: 496 },
         ],
-        printingCompatibility: "A strong option for screen printing and transfer applications with reliable clarity.",
+        printingCompatibility: "A strong option for and transfer applications with reliable clarity.",
         embroideryCompatibility: "Supports clean embroidered branding with long-lasting durability.",
         productDescription: "The cotton fleece blend offers premium comfort and a polished appearance for repeat branding orders.",
         categorySlug: "hoodie",
@@ -1217,7 +1217,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
-        printingCompatibility: "Ideal for sublimation, screen printing, and lightweight branded detailing.",
+        printingCompatibility: "Ideal for sublimation and lightweight branded detailing.",
         embroideryCompatibility: "Works beautifully for premium chest and sleeve embroidery.",
         productDescription: "The heavier cotton fleece weight gives this hoodie a luxurious hand feel and strong structure for elevated collections.",
         categorySlug: "hoodie",
@@ -1238,7 +1238,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
-        printingCompatibility: "Great for screen printing and transfer work with a premium finish.",
+        printingCompatibility: "Great for and transfer work with a premium finish.",
         embroideryCompatibility: "Strong for clean embroidered logos and detailing.",
         productDescription: "This heavyweight hoodie provides premium warmth, structure, and a refined look for branded apparel lines.",
         categorySlug: "hoodie",
@@ -1264,7 +1264,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1001, max: 5000, price: 397 },
           { min: 5001, price: 395 },
         ],
-        printingCompatibility: "Works well with screen printing and transfer applications.",
+        printingCompatibility: "Works well with and transfer applications.",
         embroideryCompatibility: "Supports durable stitched branding and logos.",
         productDescription: "The polycotton blend offers excellent durability and shape retention while keeping the hoodie comfortable and polished.",
         categorySlug: "hoodie",
@@ -1290,7 +1290,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1001, max: 5000, price: 347 },
           { min: 5001, price: 345 },
         ],
-        printingCompatibility: "A strong option for screen printing and direct branding applications.",
+        printingCompatibility: "A strong option for and direct branding applications.",
         embroideryCompatibility: "Supports clean embroidered branding with long-lasting durability.",
         productDescription: "This polycotton hoodie offers shape retention, durability, and all-season comfort for repeat orders.",
         categorySlug: "hoodie",
@@ -1316,7 +1316,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1000, max: 5000, price: 433 },
           { min: 5001, price: 430 },
         ],
-        printingCompatibility: "Works well with screen printing and transfer applications.",
+        printingCompatibility: "Works well with and transfer applications.",
         embroideryCompatibility: "Supports durable stitched branding and logos.",
         productDescription: "A 340 GSM polycotton hoodie offering premium weight and structure while remaining comfortable for everyday wear.",
         categorySlug: "hoodie",
@@ -1342,7 +1342,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1001, max: 5000, price: 397 },
           { min: 5001, price: 395 },
         ],
-        printingCompatibility: "A strong option for screen printing and direct branding applications.",
+        printingCompatibility: "A strong option for and direct branding applications.",
         embroideryCompatibility: "Supports clean embroidered branding with long-lasting durability.",
         productDescription: "This 340 GSM polycotton hoodie balances premium weight with durability, ideal for repeat orders and branded collections.",
         categorySlug: "hoodie",
@@ -1377,7 +1377,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1000, max: 5000, price: 427 },
           { min: 5000, price: 425 },
         ],
-        printingCompatibility: "Screen printing and embroidery are ideal for bold brand placement.",
+        printingCompatibility: " and embroidery are ideal for bold brand placement.",
         embroideryCompatibility: "Perfect for chest logos and sleeve detailing.",
         productDescription: "This regular-fit sweatshirt offers warmth, resilience, and a polished finish for premium merch programs.",
         categorySlug: "sweatshirt",
@@ -1403,7 +1403,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1000, max: 5000, price: 447 },
           { min: 5000, price: 445 },
         ],
-        printingCompatibility: "Supports screen printing and heat transfer with reliable clarity.",
+        printingCompatibility: "Supports and heat transfer with reliable clarity.",
         embroideryCompatibility: "Strong for chest and sleeve embroidered branding.",
         productDescription: "The cotton fleece construction provides lasting shape retention and dependable comfort for repeat orders.",
         categorySlug: "sweatshirt",
@@ -1429,7 +1429,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1000, max: 5000, price: 247 },
           { min: 5000, price: 245 },
         ],
-        printingCompatibility: "Great for screen printing and embroidery on a durable everyday base.",
+        printingCompatibility: "Great for and embroidery on a durable everyday base.",
         embroideryCompatibility: "Supports clean logo placement and premium finishing details.",
         productDescription: "The polycotton French Terry blend balances softness, durability, and structure for high-volume apparel programs.",
         categorySlug: "sweatshirt",
@@ -1461,7 +1461,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { min: 1000, max: 5000, price: 297 },
           { min: 5000, price: 295 },
         ],
-        printingCompatibility: "Well suited to screen printing and transfer work on a structured fleece base.",
+        printingCompatibility: "Well suited to and transfer work on a structured fleece base.",
         embroideryCompatibility: "Strong for bold embroidered branding and sleeve detailing.",
         productDescription: "The polycotton fleece construction delivers premium warmth and repeat-wear durability for premium staff and merch collections.",
         categorySlug: "sweatshirt",
@@ -1491,7 +1491,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
-        printingCompatibility: "Screen printing and heat transfer are ideal for bold branding on this fabric base.",
+        printingCompatibility: " and heat transfer are ideal for bold branding on this fabric base.",
         embroideryCompatibility: "Good for clean embroidery on the waistband or side panels.",
         pricing: [
           { min: 100, max: 999, price: 235 },
@@ -1517,7 +1517,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
-        printingCompatibility: "Well suited to screen printing and transfer work for larger orders.",
+        printingCompatibility: "Well suited to and transfer work for larger orders.",
         embroideryCompatibility: "Supports clean embroidered branding with reliable durability.",
         pricing: [
           { min: 100, max: 999, price: 180 },
@@ -1605,7 +1605,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
-        printingCompatibility: "Screen printing and transfer methods work well on this soft French Terry base.",
+        printingCompatibility: " and transfer methods work well on this soft French Terry base.",
         embroideryCompatibility: "Great for logo embroidery on the leg or pocket area.",
         pricing: [
           { min: 100, max: 999, price: 350 },
@@ -1631,7 +1631,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
-        printingCompatibility: "Reliable for screen printing and transfer branding on a sturdy base.",
+        printingCompatibility: "Reliable for and transfer branding on a sturdy base.",
         embroideryCompatibility: "Supports crisp embroidery with a polished presentation.",
         pricing: [
           { min: 100, max: 999, price: 250 },
