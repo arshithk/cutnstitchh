@@ -13,7 +13,7 @@ export default function CTASection({ productName, inquiryOnly = false }: CTASect
         <MessageCircleMore size={16} />
         Inquire Now
       </Link>
-      <Link href="/live-stock" className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground transition hover:border-accent-custom/40 hover:text-accent-custom">
+      <Link href="/#contact" className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground transition hover:border-accent-custom/40 hover:text-accent-custom">
         Get Quote
         <ArrowUpRight size={16} />
       </Link>
