@@ -1,0 +1,67 @@
+import { CheckCircle2, Clock3, Sparkles } from "lucide-react";
+import type { ProductDetail } from "@/data/products";
+
+interface ProductInfoProps {
+  product: ProductDetail;
+}
+
+export default function ProductInfo({ product }: ProductInfoProps) {
+  return (
+    <>
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="rounded-full border border-accent-custom/30 bg-accent-custom/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-accent-custom">
+          {product.category}
+        </span>
+        {product.premiumQuality ? (
+          <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">
+            Premium Quality
+          </span>
+        ) : null}
+      </div>
+
+      <h1 className="mt-5 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">{product.name}</h1>
+      <p className="mt-3 text-lg text-muted-custom">{product.tagline}</p>
+      <p className="mt-4 text-base leading-7 text-foreground/90">{product.description}</p>
+
+      <div className="mt-8 grid gap-4 rounded-3xl border border-white/10 bg-white/5 p-5 sm:grid-cols-2">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-muted-custom">MOQ</p>
+          <p className="mt-2 text-lg font-semibold text-foreground">{product.moq}</p>
+        </div>
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-muted-custom">Fabric</p>
+          <p className="mt-2 text-lg font-semibold text-foreground">{product.fabric}</p>
+        </div>
+        {!product.inquiryOnly ? (
+          <>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-muted-custom">GSM</p>
+              <p className="mt-2 text-lg font-semibold text-foreground">{product.gsmRange}</p>
+            </div>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-muted-custom">Sizes</p>
+              <p className="mt-2 text-lg font-semibold text-foreground">{product.sizes.join(", ")}</p>
+            </div>
+          </>
+        ) : null}
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-7 text-muted-custom">
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent-custom">Description</p>
+        <p className="mt-2 text-base leading-7 text-foreground/90">{product.description}</p>
+      </div>
+
+      <div className="mt-8 space-y-4">
+        <div className="flex items-center gap-3 rounded-2xl border border-accent-custom/20 bg-accent-custom/10 px-4 py-3 text-sm text-accent-custom">
+          <CheckCircle2 className="h-5 w-5" />
+          Available for Bulk Manufacturing
+        </div>
+        <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-muted-custom">
+          <Clock3 className="h-5 w-5 text-accent-custom" />
+          Premium dispatch workflow for repeat and seasonal B2B orders
+        </div>
+      </div>
+
+    </>
+  );
+}

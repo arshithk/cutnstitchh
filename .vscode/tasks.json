@@ -1,0 +1,66 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build-site-cmd",
+			"type": "shell",
+			"command": "cmd /c \"cd /d C:\\Users\\arshu\\OneDrive\\Desktop\\CutnStitch && node node_modules\\next\\dist\\bin\\next.js build\"",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-site-node",
+			"type": "process",
+			"command": "node",
+			"args": ["node_modules/next/dist/bin/next", "build"],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-site",
+			"type": "shell",
+			"command": "npm run build",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "generate-catalog-images",
+			"type": "shell",
+			"command": "python tmp_generate_catalog_images.py",
+			"group": "build"
+		},
+		{
+			"label": "build-site",
+			"type": "shell",
+			"command": "npm run build",
+			"group": "build"
+		},
+		{
+			"label": "restore-catalog-images",
+			"type": "shell",
+			"command": "python restore_catalog_images.py",
+			"group": "build"
+		},
+		{
+			"label": "restore-catalog-images-direct",
+			"type": "shell",
+			"command": "python restore_catalog_images_direct.py",
+			"group": "build"
+		},
+		{
+			"label": "restore-catalog-images-direct",
+			"type": "shell",
+			"command": "python restore_catalog_images_direct.py",
+			"group": "build"
+		}
+	]
+}
