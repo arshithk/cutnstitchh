@@ -9,6 +9,7 @@ import type { CatalogVariant, ProductPricingTier } from "@/data/products";
 import { normalizeImageSrc } from "@/lib/image";
 import { getProductImageCandidates, normalizeColorName } from "@/lib/productImageMap";
 import PricingTable from "@/components/PricingTable";
+import SizeChartDropdown from "@/components/SizeChartDropdown";
 
 interface VariantDetailsProps {
   categoryName: string;
@@ -68,10 +69,10 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
   const isJoggersPreview = previewImage.toLowerCase().includes("/images/joggers-") || previewImage.toLowerCase().includes("/images/lycra-joggers-");
 
   const rawFabric = variant.fabric;
-  
+
   let pillFabricText = rawFabric;
   let gridFabricText = rawFabric;
-  
+
   if (rawFabric.toLowerCase().includes("100% cotton s-jersey")) {
     pillFabricText = rawFabric.replace(/100% Cotton S-Jersey/gi, "100% Cotton (Bio Washed)");
     gridFabricText = rawFabric.replace(/100% Cotton S-Jersey/gi, "S/Jersey");
@@ -89,6 +90,10 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
     gridFabricText = rawFabric.replace(/Honeycomb Knit Polyester/gi, "Honeycomb Knit");
   } else if (rawFabric.toLowerCase().includes("saleena knit polyester")) {
     gridFabricText = rawFabric.replace(/Saleena Knit Polyester/gi, "Saleena Knit");
+  } else if (rawFabric.toLowerCase().includes("polyester with 2-way stretch lycra")) {
+    gridFabricText = rawFabric.replace(/Polyester with 2-Way Stretch Lycra/gi, "2-Way Stretch Lycra");
+  } else if (rawFabric.toLowerCase().includes("polyester with 4-way stretch lycra")) {
+    gridFabricText = rawFabric.replace(/Polyester with 4-Way Stretch Lycra/gi, "4-Way Stretch Lycra");
   }
 
   const displayDescription = variant.description
@@ -170,11 +175,10 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
                       key={color.name}
                       type="button"
                       onClick={() => setSelectedColor(color.name)}
-                      className={`group rounded-3xl border-2 p-3 text-left transition-all duration-300 hover:shadow-lg ${
-                        isSelected
-                          ? "border-accent-custom shadow-[0_0_0_2px_rgba(212,175,55,0.3),0_0_45px_rgba(212,175,55,0.2)]"
-                          : "border-border-custom/50 hover:border-accent-custom/70 hover:shadow-md"
-                      }`}
+                      className={`group rounded-3xl border-2 p-3 text-left transition-all duration-300 hover:shadow-lg ${isSelected
+                        ? "border-accent-custom shadow-[0_0_0_2px_rgba(212,175,55,0.3),0_0_45px_rgba(212,175,55,0.2)]"
+                        : "border-border-custom/50 hover:border-accent-custom/70 hover:shadow-md"
+                        }`}
                     >
                       <div className="relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-white/20 transition-transform duration-500 group-hover:scale-110 group-hover:shadow-lg">
                         <Image
@@ -186,9 +190,9 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
                         />
                       </div>
                       <div className="mt-3 flex items-center gap-3">
-                        <span 
-                          className="h-5 w-5 rounded-full border-2 border-white/50 transition-transform duration-300 group-hover:scale-125 shrink-0" 
-                          style={{ backgroundColor: color.hex }} 
+                        <span
+                          className="h-5 w-5 rounded-full border-2 border-white/50 transition-transform duration-300 group-hover:scale-125 shrink-0"
+                          style={{ backgroundColor: color.hex }}
                         />
                         <span className="text-sm font-semibold text-foreground transition-colors duration-300 group-hover:text-accent-custom">{color.name}</span>
                       </div>
@@ -229,6 +233,8 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
             ))}
           </div>
 
+          <SizeChartDropdown categoryName={categoryName} />
+
           <div className="mt-8 space-y-4">
             <div>
               <h2 className="text-sm font-semibold uppercase tracking-[0.25em] text-accent-custom">Printing Compatibility</h2>
@@ -243,17 +249,17 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
               <p className="mt-2 text-sm leading-7 text-muted-custom">
                 {variant.productDescription != null
                   ? variant.productDescription
-                      .replace(/100% Cotton S-Jersey/gi, "100% Cotton (Bio Washed)")
-                      .replace(/100% Cotton Piqu[é|e]/gi, "100% Cotton (Bio Washed)")
-                      .replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)")
+                    .replace(/100% Cotton S-Jersey/gi, "100% Cotton (Bio Washed)")
+                    .replace(/100% Cotton Piqu[é|e]/gi, "100% Cotton (Bio Washed)")
+                    .replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)")
                   : ""}
               </p>
             </div>
           </div>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <button className="rounded-full bg-accent-custom px-5 py-3 text-sm font-semibold text-black transition hover:brightness-110">
+            <Link href="/#contact" className="rounded-full bg-accent-custom px-5 py-3 text-center text-sm font-semibold text-black transition hover:brightness-110">
               Get Quote
-            </button>
+            </Link>
             <Link href={`/products/${variant.categorySlug}`} className="rounded-full border border-border-custom/70 px-5 py-3 text-center text-sm font-semibold text-foreground transition hover:bg-foreground/5">
               Back to Variants
             </Link>
