@@ -1,0 +1,1 @@
+INSERT OR REPLACE INTO Admin (id, email, password, createdAt, updatedAt) VALUES ('admin_1784454510866', 'admin@cutnstitch.com', '$2b$10$Upf86TxntC2FBMRHfM9fFuU6AiBRu5FgfA6LXZTWTzKLNa3UUBela', '2026-07-19T09:48:30.866Z', '2026-07-19T09:48:30.866Z');

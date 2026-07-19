@@ -1,20 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { PackageCheck, ArrowLeft } from "lucide-react";
+import { PackageCheck, ArrowLeft, Loader2 } from "lucide-react";
 import { catalogCategories } from "@/data/products";
-import { stockEntries } from "@/data/stock";
+import type { ProductStock } from "@prisma/client";
 
-// Exclude product types that should not appear in product selection
-const excludedProductTypes = ["Tank Top", "Windbreaker"];
-
-const filteredStockEntries = stockEntries.filter(
-  (entry) =>
-    !entry.productName.toLowerCase().includes("uniform") &&
-    !entry.productName.toLowerCase().includes("corporate") &&
-    !excludedProductTypes.includes(entry.productType)
-);
 
 const stockProductTypeToCategorySlug: Record<string, string> = {
   "Regular Fit T-Shirt": "regular-fit",
@@ -39,8 +30,8 @@ const getProductTypes = () => {
 function VariantCard({ variant }: { variant: any }) {
   const [selectedColor, setSelectedColor] = useState("All");
 
-  const displayQuantity = selectedColor === "All" 
-    ? variant.quantity 
+  const displayQuantity = selectedColor === "All"
+    ? variant.quantity
     : variant.colors.find((c: any) => c.color === selectedColor)?.quantity ?? 0;
 
   const displayFabric = variant.fabric
@@ -64,34 +55,32 @@ function VariantCard({ variant }: { variant: any }) {
         <div className="flex flex-wrap gap-2 items-center">
           <button
             onClick={() => setSelectedColor("All")}
-            className={`py-1.5 px-3 rounded-full text-[10px] font-semibold border transition-all ${
-              selectedColor === "All" 
-                ? "border-[#D4AF37] bg-[#D4AF37]/10 text-[#8A6A1F] dark:text-[#D4AF37]" 
-                : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400"
-            }`}
+            className={`py-1.5 px-3 rounded-full text-[10px] font-semibold border transition-all ${selectedColor === "All"
+              ? "border-[#D4AF37] bg-[#D4AF37]/10 text-[#8A6A1F] dark:text-[#D4AF37]"
+              : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400"
+              }`}
           >
-             All Options
+            All Options
           </button>
-          
+
           {variant.colors.map((c: any) => (
             <button
               key={c.color}
               title={c.color}
               onClick={() => setSelectedColor(c.color)}
-              className={`h-7 w-7 rounded-full border-2 transition-all p-0.5 flex items-center justify-center ${
-                selectedColor === c.color 
-                  ? "border-[#D4AF37] scale-110" 
-                  : "border-slate-200 dark:border-slate-700 hover:scale-105"
-              }`}
+              className={`h-7 w-7 rounded-full border-2 transition-all p-0.5 flex items-center justify-center ${selectedColor === c.color
+                ? "border-[#D4AF37] scale-110"
+                : "border-slate-200 dark:border-slate-700 hover:scale-105"
+                }`}
             >
-              <span 
-                className="w-full h-full rounded-full border border-black/10 dark:border-white/10" 
+              <span
+                className="w-full h-full rounded-full border border-black/10 dark:border-white/10"
                 style={{ backgroundColor: c.hex }}
               />
             </button>
           ))}
         </div>
-        
+
         <div className="mt-2 flex items-center justify-between rounded-xl bg-slate-100 px-4 py-3 dark:bg-slate-900">
           <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
             {displayQuantity} pcs <span className="font-normal text-slate-500 text-xs">ready in stock</span>
@@ -104,6 +93,26 @@ function VariantCard({ variant }: { variant: any }) {
 
 export default function LiveStockPage() {
   const [selectedCategorySlug, setSelectedCategorySlug] = useState("All");
+  const [liveStock, setLiveStock] = useState<ProductStock[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch live stock from backend
+  useEffect(() => {
+    async function fetchStock() {
+      try {
+        const res = await fetch("/api/product-stock");
+        if (res.ok) {
+          const data = await res.json();
+          setLiveStock(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch stock:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchStock();
+  }, []);
 
   const selectedCategoryName = useMemo(
     () => catalogCategories.find((category) => category.slug === selectedCategorySlug)?.name ?? "",
@@ -118,22 +127,19 @@ export default function LiveStockPage() {
 
     return category.variants
       .map((variant) => {
-        // Find matching stock entry based on productType map and gsmRange
-        const stockEntry = filteredStockEntries.find(
-          entry => stockProductTypeToCategorySlug[entry.productType] === selectedCategorySlug && entry.gsmRange === variant.gsm
-        );
-        
+        // We use the liveStock fetched from Prisma
+        const categoryStock = liveStock.filter(item => item.productSlug === selectedCategorySlug && item.variantSlug === variant.slug);
+
         // Take colors from the category variant definition (products.ts) to show all options
         const colors = (variant.colors || []).map(vc => {
-          // Find matching stock quantity from stockEntry, if available
-          const stockColor = stockEntry?.colors.find(sc => sc.color.toLowerCase() === vc.name.toLowerCase());
+          const stockColor = categoryStock.find(sc => sc.color.toLowerCase() === vc.name.toLowerCase());
           return {
             color: vc.name,
             hex: vc.hex,
             quantity: stockColor ? stockColor.quantity : 0
           };
         });
-        
+
         const quantity = colors.reduce((sum, c) => sum + c.quantity, 0);
 
         return {
@@ -150,7 +156,7 @@ export default function LiveStockPage() {
         const bNum = Number(b.gsm.replace(/\D/g, ""));
         return aNum - bNum;
       });
-  }, [selectedCategorySlug]);
+  }, [selectedCategorySlug, liveStock]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 pb-24 pt-28 sm:px-6 lg:px-8">
@@ -199,8 +205,13 @@ export default function LiveStockPage() {
             ))}
           </select>
         </div>
-        
-        {selectedCategorySlug !== "All" && availableProductVariants.length > 0 ? (
+
+        {isLoading ? (
+          <div className="mt-20 flex flex-col items-center justify-center text-slate-500">
+            <Loader2 className="h-8 w-8 animate-spin text-[#D4AF37] mb-4" />
+            <p>Loading live inventory...</p>
+          </div>
+        ) : selectedCategorySlug !== "All" && availableProductVariants.length > 0 ? (
           <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-950/80">
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#C8A64A] dark:text-[#F6D56A] mb-4">
               Available Fabric Variants for {selectedCategoryName || selectedCategorySlug}

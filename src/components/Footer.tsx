@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 
 import { Mail, Phone, MapPin, MessageSquare } from "lucide-react";
 
@@ -178,8 +179,17 @@ export default function Footer() {
           <span className="hover:text-neutral-400 cursor-pointer transition-colors">Terms of Service</span>
           <span className="hover:text-neutral-400 cursor-pointer transition-colors">Sitemap</span>
         </div>
-        <div className="text-[10px] text-neutral-600 font-medium">
-          Premium Apparel Manufacturing Solutions (PAN India/Overseas Delivery)
+        <div className="flex flex-col items-end gap-1">
+          <p className="text-sm leading-6 sm:mt-0">
+            Premium Apparel Manufacturing Solutions (PAN India/Overseas Delivery)
+          </p>
+          <Link
+            href="/admin/login"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#D4AF37]/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-[#D4AF37]/70 transition-colors hover:border-[#D4AF37] hover:text-[#D4AF37]"
+            prefetch={false}
+          >
+            Admin
+          </Link>
         </div>
       </div>
     </footer>
