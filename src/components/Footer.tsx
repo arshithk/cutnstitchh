@@ -152,8 +152,8 @@ export default function Footer() {
             </li>
             <li className="flex gap-3 items-center">
               <Phone size={16} className="text-accent-custom shrink-0" />
-              <a href="tel:+91 99_444_66_3_11" className="hover:text-white transition-colors">
-                +91 99_444_66_3_11
+              <a href="tel:+919944466311" className="hover:text-white transition-colors">
+                +91 99 444 66 3 11
               </a>
             </li>
             <li className="flex gap-3 items-center">
@@ -172,7 +172,7 @@ export default function Footer() {
           <span>&copy; {currentYear} Cut n Stitch Apparel. All rights reserved.</span>
           <span className="hidden sm:inline text-neutral-700">|</span>
           <span className="mt-1 sm:mt-0 text-neutral-400 font-medium">GSTIN: 33DDLPD5075B2ZV</span>
-          <span className="ml-2 sm:ml-4 text-neutral-500">ZED Silver MSME Cert No: 12345678</span>
+          <span className="ml-2 sm:ml-4 text-neutral-500">ZED Silver MSME Cert No: 23062026_666796</span>
         </div>
         <div className="flex items-center gap-6">
           <span className="hover:text-neutral-400 cursor-pointer transition-colors">Privacy Policy</span>
