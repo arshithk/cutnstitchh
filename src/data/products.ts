@@ -429,7 +429,7 @@ function generatePrintingCompatibility(fabric?: string, name?: string) {
   const f = (fabric ?? "").toLowerCase();
   const n = (name ?? "").toLowerCase();
 
-  const join = (arr: string[]) => arr.join(", ");
+  const join = (arr: string[]) => arr.filter(Boolean).join(", ");
 
   // Cotton-based
   if (f.includes("100% cotton") || f.includes("cotton") || f.includes("premium cotton") || f.includes("bio washed")) {
@@ -590,7 +590,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         ],
         categorySlug: "regular-fit",
       },
-      
+
       {
         slug: "polycotton-180gsm",
         name: "PolyCotton 180 GSM Round Neck T-Shirt",
@@ -1705,8 +1705,8 @@ export const catalogCategories: CatalogCategory[] = baseCatalogCategories.map((c
     const sizes = shouldKeep
       ? variant.sizes
       : variant.sizes.includes("3XL")
-      ? variant.sizes
-      : [...variant.sizes, "3XL"];
+        ? variant.sizes
+        : [...variant.sizes, "3XL"];
 
     return {
       ...variant,
@@ -1837,7 +1837,7 @@ function matchUserPricingForVariant(variant: CatalogVariant): ProductPricingTier
   if (name.includes("cotton") && gsm.includes("220") && name.includes("dual")) {
     return [t(100, 1000, 235), t(1001, 5000, 233), t(5001, undefined, 230)];
   }
-  if (name.includes("cotton") && gsm.includes("220") && name.includes("tipping") ) {
+  if (name.includes("cotton") && gsm.includes("220") && name.includes("tipping")) {
     return [t(100, 1000, 235), t(1001, 5000, 233), t(5001, undefined, 230)];
   }
   if (name.includes("cotton") && gsm.includes("220") && !name.includes("tipping") && !name.includes("dual")) {
