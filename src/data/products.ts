@@ -399,7 +399,6 @@ function buildAvailableColors(colors: ProductColor[], fallbackImagePath: string,
   const palette = getPaletteForContext(context);
   const paletteNames = new Set(palette.map((c) => c.name));
 
-  // Special case: PolyCotton Fleece 340 GSM Hoodie variants should only show their explicit colors
   const is340GSMHoodie =
     context?.variantSlug === "polycotton-fleece-340gsm-hoodie-with-zip" ||
     context?.variantSlug === "polycotton-fleece-340gsm-hoodie-without-zip";
@@ -410,8 +409,9 @@ function buildAvailableColors(colors: ProductColor[], fallbackImagePath: string,
     const filteredColors = colors.filter((color) => paletteNames.has(color.name));
     baseColors = filteredColors.length > 0 ? filteredColors : (palette as ProductColor[]);
   } else {
-    // For all other products, use the full allowed palette.
-    baseColors = palette as ProductColor[];
+    // For all other products, use the full allowed palette plus any custom explicitly defined colors for this variant.
+    const customColors = colors.filter((color) => !paletteNames.has(color.name));
+    baseColors = [...(palette as ProductColor[]), ...customColors];
   }
 
   return baseColors.map((color) => ({
@@ -692,9 +692,9 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "regular-fit",
       },
       {
-        slug: "dri-fit-mars-200gsm",
-        name: "Dri Fit Mars 200 GSM Round Neck T-Shirt",
-        gsm: "200 GSM",
+        slug: "dri-fit-mars-180gsm",
+        name: "Dri Fit Mars 180 GSM Round Neck T-Shirt",
+        gsm: "180 GSM",
         fabric: "Dri Fit Mars",
         fit: "Regular Fit",
         description: "A performance-led tee with moisture management and an elevated sportswear feel.",
@@ -721,6 +721,31 @@ const baseCatalogCategories: CatalogCategory[] = [
         name: "Dot Knit 160 GSM Round Neck T-Shirt",
         gsm: "160 GSM",
         fabric: "Dot Knit Polyester",
+        fit: "Regular Fit",
+        description: "A soft knit tee with a premium texture suited to fashion and everyday branding pieces.",
+        heroImage: "/images/regular-fit-tshirt-purple.jpg",
+        thumbnailImage: "/images/regular-fit-tshirt-purple.jpg",
+        colors: [
+          { name: "Purple", hex: "#6b3fa0", imagePath: "/images/regular-fit-tshirt-purple.jpg" },
+          { name: "Grey", hex: "#6b7280", imagePath: "/images/regular-fit-tshirt-grey.jpg" },
+          { name: "White", hex: "#f7f7f2", imagePath: "/images/regular-fit-tshirt-white.jpg" },
+        ],
+        sizes: ["S", "M", "L", "XL", "2XL"],
+        moq: "100 Pieces",
+        printingCompatibility: "Supports embroidery and for elevated brand presentation.",
+        productDescription: "This premium knit fabric offers subtle texture and a refined drape that lifts any custom merchandise collection.",
+        pricing: [
+          { min: 100, max: 999, price: 95 },
+          { min: 1000, max: 5000, price: 93 },
+          { min: 5001, price: 90 },
+        ],
+        categorySlug: "regular-fit",
+      },
+      {
+        slug: "saleena-160gsm",
+        name: "Saleena 160 GSM Round Neck T-Shirt",
+        gsm: "160 GSM",
+        fabric: "Saleena Knit",
         fit: "Regular Fit",
         description: "A soft knit tee with a premium texture suited to fashion and everyday branding pieces.",
         heroImage: "/images/regular-fit-tshirt-purple.jpg",
@@ -1041,6 +1066,7 @@ const baseCatalogCategories: CatalogCategory[] = [
           { name: "Grey", hex: "#6b7280", imagePath: "/images/polo-tshirt-grey.jpg" },
           { name: "White", hex: "#f5f5f2", imagePath: "/images/polo-tshirt-white.jpg" },
           { name: "Black", hex: "#111111", imagePath: "/images/polo-tshirt-black.jpg" },
+          { name: "Cream", hex: "#f5f5dc", imagePath: "/images/polo-tshirt-cream.jpg" },
         ],
         sizes: ["S", "M", "L", "XL", "2XL"],
         moq: "100 Pieces",
