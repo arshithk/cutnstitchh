@@ -74,10 +74,10 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
   let gridFabricText = rawFabric;
 
   if (rawFabric.toLowerCase().includes("100% cotton s-jersey")) {
-    pillFabricText = rawFabric.replace(/100% Cotton S-Jersey/gi, "100% Cotton (Bio Washed)");
+    pillFabricText = rawFabric.replace(/100% Cotton S-Jersey/gi, "Elite Cotton");
     gridFabricText = rawFabric.replace(/100% Cotton S-Jersey/gi, "S/Jersey");
   } else if (rawFabric.toLowerCase().includes("100% cotton piqué") || rawFabric.toLowerCase().includes("100% cotton pique")) {
-    pillFabricText = rawFabric.replace(/100% Cotton Piqu[é|e]/gi, "100% Cotton (Bio Washed)");
+    pillFabricText = rawFabric.replace(/100% Cotton Piqu[é|e]/gi, "Elite Cotton");
     gridFabricText = rawFabric.replace(/100% Cotton Piqu[é|e]/gi, "Airtex");
   } else if (rawFabric.toLowerCase().includes("premium cotton piqué") || rawFabric.toLowerCase().includes("premium cotton pique")) {
     pillFabricText = rawFabric.replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)");
@@ -97,8 +97,8 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
   }
 
   const displayDescription = variant.description
-    .replace(/100% Cotton S-Jersey/gi, "100% Cotton (Bio Washed)")
-    .replace(/100% Cotton Piqu[é|e]/gi, "100% Cotton (Bio Washed)")
+    .replace(/100% Cotton S-Jersey/gi, "Elite Cotton")
+    .replace(/100% Cotton Piqu[é|e]/gi, "Elite Cotton")
     .replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)");
 
   const detailItems = [
@@ -249,8 +249,8 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
               <p className="mt-2 text-sm leading-7 text-muted-custom">
                 {variant.productDescription != null
                   ? variant.productDescription
-                    .replace(/100% Cotton S-Jersey/gi, "100% Cotton (Bio Washed)")
-                    .replace(/100% Cotton Piqu[é|e]/gi, "100% Cotton (Bio Washed)")
+                    .replace(/100% Cotton S-Jersey/gi, "Elite Cotton")
+                    .replace(/100% Cotton Piqu[é|e]/gi, "Elite Cotton")
                     .replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)")
                   : ""}
               </p>

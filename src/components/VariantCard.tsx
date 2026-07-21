@@ -34,8 +34,8 @@ export default function VariantCard({ categorySlug, variant, variantIndex }: Var
   );
 
   const displayFabric = variant.fabric
-    .replace(/100% Cotton S-Jersey/gi, "100% Cotton (Bio Washed)")
-    .replace(/100% Cotton Piqu[é|e]/gi, "100% Cotton (Bio Washed)")
+    .replace(/100% Cotton S-Jersey/gi, "Elite Cotton")
+    .replace(/100% Cotton Piqu[é|e]/gi, "Elite Cotton")
     .replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)");
 
   return (

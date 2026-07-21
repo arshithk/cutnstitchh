@@ -35,8 +35,8 @@ function VariantCard({ variant }: { variant: any }) {
     : variant.colors.find((c: any) => c.color === selectedColor)?.quantity ?? 0;
 
   const displayFabric = variant.fabric
-    .replace(/100% Cotton S-Jersey/gi, "100% Cotton (Bio Washed)")
-    .replace(/100% Cotton Piqu[é|e]/gi, "100% Cotton (Bio Washed)")
+    .replace(/100% Cotton S-Jersey/gi, "Elite Cotton")
+    .replace(/100% Cotton Piqu[é|e]/gi, "Elite Cotton")
     .replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)");
 
   return (
