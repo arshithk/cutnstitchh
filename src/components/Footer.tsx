@@ -32,7 +32,7 @@ export default function Footer() {
         <div className="flex flex-col gap-6">
           <a href="#" className="flex items-center gap-2">
             <span className="font-sans font-black text-2xl tracking-tighter uppercase text-white">
-              Cut n <span className="text-accent-custom">Stitch</span>
+              <span className="text-accent-custom">Cut</span> n <span className="text-accent-custom">Stitch</span>
             </span>
             <span className="text-[10px] uppercase font-bold tracking-widest bg-accent-custom/20 text-accent-custom px-1.5 py-0.5 rounded border border-accent-custom/30">
               B2B
@@ -169,7 +169,7 @@ export default function Footer() {
       {/* Sub-Footer */}
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-neutral-900 px-4 pt-8 text-xs text-neutral-500 sm:flex-row sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-          <span>&copy; {currentYear} Cut n Stitch Apparel. All rights reserved.</span>
+          <span>&copy; {currentYear} Cut <span className="text-white">n</span> Stitch Apparel. All rights reserved.</span>
           <span className="hidden sm:inline text-neutral-700">|</span>
           <span className="mt-1 sm:mt-0 text-neutral-400 font-medium">GSTIN: 33DDLPD5075B2ZV</span>
           <span className="ml-2 sm:ml-4 text-neutral-500">ZED Silver MSME Cert No: 23062026_666796</span>

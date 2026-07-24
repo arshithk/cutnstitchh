@@ -51,8 +51,8 @@ export default function StatisticsSection() {
         >
           <h2 className="flex flex-wrap items-center justify-center text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
             <span className="mr-2 sm:mr-3">Why Leading Brands Choose</span>
-            <span className="font-sans font-black tracking-tighter uppercase text-foreground">
-              Cut n <span className="text-accent-custom">Stitch</span>
+            <span className="font-sans font-black tracking-tighter uppercase text-white">
+              <span className="text-accent-custom">Cut</span> n <span className="text-accent-custom">Stitch</span>
             </span>
             <span className="ml-2 -mt-2 rounded border border-accent-custom/30 bg-accent-custom/20 px-1.5 py-0.5 text-[11px] sm:text-[13px] font-bold uppercase tracking-widest text-accent-custom sm:-mt-3">
               B2B

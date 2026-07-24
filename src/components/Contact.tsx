@@ -619,7 +619,7 @@ export default function Contact() {
                 <CheckCircle2 size={64} className="text-accent-custom animate-bounce" />
                 <h3 className="text-2xl font-black text-foreground">Inquiry Submitted!</h3>
                 <p className="text-sm text-muted-custom max-w-sm leading-relaxed mt-2">
-                  Thank you for contacting Cut n Stitch Apparel. A dedicated merchant has been assigned to your project and will reach out to <strong>{formData.email}</strong> shortly.
+                  Thank you for contacting Cut <span className="text-white">n</span> Stitch Apparel. A dedicated merchant has been assigned to your project and will reach out to <strong>{formData.email}</strong> shortly.
                 </p>
                 <button
                   onClick={() => {
