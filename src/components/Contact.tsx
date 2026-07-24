@@ -534,7 +534,7 @@ export default function Contact() {
       `\nTarget Quantity: ${formData.quantity}\n\n` +
       `Spec Details / Message:\n${formData.message}`
     );
-    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=mahimaintl2009@gmail.com&su=${subject}&body=${body}`, "_blank");
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=vidhyashankar@cutnstitchapparel.com&su=${subject}&body=${body}`, "_blank");
 
     setTimeout(() => {
       setStatus("success");
@@ -593,7 +593,7 @@ export default function Contact() {
 
               {/* Direct Email Card */}
               <div
-                onClick={() => window.open("https://mail.google.com/mail/?view=cm&fs=1&to=mahimaintl2009@gmail.com", "_blank")}
+                onClick={() => window.open("https://mail.google.com/mail/?view=cm&fs=1&to=vidhyashankar@cutnstitchapparel.com", "_blank")}
                 className="bg-background border border-border-custom p-6 rounded-2xl flex flex-col gap-3 cursor-pointer hover:border-accent-custom/40 transition-colors group"
               >
                 <div className="p-3 bg-accent-custom/10 text-accent-custom rounded-xl w-fit group-hover:scale-105 transition-transform">

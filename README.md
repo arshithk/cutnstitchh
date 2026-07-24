@@ -180,7 +180,7 @@ Provides `theme` state and `toggleTheme` function. Uses `localStorage` to persis
 |---|---|
 | WhatsApp inquiries (all buttons) | +91 99444 66311 |
 | Phone (footer) | +91 99444 66311 |
-| Email | mahimaintl2009@gmail.com |
+| Email | vidhyashankar@cutnstitchapparel.com |
 
 ---
 

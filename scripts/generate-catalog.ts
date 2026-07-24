@@ -72,7 +72,7 @@ async function main() {
 
             <div class="about-contact">
                 <h3 style="margin-top:0; color: #111;">Get In Touch For Bulk Orders</h3>
-                <p style="margin-bottom: 5px;"><strong>Email:</strong> mahimaintl2009@gmail.com</p>
+                <p style="margin-bottom: 5px;"><strong>Email:</strong> vidhyashankar@cutnstitchapparel.com</p>
                 <p style="margin-bottom: 5px;"><strong>Phone / WhatsApp:</strong> +91 99444 66311</p>
                 <p style="margin-bottom: 0;"><strong>Office:</strong> No.51(2), Sugam Residency, 1st Floor, Rakkiyapalayam Road, Ammapalayam, Tirupur - 641 652</p>
             </div>
