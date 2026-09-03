@@ -16,6 +16,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18425343698"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'AW-18425343698');
+            `,
+          }}
+        />
+      </head>
       <body className="relative min-h-screen bg-background text-foreground">
         <ThemeProvider>
           <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-transparent">
