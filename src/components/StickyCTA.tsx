@@ -17,13 +17,13 @@ export default function StickyCTA({ productName }: StickyCTAProps) {
         </div>
         <div className="flex flex-col gap-2 sm:flex-row">
           <Link
-            href="/#contact"
+            href="#contact"
             className="rounded-full bg-accent-custom px-5 py-3 text-center text-sm font-semibold text-black transition hover:brightness-110"
           >
             Get Quote
           </Link>
           <a
-            href="https://wa.me/919944466311?text=Hello%20CutnStitch%2C%20I%20would%20like%20to%20inquire%20about%20the%20selected%20product."
+            href="https://wa.me/919999999999?text=Hello%20CutnStitch%2C%20I%20would%20like%20to%20inquire%20about%20the%20selected%20product."
             target="_blank"
             rel="noreferrer"
             className="flex items-center justify-center gap-2 rounded-full border border-accent-custom/40 px-5 py-3 text-sm font-semibold text-accent-custom transition hover:bg-accent-custom hover:text-black"

@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-
 import { Mail, Phone, MapPin, MessageSquare } from "lucide-react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 export default function Footer() {
+  const siteSettings = useSiteSettings();
   const currentYear = new Date().getFullYear();
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -32,7 +32,7 @@ export default function Footer() {
         <div className="flex flex-col gap-6">
           <a href="#" className="flex items-center gap-2">
             <span className="font-sans font-black text-2xl tracking-tighter uppercase text-white">
-              <span className="text-accent-custom">Cut</span> n <span className="text-accent-custom">Stitch</span>
+              Cut n <span className="text-accent-custom">Stitch</span>
             </span>
             <span className="text-[10px] uppercase font-bold tracking-widest bg-accent-custom/20 text-accent-custom px-1.5 py-0.5 rounded border border-accent-custom/30">
               B2B
@@ -50,9 +50,9 @@ export default function Footer() {
               className="p-2 rounded-full bg-neutral-900 text-neutral-400 hover:bg-accent-custom hover:text-white transition-colors"
             >
               <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
               </svg>
             </a>
             <a
@@ -63,13 +63,13 @@ export default function Footer() {
               className="p-2 rounded-full bg-neutral-900 text-neutral-400 hover:bg-accent-custom hover:text-white transition-colors"
             >
               <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                <rect width="4" height="12" x="2" y="9" />
-                <circle cx="4" cy="4" r="2" />
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                <rect width="4" height="12" x="2" y="9"/>
+                <circle cx="4" cy="4" r="2"/>
               </svg>
             </a>
             <a
-              href="https://wa.me/919944466311"
+              href={`https://wa.me/${siteSettings.whatsAppNumber.replace(/\D/g, "")}`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
@@ -78,8 +78,6 @@ export default function Footer() {
               <MessageSquare size={16} />
             </a>
           </div>
-
-
         </div>
 
         {/* Manufacturing Services */}
@@ -105,22 +103,22 @@ export default function Footer() {
           </h4>
           <ul className="flex flex-col gap-2.5 text-sm text-neutral-400">
             <li>
-              <a href="#products" onClick={(e) => handleNavClick(e, "#products")} className="hover:text-accent-custom transition-colors">
+              <a href="/#products" onClick={(e) => handleNavClick(e, "#products")} className="hover:text-accent-custom transition-colors">
                 Oversized & Regular T-Shirts
               </a>
             </li>
             <li>
-              <a href="#products" onClick={(e) => handleNavClick(e, "#products")} className="hover:text-accent-custom transition-colors">
+              <a href="/#products" onClick={(e) => handleNavClick(e, "#products")} className="hover:text-accent-custom transition-colors">
                 Polo Shirts & Activewear
               </a>
             </li>
             <li>
-              <a href="#products" onClick={(e) => handleNavClick(e, "#products")} className="hover:text-accent-custom transition-colors">
+              <a href="/#products" onClick={(e) => handleNavClick(e, "#products")} className="hover:text-accent-custom transition-colors">
                 Corporate Wear & Uniforms
               </a>
             </li>
             <li>
-              <a href="#products" onClick={(e) => handleNavClick(e, "#products")} className="hover:text-accent-custom transition-colors">
+              <a href="/#products" onClick={(e) => handleNavClick(e, "#products")} className="hover:text-accent-custom transition-colors">
                 Custom Merch & Shorts
               </a>
             </li>
@@ -136,15 +134,7 @@ export default function Footer() {
             <li className="flex gap-3 items-start">
               <MapPin size={18} className="text-accent-custom shrink-0 mt-0.5" />
               <span>
-                <strong>Office:</strong><br />
-                No.51(2), SUGAM RESIDENCY, 1st FLOOR,<br />
-                RAKKIYAPALAYAM ROAD, AMMAPALAYAM,<br />
-                TIRUPUR - 641 652<br /><br />
-                <strong>Manufacturing Unit 1:</strong><br />
-                52 K17, Thilagar Nagar,<br />
-                Anupparpalayam, Tirupur,<br />
-                Tamil Nadu - 641652<br /><br />
-                <strong>Manufacturing Unit 2:</strong><br />
+                <strong>Manufacturing Unit:</strong><br />
                 339/2, Thilaga Nagar,<br />
                 Anupparapalayam, Tirupur,<br />
                 Tamil Nadu - 641 652
@@ -152,14 +142,14 @@ export default function Footer() {
             </li>
             <li className="flex gap-3 items-center">
               <Phone size={16} className="text-accent-custom shrink-0" />
-              <a href="tel:+919944466311" className="hover:text-white transition-colors">
-                +91 99 444 66 3 11
+              <a href={`tel:${siteSettings.phoneNumber}`} className="hover:text-white transition-colors">
+                {siteSettings.phoneNumber}
               </a>
             </li>
             <li className="flex gap-3 items-center">
               <Mail size={16} className="text-accent-custom shrink-0" />
-              <a href="mailto:vidhyashankar@cutnstitchapparel.com" className="hover:text-white transition-colors">
-                vidhyashankar@cutnstitchapparel.com
+              <a href={`mailto:${siteSettings.contactEmail}`} className="hover:text-white transition-colors">
+                {siteSettings.contactEmail}
               </a>
             </li>
           </ul>
@@ -168,28 +158,16 @@ export default function Footer() {
 
       {/* Sub-Footer */}
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-neutral-900 px-4 pt-8 text-xs text-neutral-500 sm:flex-row sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-          <span>&copy; {currentYear} Cut <span className="text-white">n</span> Stitch Apparel. All rights reserved.</span>
-          <span className="hidden sm:inline text-neutral-700">|</span>
-          <span className="mt-1 sm:mt-0 text-neutral-400 font-medium">GSTIN: 33DDLPD5075B2ZV</span>
-          <span className="ml-2 sm:ml-4 text-neutral-500">ZED Silver MSME Cert No: 23062026_666796</span>
+        <div>
+          &copy; {currentYear} Cut n Stitch Apparel. All rights reserved.
         </div>
         <div className="flex items-center gap-6">
           <span className="hover:text-neutral-400 cursor-pointer transition-colors">Privacy Policy</span>
           <span className="hover:text-neutral-400 cursor-pointer transition-colors">Terms of Service</span>
-          <span className="hover:text-neutral-400 cursor-pointer transition-colors">Sitemap</span>
+          <a href="/sitemap.xml" className="hover:text-neutral-400 transition-colors">Sitemap</a>
         </div>
-        <div className="flex flex-col items-end gap-1">
-          <p className="text-sm leading-6 sm:mt-0">
-            Premium Apparel Manufacturing Solutions (PAN India/Overseas Delivery)
-          </p>
-          <Link
-            href="/admin/login"
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#D4AF37]/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-[#D4AF37]/70 transition-colors hover:border-[#D4AF37] hover:text-[#D4AF37]"
-            prefetch={false}
-          >
-            Admin
-          </Link>
+        <div className="text-[10px] text-neutral-600 font-medium">
+          Premium Apparel Manufacturing Solutions (PAN India/Overseas Delivery)
         </div>
       </div>
     </footer>

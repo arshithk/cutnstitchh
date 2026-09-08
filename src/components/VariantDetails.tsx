@@ -1,38 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Shirt, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import type { CatalogVariant, ProductPricingTier } from "@/data/products";
 import { normalizeImageSrc } from "@/lib/image";
 import { getProductImageCandidates, normalizeColorName } from "@/lib/productImageMap";
+import type { ProductColor } from "@/models/Product";
 import PricingTable from "@/components/PricingTable";
-import SizeChartDropdown from "@/components/SizeChartDropdown";
 
 interface VariantDetailsProps {
   categoryName: string;
-  variant: CatalogVariant;
-  pricing?: ProductPricingTier[];
+  variant: any;
+  pricing?: any[];
 }
-
-function getDefaultVariantColorName(variant: CatalogVariant) {
+function getDefaultVariantColorName(variant: any) {
   const normalizedHeroImage = normalizeImageSrc(variant.heroImage).toLowerCase();
 
-  const heroMatchByImagePath = variant.colors.find((color) =>
+  const heroMatchByImagePath = (variant.colors as ProductColor[]).find((color) =>
     normalizeImageSrc(color.imagePath ?? variant.heroImage).toLowerCase() === normalizedHeroImage,
   );
   if (heroMatchByImagePath) {
     return heroMatchByImagePath.name;
   }
 
-  const heroColorByName = variant.colors.find((color) => normalizedHeroImage.includes(normalizeColorName(color.name)));
+  const heroColorByName = (variant.colors as ProductColor[]).find((color) => normalizedHeroImage.includes(normalizeColorName(color.name)));
   if (heroColorByName) {
     return heroColorByName.name;
   }
 
-  const heroCandidateColor = variant.colors.find((color) => {
+  const heroCandidateColor = (variant.colors as ProductColor[]).find((color) => {
     const candidates = getProductImageCandidates(
       {
         categorySlug: variant.categorySlug,
@@ -50,60 +48,57 @@ function getDefaultVariantColorName(variant: CatalogVariant) {
     return heroCandidateColor.name;
   }
 
-  const firstNonWhiteColor = variant.colors.find(
+  const firstNonWhiteColor = (variant.colors as ProductColor[]).find(
     (color) => !["white", "off-white"].includes(color.name.toLowerCase()),
   );
 
-  return firstNonWhiteColor?.name ?? variant.colors[0]?.name ?? "White";
+  return firstNonWhiteColor?.name ?? (variant.colors as ProductColor[])[0]?.name ?? "White";
 }
 
 export default function VariantDetails({ categoryName, variant, pricing = [] }: VariantDetailsProps) {
   const pricingSourceText = variant.pricingSource ? `Pricing source: ${variant.pricingSource}` : "";
+  const [fetchedPricing, setFetchedPricing] = useState<any[] | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      if (pricing && pricing.length) return;
+      const productSlug = variant.categorySlug || variant.productSlug || variant.slug;
+      try {
+        const res = await fetch(`/api/products/${productSlug}/price`);
+        if (!res.ok) return;
+        const data = await res.json();
+        // API may return object with productPricing and variants
+        if (Array.isArray(data)) {
+          if (mounted) setFetchedPricing(data);
+        } else if (data && typeof data === 'object') {
+          if (Array.isArray(data.productPricing)) {
+            if (mounted) setFetchedPricing(data.productPricing);
+          } else if (Array.isArray(data.pricing)) {
+            if (mounted) setFetchedPricing(data.pricing);
+          } else if (data.variants && data.variants[variant.slug]) {
+            if (mounted) setFetchedPricing(data.variants[variant.slug]);
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+    load();
+    return () => { mounted = false; };
+  }, [pricing, variant]);
   const [selectedColor, setSelectedColor] = useState(getDefaultVariantColorName(variant));
 
   const activeColor =
-    variant.colors.find((c) => c.name.toLowerCase() === selectedColor.toLowerCase()) ??
-    variant.colors[0];
+    (variant.colors as ProductColor[]).find((c) => c.name.toLowerCase() === selectedColor.toLowerCase()) ??
+    (variant.colors as ProductColor[])[0];
 
   const previewImage = activeColor?.imagePath ?? variant.heroImage;
   const isJoggersPreview = previewImage.toLowerCase().includes("/images/joggers-") || previewImage.toLowerCase().includes("/images/lycra-joggers-");
 
-  const rawFabric = variant.fabric;
-
-  let pillFabricText = rawFabric;
-  let gridFabricText = rawFabric;
-
-  if (rawFabric.toLowerCase().includes("100% cotton s-jersey")) {
-    pillFabricText = rawFabric.replace(/100% Cotton S-Jersey/gi, "Elite Cotton");
-    gridFabricText = rawFabric.replace(/100% Cotton S-Jersey/gi, "S/Jersey");
-  } else if (rawFabric.toLowerCase().includes("100% cotton piqué") || rawFabric.toLowerCase().includes("100% cotton pique")) {
-    pillFabricText = rawFabric.replace(/100% Cotton Piqu[é|e]/gi, "Elite Cotton");
-    gridFabricText = rawFabric.replace(/100% Cotton Piqu[é|e]/gi, "Airtex");
-  } else if (rawFabric.toLowerCase().includes("premium cotton piqué") || rawFabric.toLowerCase().includes("premium cotton pique")) {
-    pillFabricText = rawFabric.replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)");
-    gridFabricText = rawFabric.replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton Airtex");
-  } else if (rawFabric.toLowerCase() === "dri fit mars") {
-    pillFabricText = "Dri Fit Mars Polyester";
-  } else if (rawFabric.toLowerCase().includes("dot knit polyester")) {
-    gridFabricText = rawFabric.replace(/Dot Knit Polyester/gi, "Dot Knit");
-  } else if (rawFabric.toLowerCase().includes("honeycomb knit polyester")) {
-    gridFabricText = rawFabric.replace(/Honeycomb Knit Polyester/gi, "Honeycomb Knit");
-  } else if (rawFabric.toLowerCase().includes("saleena knit polyester")) {
-    gridFabricText = rawFabric.replace(/Saleena Knit Polyester/gi, "Saleena Knit");
-  } else if (rawFabric.toLowerCase().includes("polyester with 2-way stretch lycra")) {
-    gridFabricText = rawFabric.replace(/Polyester with 2-Way Stretch Lycra/gi, "2-Way Stretch Lycra");
-  } else if (rawFabric.toLowerCase().includes("polyester with 4-way stretch lycra")) {
-    gridFabricText = rawFabric.replace(/Polyester with 4-Way Stretch Lycra/gi, "4-Way Stretch Lycra");
-  }
-
-  const displayDescription = variant.description
-    .replace(/100% Cotton S-Jersey/gi, "Elite Cotton")
-    .replace(/100% Cotton Piqu[é|e]/gi, "Elite Cotton")
-    .replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)");
-
   const detailItems = [
     { label: "MOQ", value: variant.moq },
-    { label: "Fabric", value: gridFabricText },
+    { label: "Fabric", value: variant.fabric },
     { label: "GSM", value: variant.gsm },
     { label: "Fit", value: variant.fit },
     { label: "Sizes", value: variant.sizes.join(", ") },
@@ -118,7 +113,7 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
             Back to Variants
           </Link>
           <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">{variant.name}</h1>
-          <p className="mt-3 max-w-3xl text-base leading-7 text-muted-custom">{displayDescription}</p>
+          <p className="mt-3 max-w-3xl text-base leading-7 text-muted-custom">{variant.description}</p>
         </div>
         <div className="flex items-center gap-3 rounded-full border border-accent-custom/20 bg-accent-custom/10 px-4 py-2 text-sm font-semibold text-accent-custom">
           <Shirt size={16} />
@@ -145,7 +140,7 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
             >
               <Image
                 src={normalizeImageSrc(previewImage)}
-                alt={`${activeColor?.name ?? variant.name} preview`}
+                alt={`${activeColor?.name ?? variant.name} preview - Cut N Stitch Apparel`}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 62vw, 55vw"
                 priority
@@ -168,31 +163,32 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
                 <h2 className="text-sm font-semibold uppercase tracking-[0.25em]">Select Colour</h2>
               </div>
               <div className="flex flex-wrap gap-4 sm:gap-5 md:grid md:grid-cols-2 lg:grid-cols-3">
-                {variant.colors.map((color) => {
+                {(variant.colors as ProductColor[]).map((color) => {
                   const isSelected = activeColor?.name === color.name;
                   return (
                     <button
                       key={color.name}
                       type="button"
                       onClick={() => setSelectedColor(color.name)}
-                      className={`group rounded-3xl border-2 p-3 text-left transition-all duration-300 hover:shadow-lg ${isSelected
-                        ? "border-accent-custom shadow-[0_0_0_2px_rgba(212,175,55,0.3),0_0_45px_rgba(212,175,55,0.2)]"
-                        : "border-border-custom/50 hover:border-accent-custom/70 hover:shadow-md"
-                        }`}
+                      className={`group rounded-3xl border-2 p-3 text-left transition-all duration-300 hover:shadow-lg ${
+                        isSelected
+                          ? "border-accent-custom shadow-[0_0_0_2px_rgba(212,175,55,0.3),0_0_45px_rgba(212,175,55,0.2)]"
+                          : "border-border-custom/50 hover:border-accent-custom/70 hover:shadow-md"
+                      }`}
                     >
                       <div className="relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-white/20 transition-transform duration-500 group-hover:scale-110 group-hover:shadow-lg">
                         <Image
                           src={normalizeImageSrc(color.imagePath || variant.heroImage)}
-                          alt={`${color.name} swatch`}
+                          alt={`${color.name} fabric swatch - Cut N Stitch Apparel`}
                           fill
                           sizes="96px"
                           className="object-cover object-center"
                         />
                       </div>
                       <div className="mt-3 flex items-center gap-3">
-                        <span
-                          className="h-5 w-5 rounded-full border-2 border-white/50 transition-transform duration-300 group-hover:scale-125 shrink-0"
-                          style={{ backgroundColor: color.hex }}
+                        <span 
+                          className="h-5 w-5 rounded-full border-2 border-white/50 transition-transform duration-300 group-hover:scale-125 shrink-0" 
+                          style={{ backgroundColor: color.hex }} 
                         />
                         <span className="text-sm font-semibold text-foreground transition-colors duration-300 group-hover:text-accent-custom">{color.name}</span>
                       </div>
@@ -220,7 +216,7 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
               {variant.gsm}
             </span>
             <span className="rounded-full border border-border-custom/70 px-3 py-1 text-xs font-medium text-muted-custom">
-              {pillFabricText}
+              {variant.fabric}
             </span>
           </div>
 
@@ -233,8 +229,6 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
             ))}
           </div>
 
-          <SizeChartDropdown categoryName={categoryName} />
-
           <div className="mt-8 space-y-4">
             <div>
               <h2 className="text-sm font-semibold uppercase tracking-[0.25em] text-accent-custom">Printing Compatibility</h2>
@@ -246,20 +240,13 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
             </div>
             <div>
               <h2 className="text-sm font-semibold uppercase tracking-[0.25em] text-accent-custom">Product Description</h2>
-              <p className="mt-2 text-sm leading-7 text-muted-custom">
-                {variant.productDescription != null
-                  ? variant.productDescription
-                    .replace(/100% Cotton S-Jersey/gi, "Elite Cotton")
-                    .replace(/100% Cotton Piqu[é|e]/gi, "Elite Cotton")
-                    .replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)")
-                  : ""}
-              </p>
+              <p className="mt-2 text-sm leading-7 text-muted-custom">{variant.productDescription}</p>
             </div>
           </div>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/#contact" className="rounded-full bg-accent-custom px-5 py-3 text-center text-sm font-semibold text-black transition hover:brightness-110">
+            <button className="rounded-full bg-accent-custom px-5 py-3 text-sm font-semibold text-black transition hover:brightness-110">
               Get Quote
-            </Link>
+            </button>
             <Link href={`/products/${variant.categorySlug}`} className="rounded-full border border-border-custom/70 px-5 py-3 text-center text-sm font-semibold text-foreground transition hover:bg-foreground/5">
               Back to Variants
             </Link>
@@ -270,7 +257,7 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
               {pricingSourceText && (
                 <p className="mb-2 text-xs uppercase tracking-[0.3em] text-foreground/70">{pricingSourceText}</p>
               )}
-              <PricingTable pricing={pricing} show3XLSurcharge={variant.categorySlug !== "joggers" && variant.categorySlug !== "shorts"} />
+              <PricingTable pricing={fetchedPricing ?? pricing} show3XLSurcharge={variant.categorySlug !== "joggers" && variant.categorySlug !== "shorts"} />
             </div>
           )}
         </div>

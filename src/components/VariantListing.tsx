@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import type { ProductVariant } from "@/models/Product";
 import VariantCard from "@/components/VariantCard";
-import type { CatalogCategory } from "@/data/products";
-
 interface VariantListingProps {
-  category: CatalogCategory;
+  category: {
+    name: string;
+    slug: string;
+    description?: string;
+    variants: ProductVariant[];
+  };
 }
 
 export default function VariantListing({ category }: VariantListingProps) {

@@ -80,6 +80,16 @@ function isPolyCottonFabric(fabric: string) {
   return matchesFabric(fabric, ["polycotton"]) || (matchesFabric(fabric, ["poly"]) && matchesFabric(fabric, ["cotton"]));
 }
 
+function isCottonLikeFabric(fabric: string) {
+  return (
+    matchesFabric(fabric, ["cotton"]) ||
+    matchesFabric(fabric, ["jersey"]) ||
+    matchesFabric(fabric, ["s/jersey"]) ||
+    matchesFabric(fabric, ["cotton / jersey"]) ||
+    matchesFabric(fabric, ["cotton / jersey"])
+  );
+}
+
 function getImageBaseName(context: ProductImageContext) {
   const categorySlug = (context.categorySlug ?? context.productSlug ?? context.productName ?? "").toLowerCase();
   const fabric = (context.fabric ?? "").toLowerCase();
@@ -123,7 +133,7 @@ function getImageBaseName(context: ProductImageContext) {
   }
 
   if (categorySlug.includes("regular-fit")) {
-    if (matchesFabric(fabric, ["cotton"]) || isPolyCottonFabric(fabric)) {
+    if (isCottonLikeFabric(fabric) || isPolyCottonFabric(fabric)) {
       return "cotton-regular-fit-tshirt";
     }
     return "regular-fit-tshirt";

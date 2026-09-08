@@ -69,7 +69,7 @@ export default function Hero() {
             </h1>
 
             <p className="max-w-xl text-base leading-7 text-muted-custom sm:text-lg sm:leading-8">
-              Cut <span className="text-white">n</span> Stitch Apparel helps clothing brands, startups, and corporate
+              Cut n Stitch Apparel helps clothing brands, startups, and corporate
               clients manufacture retail-grade garments at scale. High-end
               quality control, low MOQs, and end-to-end support.
             </p>
@@ -110,16 +110,16 @@ export default function Hero() {
         >
           <motion.div
             animate={{ y: [0, -3, 0] }}
-            transition={{ duration: 5, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" }}
-            whileHover={{ y: -6, scale: 1.02 }}
-            className="relative h-[420px] w-full overflow-hidden rounded-[2rem] bg-transparent shadow-[0_18px_40px_rgba(0,0,0,0.12)] transition-transform duration-500 ease-out sm:h-[460px] md:h-[480px] lg:h-[500px] xl:h-[520px] origin-center"
+              transition={{ duration: 5, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" }}
+              whileHover={{ y: -6, scale: 1.02 }}
+             className="relative h-[420px] w-full overflow-hidden rounded-[2rem] bg-transparent shadow-[0_18px_40px_rgba(0,0,0,0.12)] transition-transform duration-500 ease-out sm:h-[460px] md:h-[480px] lg:h-[500px] xl:h-[520px] origin-center"
           >
             <div className="absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.2),transparent_55%)] opacity-70" />
             <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-transparent via-black/10 to-transparent opacity-68" />
             <div className="relative h-full w-full overflow-hidden">
               <Image
                 src="/images/cut-n-stitch-apparel.jpeg"
-                alt="Cut n Stitch Apparel"
+                alt="Cut N Stitch Apparel - Premium B2B Apparel and T-Shirt Manufacturer in Bangalore, India"
                 fill
                 sizes="(min-width: 1024px) 48vw, (min-width: 768px) 50vw, 100vw"
                 className="object-contain object-center"

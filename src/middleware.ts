@@ -1,54 +1,35 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { jwtVerify } from 'jose';
+import { NextResponse, type NextRequest } from "next/server";
+import { ADMIN_COOKIE_NAME } from "@/lib/adminAuth";
 
-const SECRET_KEY = new TextEncoder().encode(
-    process.env.JWT_SECRET || "cutnstitch-super-secret-key-123"
-);
+function hasAdminToken(request: NextRequest) {
+  return Boolean(request.cookies.get(ADMIN_COOKIE_NAME)?.value);
+}
 
-export async function middleware(req: NextRequest) {
-    const { pathname } = req.nextUrl;
+export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  const isLoginRoute = pathname === "/admin/login";
+  const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
+  const isAdminApiRoute = pathname === "/api/admin" || pathname.startsWith("/api/admin/");
+  const isAuthApiRoute = pathname === "/api/admin/auth/login" || pathname === "/api/admin/auth/logout";
+  const tokenPresent = hasAdminToken(request);
 
-    const isDashboard = pathname.startsWith('/admin/dashboard');
-    const isLoginRoute = pathname === '/admin/login';
-    const isProtectedApi = (pathname.startsWith('/api/product-stock') || pathname.startsWith('/api/product-pricing') || pathname.startsWith('/api/admin/logout')) && req.method !== 'GET';
+  if (isLoginRoute && tokenPresent) {
+    return NextResponse.redirect(new URL("/admin", request.url));
+  }
 
-    if (!isDashboard && !isProtectedApi && !isLoginRoute) {
-        return NextResponse.next();
-    }
+  if (isAdminRoute && !isLoginRoute && !tokenPresent) {
+    const destination = new URL("/admin/login", request.url);
+    destination.searchParams.set("redirectTo", pathname);
+    return NextResponse.redirect(destination);
+  }
 
-    const token = req.cookies.get('admin_session')?.value;
+  if (isAdminApiRoute && !isAuthApiRoute && !tokenPresent) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-    if (isLoginRoute) {
-        if (token) {
-            try {
-                await jwtVerify(token, SECRET_KEY);
-                return NextResponse.redirect(new URL('/admin/dashboard', req.url));
-            } catch (error) {
-                return NextResponse.next();
-            }
-        }
-        return NextResponse.next();
-    }
-
-    if (!token) {
-        if (isProtectedApi) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-        return NextResponse.redirect(new URL('/admin/login', req.url));
-    }
-
-    try {
-        await jwtVerify(token, SECRET_KEY);
-        return NextResponse.next();
-    } catch (error) {
-        if (isProtectedApi) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-        return NextResponse.redirect(new URL('/admin/login', req.url));
-    }
+  return NextResponse.next();
 }
 
 export const config = {
-    matcher: ['/admin/:path*', '/api/:path*'],
+  matcher: ["/admin/:path*", "/admin", "/api/admin/:path*", "/api/admin"],
 };

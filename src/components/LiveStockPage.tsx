@@ -1,11 +1,28 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { PackageCheck, ArrowLeft, Loader2 } from "lucide-react";
-import { catalogCategories } from "@/data/products";
-import type { ProductStock } from "@prisma/client";
+import { PackageCheck, ArrowLeft } from "lucide-react";
 
+interface StockColorVariant {
+  color: string;
+  hex: string;
+  quantity: number;
+}
+
+interface StockEntry {
+  slug: string;
+  productName: string;
+  productType: string;
+  fabric: string;
+  gsmRange: string;
+  lastUpdated: string;
+  availableForBulk: boolean;
+  colors: StockColorVariant[];
+}
+
+// Exclude product types that should not appear in product selection
+const excludedProductTypes = ["Tank Top", "Windbreaker"];
 
 const stockProductTypeToCategorySlug: Record<string, string> = {
   "Regular Fit T-Shirt": "regular-fit",
@@ -17,146 +34,125 @@ const stockProductTypeToCategorySlug: Record<string, string> = {
   Shorts: "shorts",
 };
 
+// Static mapping for product type selector (label + slug)
 const getProductTypes = () => {
-  const allowedSlugs = new Set(Object.values(stockProductTypeToCategorySlug));
-  return catalogCategories
-    .filter((category) => allowedSlugs.has(category.slug))
-    .map((category) => ({
-      label: category.name,
-      value: category.slug,
-    }));
+  return [
+    { label: "Regular Fit", value: "regular-fit" },
+    { label: "Polo", value: "polo" },
+    { label: "Oversized", value: "oversized" },
+    { label: "Hoodie", value: "hoodie" },
+    { label: "Sweatshirt", value: "sweatshirt" },
+    { label: "Joggers", value: "joggers" },
+    { label: "Shorts", value: "shorts" },
+  ];
 };
-
-function VariantCard({ variant }: { variant: any }) {
-  const [selectedColor, setSelectedColor] = useState("All");
-
-  const displayQuantity = selectedColor === "All"
-    ? variant.quantity
-    : variant.colors.find((c: any) => c.color === selectedColor)?.quantity ?? 0;
-
-  const displayFabric = variant.fabric
-    .replace(/100% Cotton S-Jersey/gi, "Elite Cotton")
-    .replace(/100% Cotton Piqu[é|e]/gi, "Elite Cotton")
-    .replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)");
-
-  return (
-    <div className="rounded-3xl border border-slate-200 bg-[#F8FAFC] p-5 text-sm text-slate-900 shadow-sm dark:border-slate-700 dark:bg-slate-950/80 dark:text-slate-100 flex flex-col justify-between">
-      <div>
-        <p className="font-semibold text-base">{variant.gsm}</p>
-        <p className="mt-1 text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">
-          {displayFabric}
-        </p>
-      </div>
-
-      <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-4 dark:border-slate-700/50">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-[#8A6A1F] dark:text-[#D4AF37]">
-          Color Availability
-        </p>
-        <div className="flex flex-wrap gap-2 items-center">
-          <button
-            onClick={() => setSelectedColor("All")}
-            className={`py-1.5 px-3 rounded-full text-[10px] font-semibold border transition-all ${selectedColor === "All"
-              ? "border-[#D4AF37] bg-[#D4AF37]/10 text-[#8A6A1F] dark:text-[#D4AF37]"
-              : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400"
-              }`}
-          >
-            All Options
-          </button>
-
-          {variant.colors.map((c: any) => (
-            <button
-              key={c.color}
-              title={c.color}
-              onClick={() => setSelectedColor(c.color)}
-              className={`h-7 w-7 rounded-full border-2 transition-all p-0.5 flex items-center justify-center ${selectedColor === c.color
-                ? "border-[#D4AF37] scale-110"
-                : "border-slate-200 dark:border-slate-700 hover:scale-105"
-                }`}
-            >
-              <span
-                className="w-full h-full rounded-full border border-black/10 dark:border-white/10"
-                style={{ backgroundColor: c.hex }}
-              />
-            </button>
-          ))}
-        </div>
-
-        <div className="mt-2 flex items-center justify-between rounded-xl bg-slate-100 px-4 py-3 dark:bg-slate-900">
-          <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-            {displayQuantity} pcs <span className="font-normal text-slate-500 text-xs">ready in stock</span>
-          </span>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 export default function LiveStockPage() {
   const [selectedCategorySlug, setSelectedCategorySlug] = useState("All");
-  const [liveStock, setLiveStock] = useState<ProductStock[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [selectedColorByVariant, setSelectedColorByVariant] = useState<Record<string, string>>({});
+  const [stockEntries, setStockEntries] = useState<StockEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>("");
 
-  // Fetch live stock from backend
   useEffect(() => {
-    async function fetchStock() {
+    const loadStock = async () => {
       try {
-        const res = await fetch("/api/product-stock");
-        if (res.ok) {
-          const data = await res.json();
-          setLiveStock(data);
+        const response = await fetch("/api/stock");
+        if (!response.ok) {
+          const data = await response.json().catch(() => null);
+          throw new Error(data?.error ?? `Failed to load stock (${response.status})`);
         }
-      } catch (error) {
-        console.error("Failed to fetch stock:", error);
+
+        const data = await response.json();
+        if (!Array.isArray(data)) {
+          throw new Error("Unexpected stock response format");
+        }
+
+        setStockEntries(data);
+      } catch (err) {
+        console.error(err);
+        setError(err instanceof Error ? err.message : "Unable to load stock data.");
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
-    }
-    fetchStock();
+    };
+
+    loadStock();
   }, []);
 
-  const selectedCategoryName = useMemo(
-    () => catalogCategories.find((category) => category.slug === selectedCategorySlug)?.name ?? "",
-    [selectedCategorySlug]
+  const filteredStockEntries = useMemo(
+    () =>
+      stockEntries.filter(
+        (entry) =>
+          !entry.productName.toLowerCase().includes("uniform") &&
+          !entry.productName.toLowerCase().includes("corporate") &&
+          !excludedProductTypes.includes(entry.productType),
+      ),
+    [stockEntries],
   );
+
+  const stockQuantityByGsm = useMemo(() => {
+    const map = new Map<string, number>();
+
+    filteredStockEntries
+      .filter((entry) => stockProductTypeToCategorySlug[entry.productType] === selectedCategorySlug)
+      .forEach((entry) => {
+        const quantity = entry.colors.reduce((sum, item) => sum + item.quantity, 0);
+        map.set(entry.gsmRange, (map.get(entry.gsmRange) ?? 0) + quantity);
+      });
+
+    return map;
+  }, [selectedCategorySlug, filteredStockEntries]);
+
+  const selectedCategoryName = useMemo(() => {
+    if (selectedCategorySlug === "All") return "All Product Types";
+    return getProductTypes().find((t) => t.value === selectedCategorySlug)?.label ?? "";
+  }, [selectedCategorySlug]);
 
   const availableProductVariants = useMemo(() => {
     if (selectedCategorySlug === "All") return [];
 
-    const category = catalogCategories.find((item) => item.slug === selectedCategorySlug);
-    if (!category) return [];
+    // Build variants from stock entries matching the selected category
+    const entries = filteredStockEntries.filter(
+      (entry) => stockProductTypeToCategorySlug[entry.productType] === selectedCategorySlug,
+    );
 
-    return category.variants
-      .map((variant) => {
-        // We use the liveStock fetched from Prisma
-        const categoryStock = liveStock.filter(item => item.productSlug === selectedCategorySlug && item.variantSlug === variant.slug);
-
-        // Take colors from the category variant definition (products.ts) to show all options
-        const colors = (variant.colors || []).map(vc => {
-          const stockColor = categoryStock.find(sc => sc.color.toLowerCase() === vc.name.toLowerCase());
-          return {
-            color: vc.name,
-            hex: vc.hex,
-            quantity: stockColor ? stockColor.quantity : 0
-          };
-        });
-
-        const quantity = colors.reduce((sum, c) => sum + c.quantity, 0);
-
-        return {
-          slug: variant.slug,
-          gsm: variant.gsm,
-          fabric: variant.fabric,
-          name: variant.name,
+    const variantsMap = new Map<string, any>();
+    for (const entry of entries) {
+      const gsm = entry.gsmRange;
+      const key = `${gsm}||${entry.fabric}||${entry.slug}`;
+      if (!variantsMap.has(key)) {
+        const quantity = entry.colors.reduce((sum, c) => sum + c.quantity, 0);
+        const colorQuantities = entry.colors.reduce(
+          (acc, item) => ({ ...acc, [item.color]: item.quantity }),
+          {} as Record<string, number>,
+        );
+        variantsMap.set(key, {
+          slug: entry.slug,
+          gsm,
+          fabric: entry.fabric,
+          name: entry.productName,
+          colors: entry.colors.map((c) => ({ name: c.color, hex: c.hex })),
           quantity,
-          colors
-        };
-      })
-      .sort((a, b) => {
-        const aNum = Number(a.gsm.replace(/\D/g, ""));
-        const bNum = Number(b.gsm.replace(/\D/g, ""));
-        return aNum - bNum;
-      });
-  }, [selectedCategorySlug, liveStock]);
+          colorQuantities,
+        });
+      } else {
+        const existing = variantsMap.get(key);
+        existing.quantity += entry.colors.reduce((sum: number, c: StockColorVariant) => sum + c.quantity, 0);
+        entry.colors.forEach((c) => {
+          existing.colorQuantities[c.color] = (existing.colorQuantities[c.color] ?? 0) + c.quantity;
+        });
+      }
+    }
+
+    const variants = Array.from(variantsMap.values()).sort((a, b) => {
+      const aNum = Number(String(a.gsm).replace(/\D/g, ""));
+      const bNum = Number(String(b.gsm).replace(/\D/g, ""));
+      return aNum - bNum;
+    });
+
+    return variants;
+  }, [selectedCategorySlug, filteredStockEntries]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 pb-24 pt-28 sm:px-6 lg:px-8">
@@ -191,7 +187,7 @@ export default function LiveStockPage() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col gap-6">
+        <div className="mt-8">
           <select
             value={selectedCategorySlug}
             onChange={(event) => setSelectedCategorySlug(event.target.value)}
@@ -205,25 +201,79 @@ export default function LiveStockPage() {
             ))}
           </select>
         </div>
-
-        {isLoading ? (
-          <div className="mt-20 flex flex-col items-center justify-center text-slate-500">
-            <Loader2 className="h-8 w-8 animate-spin text-[#D4AF37] mb-4" />
-            <p>Loading live inventory...</p>
+        {loading && (
+          <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-950/80 dark:text-slate-200">
+            Fetching latest inventory...
           </div>
-        ) : selectedCategorySlug !== "All" && availableProductVariants.length > 0 ? (
-          <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-950/80">
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#C8A64A] dark:text-[#F6D56A] mb-4">
+        )}
+        {error && (
+          <div className="mt-4 rounded-3xl border border-red-200 bg-red-50 p-6 text-sm text-red-700 shadow-sm dark:border-red-700/50 dark:bg-red-900/30 dark:text-red-200">
+            {error}
+          </div>
+        )}
+        {selectedCategorySlug !== "All" && availableProductVariants.length > 0 ? (
+          <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-950/80">
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#C8A64A] dark:text-[#F6D56A]">
               Available Fabric Variants for {selectedCategoryName || selectedCategorySlug}
             </p>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {availableProductVariants.map((variant) => (
-                <VariantCard key={variant.slug} variant={variant} />
+                <div
+                  key={variant.slug}
+                  className="rounded-3xl border border-slate-200 bg-[#F8FAFC] p-4 text-sm text-slate-900 shadow-sm dark:border-slate-700 dark:bg-slate-950/80 dark:text-slate-100"
+                >
+                  <p className="font-semibold">{variant.gsm}</p>
+                  <p className="mt-2 text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">
+                    {variant.fabric}
+                  </p>
+                  <div className="mt-3">
+                    {variant.colors.length > 0 ? (
+                      <div className="flex items-center gap-2">
+                        {variant.colors.map((color: { name: string; hex: string }) => {
+                          const colorName = color.name;
+                          const isSelected = selectedColorByVariant[variant.slug] === colorName;
+                          const quantity = variant.colorQuantities[colorName] ?? 0;
+                          return (
+                            <button
+                              key={colorName}
+                              type="button"
+                              onClick={() =>
+                                setSelectedColorByVariant((prev) => ({
+                                  ...prev,
+                                  [variant.slug]: colorName,
+                                }))
+                              }
+                              className={`h-3.5 w-3.5 rounded-full border shadow-sm transition focus:outline-none ${
+                                isSelected
+                                  ? "border-[#D4AF37] ring-2 ring-[#D4AF37]/30"
+                                  : "border-slate-300"
+                              }`}
+                              style={{ backgroundColor: color.hex }}
+                              title={`${colorName} — ${quantity} pcs available`}
+                            />
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        No color data
+                      </span>
+                    )}
+                    <p className="mt-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                      {selectedColorByVariant[variant.slug]
+                        ? `${variant.colorQuantities[selectedColorByVariant[variant.slug]] ?? 0} pcs available in ${selectedColorByVariant[variant.slug]}`
+                        : `Select a color to view stock`}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      Overall stock: {variant.quantity} pcs
+                    </p>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
         ) : selectedCategorySlug !== "All" ? (
-          <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-300">
+          <div className="mt-4 rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-300">
             No fabric variants found for the selected product type.
           </div>
         ) : null}

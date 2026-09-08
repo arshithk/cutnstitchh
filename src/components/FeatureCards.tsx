@@ -2,7 +2,6 @@
 
 import type { ComponentType } from "react";
 import { BadgeCheck, Factory, MapPinned, ShieldCheck, Snowflake, Sparkles, Sprout, Truck } from "lucide-react";
-import type { ProductFeature } from "@/data/products";
 
 const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   Sprout,
@@ -16,7 +15,7 @@ const iconMap: Record<string, ComponentType<{ className?: string }>> = {
 };
 
 interface FeatureCardsProps {
-  features: ProductFeature[];
+  features: any[];
 }
 
 export default function FeatureCards({ features }: FeatureCardsProps) {

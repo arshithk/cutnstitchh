@@ -1,37 +1,42 @@
-import { jwtVerify, SignJWT } from "jose";
-import { cookies } from "next/headers";
-import { NextRequest } from "next/server";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import type { AdminUserDocument } from "@/models/AdminUser";
+import { env } from "./env";
 
-const SECRET_KEY = new TextEncoder().encode(
-    process.env.JWT_SECRET || "cutnstitch-super-secret-key-123",
-);
+const TOKEN_EXPIRES_IN = "7d";
 
-export async function signToken(payload: { email: string }) {
-    return await new SignJWT(payload)
-        .setProtectedHeader({ alg: "HS256" })
-        .setIssuedAt()
-        .setExpirationTime("24h")
-        .sign(SECRET_KEY);
+export function hashPassword(password: string) {
+  return bcrypt.hashSync(password, 12);
 }
 
-export async function verifyToken(token: string) {
-    try {
-        const { payload } = await jwtVerify(token, SECRET_KEY);
-        return payload;
-    } catch (error) {
-        return null;
-    }
+export function verifyPassword(password: string, passwordHash: string) {
+  return bcrypt.compareSync(password, passwordHash);
 }
 
-export async function getSession() {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("admin_session")?.value;
-    if (!token) return null;
-    return await verifyToken(token);
+export function generateAdminToken(user: Pick<AdminUserDocument, "_id" | "email" | "role">) {
+  return jwt.sign(
+    {
+      sub: user._id.toString(),
+      email: user.email,
+      role: user.role,
+    },
+    env.ADMIN_JWT_SECRET,
+    {
+      expiresIn: TOKEN_EXPIRES_IN,
+    },
+  );
 }
 
-export async function requireAuth(req: NextRequest) {
-    const token = req.cookies.get("admin_session")?.value;
-    if (!token) return null;
-    return await verifyToken(token);
+export function verifyAdminToken(token: string) {
+  try {
+    return jwt.verify(token, env.ADMIN_JWT_SECRET) as {
+      sub: string;
+      email: string;
+      role: string;
+      iat: number;
+      exp: number;
+    };
+  } catch {
+    return null;
+  }
 }

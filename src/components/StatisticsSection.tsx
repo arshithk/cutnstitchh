@@ -49,13 +49,15 @@ export default function StatisticsSection() {
           transition={{ duration: 0.7, ease: "easeOut" }}
           className="max-w-3xl text-center"
         >
-          <h2 className="flex flex-wrap items-center justify-center text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-            <span className="mr-2 sm:mr-3">Why Leading Brands Choose</span>
-            <span className="font-sans font-black tracking-tighter uppercase text-white">
-              <span className="text-accent-custom">Cut</span> n <span className="text-accent-custom">Stitch</span>
-            </span>
-            <span className="ml-2 -mt-2 rounded border border-accent-custom/30 bg-accent-custom/20 px-1.5 py-0.5 text-[11px] sm:text-[13px] font-bold uppercase tracking-widest text-accent-custom sm:-mt-3">
-              B2B
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+            Why Leading Brands Choose{' '}
+            <span className="inline-flex items-center gap-3 whitespace-nowrap text-[1.2rem] font-extrabold uppercase tracking-[0.34em] leading-none sm:text-[1.4rem]">
+              <span className="text-white">CUT</span>
+              <span className="text-white">N</span>
+              <span className="text-[#d4af37]">STITCH</span>
+              <span className="rounded-full border border-accent-custom/30 bg-accent-custom/20 px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.44em] text-accent-custom">
+                B2B
+              </span>
             </span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-muted-custom sm:text-lg sm:leading-8">

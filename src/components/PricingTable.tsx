@@ -1,9 +1,7 @@
 "use client";
 
-import type { ProductPricingTier } from "@/data/products";
-
 interface PricingTableProps {
-  pricing: ProductPricingTier[];
+  pricing: any[];
   show3XLSurcharge?: boolean;
 }
 

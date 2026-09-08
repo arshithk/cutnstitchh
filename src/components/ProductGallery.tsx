@@ -81,7 +81,7 @@ export default function ProductGallery({ colors, selectedColor, onColorSelect, i
               >
                 <Image
                   src={normalizeImageSrc(previewImage)}
-                  alt={`${activeColor?.name ?? "product"} preview`}
+                  alt={`${activeColor?.name ?? "Custom apparel"} preview - Cut N Stitch Apparel`}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority

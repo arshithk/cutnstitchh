@@ -14,35 +14,20 @@ function getBase64Image(imagePath: string): string {
     return `data:image/${mime};base64,${data.toString('base64')}`;
 }
 
-async function main() {
-    console.log("Starting catalog generation...");
-    let variants: any[] = [];
+async function createInteractiveCatalog(
+    browser: any,
+    brandName: string,
+    logoPath: string,
+    contactEmail: string,
+    contactPhone: string,
+    brandSite: string,
+    outputName: string,
+    includePricing: boolean,
+    variants: any[]
+) {
+    console.log(`Generating ${outputName}.pdf ...`);
+    const logoBase64 = getBase64Image(logoPath);
 
-    // Extract all variants
-    for (const cat of catalogCategories) {
-        for (const variant of cat.variants) {
-            const pricing = variant.pricing && variant.pricing.length >= 3
-                ? variant.pricing
-                : [
-                    { min: 100, max: 999, price: 175 },
-                    { min: 1000, max: 4999, price: 173 },
-                    { min: 5000, price: 170 },
-                ];
-
-            variants.push({
-                ...variant,
-                categoryName: cat.name,
-                pricing: pricing
-            });
-        }
-    }
-
-    console.log(`Extracted ${variants.length} variants.`);
-
-    const logoBase64 = getBase64Image('/images/cut-n-stitch-apparel.jpeg');
-    const heroBgImage = logoBase64; // Can use something else if needed
-
-    // Generate HTML pages
     let pagesHtml = '';
 
     // 1. Cover Page
@@ -53,7 +38,7 @@ async function main() {
         <p>Expertly Crafted Uniforms, Merchandise & Sportswear</p>
         
         <div style="margin-top: 80px; text-transform:uppercase; font-size: 14px; letter-spacing: 2px; color: #f2c94c;">
-            Cut N Stitch Apparel &bull; Made in India
+            ${brandName} &bull; Made in India
         </div>
     </div>
     `;
@@ -62,23 +47,24 @@ async function main() {
     pagesHtml += `
     <div class="page">
         <div class="page-header">
-            ${logoBase64 ? `<img src="${logoBase64}" alt="Logo" style="border-radius:4px;" />` : `<h2 style="margin:0; color:#f2c94c;">Cut N Stitch Apparel</h2>`}
+            ${logoBase64 ? `<img src="${logoBase64}" alt="Logo" style="border-radius:4px;" />` : `<h2 style="margin:0; color:#f2c94c;">${brandName}</h2>`}
         </div>
         <div class="about-page">
             <h2>About Us</h2>
-            <p>At <strong>Cut N Stitch Apparel</strong>, we specialize in high-quality, reliable, and premium B2B custom merchandise, uniforms, and sportswear. With over a decade of industry expertise, we manufacture and deliver excellence.</p>
+            <p>At <strong>${brandName}</strong>, we specialize in high-quality, reliable, and premium B2B custom merchandise, uniforms, and sportswear. With over a decade of industry expertise, we manufacture and deliver excellence.</p>
             <p>Our commitment strictly resides in unparalleled stitching standards, premium fabric selection, and modern printing compatibilities—empowering your brand from design to dispatch.</p>
-            <p>Whether you require corporate uniforms, event merchandise, or complex bulk export assignments, Cut N Stitch operates on core pillars: Durability, Consistency, and Timeline accuracy.</p>
+            <p>Whether you require corporate uniforms, event merchandise, or complex bulk export assignments, ${brandName} operates on core pillars: Durability, Consistency, and Timeline accuracy.</p>
 
             <div class="about-contact">
                 <h3 style="margin-top:0; color: #111;">Get In Touch For Bulk Orders</h3>
-                <p style="margin-bottom: 5px;"><strong>Email:</strong> vidhyashankar@cutnstitchapparel.com</p>
-                <p style="margin-bottom: 5px;"><strong>Phone / WhatsApp:</strong> +91 99444 66311</p>
+                <p style="margin-bottom: 5px;"><strong>Email:</strong> ${contactEmail}</p>
+                <p style="margin-bottom: 5px;"><strong>Phone / WhatsApp:</strong> ${contactPhone}</p>
+                <p style="margin-bottom: 5px;"><strong>Website:</strong> ${brandSite}</p>
                 <p style="margin-bottom: 0;"><strong>Office:</strong> No.51(2), Sugam Residency, 1st Floor, Rakkiyapalayam Road, Ammapalayam, Tirupur - 641 652</p>
             </div>
         </div>
         <div class="page-footer">
-            <span>Cut N Stitch Apparel | Premium B2B Merchandise</span>
+            <span>${brandName} | Premium B2B Merchandise</span>
             <span>Page 2</span>
         </div>
     </div>
@@ -91,10 +77,26 @@ async function main() {
         const p2 = v.pricing[1].price;
         const p3 = v.pricing.length > 2 ? v.pricing[2].price : v.pricing[1].price;
 
+        let colorsHtml = '';
+        if (v.colors && v.colors.length > 0) {
+            colorsHtml = `
+            <div class="product-colors" style="margin-top: 10px; padding: 10px; background: #f9f9f9; border-radius: 8px;">
+                <div style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #111; text-transform: uppercase;">Available Colors (${v.colors.length}):</div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    ${v.colors.map((c: any) => `
+                        <div style="display: flex; align-items: center; gap: 6px; background: #fff; padding: 4px 8px; border-radius: 4px; border: 1px solid #eaeaea; font-size: 11px; font-weight: 600;">
+                            <span style="display: inline-block; width: 14px; height: 14px; border-radius: 50%; background-color: ${c.hex}; border: 1px solid #ccc;"></span>
+                            ${c.name}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
+        }
+
         pagesHtml += `
         <div class="page">
             <div class="page-header">
-               ${logoBase64 ? `<img src="${logoBase64}" alt="Logo" style="border-radius:4px;" />` : `<h2 style="margin:0; color:#f2c94c;">Cut N Stitch Apparel</h2>`}
+               ${logoBase64 ? `<img src="${logoBase64}" alt="Logo" style="border-radius:4px;" />` : `<h2 style="margin:0; color:#f2c94c;">${brandName}</h2>`}
             </div>
             <div class="product-content">
                 <div class="product-header">
@@ -117,28 +119,28 @@ async function main() {
                     <strong>Printing Compatibility:</strong> ${v.printingCompatibility || 'All custom printing supported.'}
                 </div>
                 
-                <div class="pricing-section">
-                    <h3>Bulk Pricing Tiers</h3>
+                ${colorsHtml}
+                
+                ${includePricing ? `
+                <div class="pricing-section" style="margin-top: 15px;">
+                    <h3>Wholesale Pricing</h3>
                     <table class="pricing-table">
-                        <thead>
-                            <tr>
-                                <th>100 - 999 Pcs</th>
-                                <th>1000 - 4999 Pcs</th>
-                                <th>5000+ Pcs</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>₹${p1}/pc</td>
-                                <td>₹${p2}/pc</td>
-                                <td>₹${p3}/pc</td>
-                            </tr>
-                        </tbody>
+                        <tr>
+                            <th>100 - 999 Pcs</th>
+                            <th>1000 - 4999 Pcs</th>
+                            <th>5000+ Pcs</th>
+                        </tr>
+                        <tr>
+                            <td>₹${p1}</td>
+                            <td>₹${p2}</td>
+                            <td>₹${p3}</td>
+                        </tr>
                     </table>
-                </div>
+                </div>` : ''}
+
             </div>
             <div class="page-footer">
-                <span>Cut N Stitch Apparel | Premium B2B Merchandise</span>
+                <span>${brandName} | Premium B2B Merchandise</span>
                 <span>Page ${idx + 3}</span>
             </div>
         </div>
@@ -256,16 +258,16 @@ async function main() {
     }
     
     .product-content {
-        padding: 40px 60px;
+        padding: 25px 60px;
         display: flex;
         flex-direction: column;
         height: calc(100% - 140px);
     }
     .product-header {
-        margin-bottom: 20px;
+        margin-bottom: 15px;
     }
     .product-title h2 {
-        font-size: 32px;
+        font-size: 30px;
         margin: 0 0 10px 0;
         color: #111;
         line-height: 1.2;
@@ -289,12 +291,12 @@ async function main() {
         background: #fff;
         border-radius: 8px;
         overflow: hidden;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         display: flex;
         align-items: center;
         justify-content: center;
         border: 1px solid #eaeaea;
-        max-height: 400px;
+        max-height: 280px;
     }
     .product-image-container img {
         max-height: 100%;
@@ -303,11 +305,11 @@ async function main() {
     }
     
     .product-description {
-        font-size: 15px;
+        font-size: 14px;
         line-height: 1.5;
         color: #333;
-        margin-bottom: 25px;
-        padding: 15px;
+        margin-bottom: 0px;
+        padding: 12px;
         background: #f9f9f9;
         border-radius: 8px;
     }
@@ -324,7 +326,7 @@ async function main() {
         border-collapse: collapse;
     }
     .pricing-table th, .pricing-table td {
-        padding: 12px 15px;
+        padding: 6px 12px;
         text-align: center;
         border: 1px solid #eaeaea;
     }
@@ -349,23 +351,59 @@ async function main() {
     </html>
     `;
 
-    console.log("Launching Puppeteer...");
-    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     const page = await browser.newPage();
-
-    // Set content and generate PDF
     await page.setContent(fullHtml, { waitUntil: 'domcontentloaded' });
 
-    const outputPath = path.join(PROJECT_ROOT, 'public', 'catalog.pdf');
+    const outPath = path.join(PROJECT_ROOT, 'public', `${outputName}.pdf`);
     await page.pdf({
-        path: outputPath,
+        path: outPath,
         format: 'A4',
         printBackground: true,
         margin: { top: '0', right: '0', bottom: '0', left: '0' }
     });
 
+    await page.close();
+    console.log("Successfully generated:", outPath);
+}
+
+async function main() {
+    console.log("Starting catalog generation...");
+    let variants: any[] = [];
+
+    // Extract all variants
+    for (const cat of catalogCategories) {
+        for (const variant of cat.variants) {
+            const pricing = variant.pricing && variant.pricing.length >= 3
+                ? variant.pricing
+                : [
+                    { min: 100, max: 999, price: 175 },
+                    { min: 1000, max: 4999, price: 173 },
+                    { min: 5000, price: 170 },
+                ];
+
+            variants.push({
+                ...variant,
+                categoryName: cat.name,
+                pricing: pricing
+            });
+        }
+    }
+
+    console.log(`Extracted ${variants.length} variants.`);
+
+    console.log("Launching Puppeteer...");
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+
+    // Generate Cut N Stitch
+    await createInteractiveCatalog(browser, "Cut N Stitch Apparel", "/images/cut-n-stitch-apparel.jpeg", "vidhyashankar@cutnstitchapparel.com", "+91 9994828850", "cutnstitchapparel.com", "cutnstitch-catalog", true, variants);
+    await createInteractiveCatalog(browser, "Cut N Stitch Apparel", "/images/cut-n-stitch-apparel.jpeg", "vidhyashankar@cutnstitchapparel.com", "+91 9994828850", "cutnstitchapparel.com", "cutnstitch-catalog-without-pricing", false, variants);
+
+    // Generate Mahima
+    await createInteractiveCatalog(browser, "Mahima International", "/images/mahima-intl-logo.png", "vidhyashankar@cutnstitchapparel.com", "+91 99444 66311", "mahimainternational.com", "mahima-catalog", true, variants);
+    await createInteractiveCatalog(browser, "Mahima International", "/images/mahima-intl-logo.png", "vidhyashankar@cutnstitchapparel.com", "+91 99444 66311", "mahimainternational.com", "mahima-catalog-without-pricing", false, variants);
+
     await browser.close();
-    console.log("Successfully generated:", outputPath);
+    console.log("All cutnstitch and mahima catalogs complete!");
 }
 
 main().catch(console.error);

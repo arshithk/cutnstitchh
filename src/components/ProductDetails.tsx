@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import type { ProductDetail, ProductVariant } from "@/data/products";
+import type { ProductColor, ProductVariant } from "@/models/Product";
 import GarmentColorPreview from "@/components/GarmentColorPreview";
 import PricingTable from "@/components/PricingTable";
 import RelatedProducts from "@/components/RelatedProducts";
@@ -13,23 +13,23 @@ import { normalizeImageSrc } from "@/lib/image";
 import { getProductImageCandidates, normalizeColorName } from "@/lib/productImageMap";
 
 interface ProductDetailsProps {
-  product: ProductDetail;
+  product: any;
 }
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
   // selectedVariant is null when no specific variant is active (show product-level colors)
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
+  const [selectedVariant, setSelectedVariant] = useState<any | null>(
     product.variants?.[0] ?? null,
   );
 
   // Colors come from the active variant, falling back to product-level colors
-  const displayColors = useMemo(
+  const displayColors = useMemo<ProductColor[]>(
     () => (selectedVariant?.colors.length ? selectedVariant.colors : product.colors),
     [selectedVariant, product.colors],
   );
 
   const resolveDefaultColorName = (variant: ProductVariant | null) => {
-    const currentColors = variant?.colors.length ? variant.colors : product.colors;
+    const currentColors: ProductColor[] = variant?.colors.length ? variant.colors : product.colors;
     const heroImage = variant?.heroImage ?? product.heroImage;
     const normalizedHero = normalizeImageSrc(heroImage).toLowerCase();
 
@@ -48,7 +48,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     const matchedColor = currentColors.find((color) => {
       const candidates = getProductImageCandidates(
         {
-          categorySlug: product.category.toLowerCase().replace(/\s+/g, "-"),
+          categorySlug: product.slug,
           productSlug: product.slug,
           productName: product.name,
           fabric: variant?.fabric ?? product.fabric,
@@ -71,6 +71,40 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
   };
 
   const [selectedColor, setSelectedColor] = useState(resolveDefaultColorName(selectedVariant));
+  const [pricingMap, setPricingMap] = useState<Record<string, any[]>>({});
+
+  useEffect(() => {
+    let mounted = true;
+    const loadPricing = async () => {
+      try {
+        const res = await fetch(`/api/products/${product.slug}/price`);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        const map: Record<string, any[]> = {};
+
+        if (Array.isArray(data)) {
+          map['product'] = data;
+        } else if (data && typeof data === 'object') {
+          if (Array.isArray(data.pricing)) {
+            map['product'] = data.pricing;
+          }
+          if (data.variants && typeof data.variants === 'object') {
+            Object.keys(data.variants).forEach((k) => {
+              map[k] = data.variants[k];
+            });
+          }
+        }
+
+        if (mounted) setPricingMap(map);
+      } catch (err) {
+        // ignore; fall back to product prop pricing
+      }
+    };
+
+    loadPricing();
+    return () => { mounted = false; };
+  }, [product.slug]);
 
   const selectedColorData = useMemo(
     () => displayColors.find((c) => c.name.toLowerCase() === selectedColor.toLowerCase()) ?? displayColors[0],
@@ -84,7 +118,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     const imageColorMatch = displayColors.find((color) => {
       const candidates = getProductImageCandidates(
         {
-          categorySlug: product.category.toLowerCase().replace(/\s+/g, "-"),
+          categorySlug: product.slug,
           productSlug: product.slug,
           productName: product.name,
           fabric: selectedVariant?.fabric ?? product.fabric,
@@ -168,6 +202,13 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
               <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#d4af37]">Pricing Table</p>
               <div className="mt-4">
                 <PricingTable pricing={selectedVariant?.pricing?.length ? selectedVariant.pricing : product.pricing} />
+                  {
+                    (() => {
+                      const variantKey = selectedVariant?.slug;
+                      const pricing = (variantKey && pricingMap[variantKey]) || pricingMap['product'] || (selectedVariant?.pricing?.length ? selectedVariant.pricing : product.pricing);
+                      return <PricingTable pricing={pricing ?? []} />;
+                    })()
+                  }
               </div>
             </div>
           ) : null}

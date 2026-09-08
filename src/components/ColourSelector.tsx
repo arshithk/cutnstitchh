@@ -2,11 +2,10 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import type { ProductColor } from "@/data/products";
 import { normalizeImageSrc } from "@/lib/image";
 
 interface ColourSelectorProps {
-  colors: ProductColor[];
+  colors: any[];
   selectedColor: string;
   onSelect: (colorName: string) => void;
 }
@@ -32,7 +31,7 @@ export default function ColourSelector({ colors, selectedColor, onSelect }: Colo
               <div className="relative h-28 w-28 overflow-hidden rounded-2xl border-2 border-white/20 transition-transform duration-500 group-hover:scale-110 group-hover:shadow-lg">
                 <Image
                   src={normalizeImageSrc(color.imagePath || "/images/regular-fit-tshirt-white.jpg")}
-                  alt={`${color.name} swatch`}
+                  alt={`${color.name} fabric colour swatch - Cut N Stitch Apparel`}
                   fill
                   sizes="112px"
                   className="object-cover object-center"

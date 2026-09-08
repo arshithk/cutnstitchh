@@ -14,7 +14,10 @@
 			"label": "build-site-node",
 			"type": "process",
 			"command": "node",
-			"args": ["node_modules/next/dist/bin/next", "build"],
+			"args": [
+				"node_modules/next/dist/bin/next",
+				"build"
+			],
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
@@ -60,6 +63,53 @@
 			"label": "restore-catalog-images-direct",
 			"type": "shell",
 			"command": "python restore_catalog_images_direct.py",
+			"group": "build"
+		},
+		{
+			"label": "verify-admin-db",
+			"type": "shell",
+			"command": "node tmp_verify_admin.js",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "verify-admin-db",
+			"type": "shell",
+			"command": "node tmp_verify_admin.js",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "verify-admin-db",
+			"type": "shell",
+			"command": "node tmp_verify_admin.js",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "build-site-cmd-fixed",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/d",
+				"/s",
+				"/c",
+				"cd /d c:\\Projects\\CutnStitch && npm.cmd run build"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "build-site-cmd-fixed",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/d",
+				"/s",
+				"/c",
+				"cd /d c:\\Projects\\CutnStitch && npm.cmd run build"
+			],
+			"problemMatcher": [],
 			"group": "build"
 		}
 	]

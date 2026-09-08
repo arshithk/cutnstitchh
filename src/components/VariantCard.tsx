@@ -1,17 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import type { CatalogVariant } from "@/data/products";
 import { normalizeImageSrc } from "@/lib/image";
 import { getProductImagePath } from "@/lib/productImageMap";
 
 interface VariantCardProps {
   categorySlug: string;
-  variant: CatalogVariant;
+  variant: any;
   variantIndex: number;
 }
-
-function selectVariantDisplayColor(colors: CatalogVariant["colors"], variantIndex: number) {
+function selectVariantDisplayColor(colors: any[], variantIndex: number) {
   const nonWhiteColors = colors.filter(
     (color) => color.name.toLowerCase() !== "white" && color.name.toLowerCase() !== "off-white",
   );
@@ -33,17 +31,12 @@ export default function VariantCard({ categorySlug, variant, variantIndex }: Var
     variant.thumbnailImage ?? variant.heroImage,
   );
 
-  const displayFabric = variant.fabric
-    .replace(/100% Cotton S-Jersey/gi, "Elite Cotton")
-    .replace(/100% Cotton Piqu[é|e]/gi, "Elite Cotton")
-    .replace(/Premium Cotton Piqu[é|e]/gi, "Premium Cotton (Bio Washed)");
-
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-border-custom/70 bg-card/70 shadow-[0_16px_45px_rgba(0,0,0,0.16)] transition-all duration-300 hover:-translate-y-1 hover:border-accent-custom/40 hover:shadow-[0_28px_70px_rgba(0,0,0,0.22)]">
       <div className="relative aspect-4/3 overflow-hidden">
         <Image
           src={normalizeImageSrc(previewImage)}
-          alt={variant.name}
+          alt={`${variant.name} - Custom Apparel Manufacturing Cut N Stitch`}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
           priority
@@ -64,7 +57,7 @@ export default function VariantCard({ categorySlug, variant, variantIndex }: Var
         </div>
 
         <div className="mt-5 flex flex-wrap gap-2">
-          <span className="rounded-full border border-border-custom/70 px-2.5 py-1 text-xs text-muted-custom">{displayFabric}</span>
+          <span className="rounded-full border border-border-custom/70 px-2.5 py-1 text-xs text-muted-custom">{variant.fabric}</span>
           <span className="rounded-full border border-border-custom/70 px-2.5 py-1 text-xs text-muted-custom">{variant.fit}</span>
         </div>
 

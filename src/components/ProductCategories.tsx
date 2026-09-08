@@ -1,19 +1,30 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { catalogCategories, products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 
 export default function ProductCategories() {
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true, margin: "-50px" });
-  const catalogCategorySlugs = new Set(catalogCategories.map((category) => category.slug));
-  const legacyProducts = products.filter((product) => !["regular-fit-t-shirts", "polo-t-shirts", "oversized-t-shirts"].includes(product.slug) && !catalogCategorySlugs.has(product.slug));
-  const catalogCards = [
-    ...catalogCategories.map((category) => ({ type: "category" as const, item: category })),
-    ...legacyProducts.map((product) => ({ type: "product" as const, item: product })),
-  ];
+  const [items, setItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!mounted) return;
+        setItems(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setItems([]);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <section id="products" className="scroll-mt-20 relative overflow-hidden bg-background py-8 sm:py-10 lg:py-12" ref={containerRef}>
@@ -27,14 +38,14 @@ export default function ProductCategories() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {catalogCards.map((card, idx) => (
+          {items.map((product, idx) => (
             <motion.div
-              key={`${card.type}-${card.item.slug}`}
+              key={product.slug}
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.45, delay: idx * 0.05 }}
             >
-              {card.type === "category" ? <ProductCard category={card.item} /> : <ProductCard product={card.item} />}
+              <ProductCard product={product} />
             </motion.div>
           ))}
         </div>

@@ -39,3 +39,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local editor and temp files
+.history/
+.venv/
+*.log
+diff*.txt
+status*.txt
+err.txt
+tmp_*
+temp_*
+verify_*.py
+*.ipynb
+build-output.txt
+test_marker_from_tool.txt
+server_dir_contents.csv

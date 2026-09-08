@@ -1,12 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { getCatalogCategorySlugByLegacyProductSlug, type CatalogCategory, type ProductDetail } from "@/data/products";
 import { normalizeImageSrc } from "@/lib/image";
 
 interface ProductCardProps {
-  product?: ProductDetail;
-  category?: CatalogCategory;
+  product?: any;
+  category?: any;
 }
 
 export default function ProductCard({ product, category }: ProductCardProps) {
@@ -24,7 +23,7 @@ export default function ProductCard({ product, category }: ProductCardProps) {
       <div className="relative aspect-4/5 overflow-hidden">
         <Image
           src={normalizeImageSrc(heroImage)}
-          alt={title}
+          alt={`${title} - Cut N Stitch Apparel B2B Manufacturer`}
           fill
           sizes="(max-width: 768px) 100vw, 25vw"
           priority={isCategoryCard}
@@ -54,7 +53,7 @@ export default function ProductCard({ product, category }: ProductCardProps) {
           )}
         </div>
 
-        <Link href={href} className="mt-auto pt-4 inline-flex items-center gap-2 rounded-full bg-accent-custom px-4 py-3 text-sm font-semibold text-black transition hover:brightness-110">
+        <Link href={href} className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent-custom px-4 py-3 text-sm font-semibold text-black transition hover:brightness-110">
           View Products
           <ArrowUpRight size={16} />
         </Link>

@@ -3,12 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import type { ProductColor } from "@/data/products";
 import { normalizeImageSrc } from "@/lib/image";
 
 interface GarmentColorPreviewProps {
   imagePath: string;
-  colors: ProductColor[];
+  colors: any[];
   selectedColor: string;
   onColorSelect: (colorName: string) => void;
   inquiryOnly?: boolean;
@@ -90,7 +89,7 @@ export default function GarmentColorPreview({
                 <div className="relative h-full w-full">
                   <Image
                     src={normalizeImageSrc(previewImage)}
-                    alt={`${activeColor.name} preview`}
+                    alt={`${activeColor.name} ${productName} preview - Cut N Stitch Apparel`}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 65vw, 45vw"
                     priority

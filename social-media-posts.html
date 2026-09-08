@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cut N Stitch - Social Media Generator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cns: {
+                            gold: '#d4af37', // Exact website theme accent
+                            black: '#000000',
+                            white: '#FFFFFF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 350px;
+            background-color: #0f0f0f;
+            padding: 2rem;
+            border-right: 1px solid #333;
+            overflow-y: auto;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #111;
+            overflow: auto;
+            position: relative;
+        }
+
+        /* 1080x1080 Post Container */
+        .post-container {
+            width: 1080px;
+            height: 1080px;
+            background-color: #000;
+            position: relative;
+            transform-origin: center center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.55);
+            overflow: hidden;
+        }
+
+        [contenteditable="true"]:hover {
+            outline: 2px dashed rgba(212, 175, 55, 0.5);
+            cursor: text;
+        }
+
+        [contenteditable="true"]:focus {
+            outline: 2px solid #d4af37;
+        }
+
+        .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .content-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Sidebar UI */
+        .template-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #222;
+            border: 1px solid #444;
+            color: white;
+            text-align: left;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .template-btn:hover {
+            border-color: #d4af37;
+            background-color: #2a2a2a;
+        }
+
+        .template-btn.active {
+            border-color: #d4af37;
+            border-width: 2px;
+        }
+
+        input[type="file"]::file-selector-button {
+            background-color: #d4af37;
+            color: black;
+            font-weight: bold;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <div class="mb-8">
+            <!-- Exact Website Component Replica -->
+            <div class="inline-grid items-center gap-0 text-center mb-2">
+                <span
+                    class="inline-block w-full text-[1.2rem] font-extrabold uppercase tracking-[0.34em] text-cns-gold leading-none">CUT
+                    N STITCH</span>
+                <span
+                    class="inline-block w-full text-[0.8rem] font-semibold lowercase tracking-[0.42em] text-white/80 leading-none">apparel.com</span>
+            </div>
+            <p class="text-sm text-gray-400 mt-2">Social Media Generator</p>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">1. Select Template</h2>
+            <button class="template-btn active" onclick="loadTemplate('premium_quote')">
+                <div class="font-bold">Premium Quality Focus</div>
+                <div class="text-xs text-gray-400 mt-1">Advertising quote for premium manufacturing</div>
+            </button>
+            <button class="template-btn" onclick="loadTemplate('bulk_corporate')">
+                <div class="font-bold">Bulk & Corporate</div>
+                <div class="text-xs text-gray-400 mt-1">Loud CTA for B2B wholesale</div>
+            </button>
+            <button class="template-btn" onclick="loadTemplate('custom_merch')">
+                <div class="font-bold">Custom Merch Quote</div>
+                <div class="text-xs text-gray-400 mt-1">Highlighting customization and startup branding</div>
+            </button>
+            <button class="template-btn" onclick="loadTemplate('brand_intro')">
+                <div class="font-bold">Brand Philosophy</div>
+                <div class="text-xs text-gray-400 mt-1">Aesthetic minimal template</div>
+            </button>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">2. Upload Background</h2>
+            <input type="file" id="imageUpload" accept="image/*"
+                class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-cns-gold file:text-black hover:file:brightness-110">
+            <p class="text-xs text-gray-500 mt-2">Use square images (1080x1080) for best results.</p>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">3. Edit Text</h2>
+            <p class="text-sm text-gray-400">Click directly on any text in the preview area to edit it.</p>
+        </div>
+
+        <button onclick="downloadPost()"
+            class="w-full bg-cns-gold text-black font-bold py-4 rounded shadow-lg hover:brightness-110 transition-all flex justify-center items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download High-Res 1080x1080
+        </button>
+        <p class="text-xs text-center text-gray-500 mt-3" id="dl-status"></p>
+    </div>
+
+    <div class="main" id="main-area">
+        <div class="absolute top-4 right-4 z-50 flex gap-2 bg-black/80 p-2 rounded border border-gray-700">
+            <button onclick="zoom(0.1)" class="text-white hover:text-cns-gold px-2">+</button>
+            <span id="zoom-level" class="text-xs text-white flex items-center px-2">55%</span>
+            <button onclick="zoom(-0.1)" class="text-white hover:text-cns-gold px-2">-</button>
+        </div>
+
+        <div class="post-container" id="post-canvas">
+            <img src="https://images.unsplash.com/photo-1618085220188-b4f210d22703?q=80&w=2000&auto=format&fit=crop"
+                id="post-bg" class="bg-image" crossorigin="anonymous">
+
+            <div id="template-container" class="w-full h-full">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const logoHTML = \`
+        <div class="inline-grid items-center gap-0 text-center">
+            <span class="inline-block w-full text-[1.4rem] font-extrabold uppercase tracking-[0.34em] text-cns-gold leading-none" contenteditable="true">CUT N STITCH</span>
+            <span class="inline-block w-full text-[0.9rem] font-semibold lowercase tracking-[0.42em] text-white/80 leading-none" contenteditable="true">apparel.com</span>
+        </div>
+    \`;
+
+    const templates = {
+        premium_quote: \`
+            <div class="overlay bg-gradient-to-t from-black via-black/80 to-transparent"></div>
+            <div class="content-layer p-16 flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <div class="border-l-4 border-cns-gold pl-4 mt-8">
+                        <div class="text-white font-bold text-2xl tracking-widest uppercase opacity-80" contenteditable="true">Premium Manufacturing</div>
+                    </div>
+                </div>
+                
+                <div class="mb-12 relative">
+                    <div class="absolute -top-16 left-0 text-cns-gold text-[12rem] h-32 leading-none font-serif opacity-30">"</div>
+                    <h1 class="text-white font-light text-6xl leading-[1.2] mb-8 relative z-10" contenteditable="true">"Because your brand deserves more than just an average t-shirt. We manufacture high-end apparel that speaks for itself."</h1>
+                    
+                    <p class="text-gray-300 text-2xl font-light mb-12 max-w-3xl leading-relaxed uppercase tracking-wider" contenteditable="true">BIOWASHED COTTON • OVERSIZED FITS • DIRECT TO GARMENT</p>
+                    
+                    <div class="flex justify-between items-end border-t border-white/20 pt-8 mt-12">
+                        \${logoHTML}
+                        <div class="bg-cns-gold text-black font-bold uppercase tracking-wider text-xl px-10 py-4" contenteditable="true">Request a Quote</div>
+                    </div>
+                </div>
+            </div>
+        \`,
+        bulk_corporate: \`
+            <div class="overlay bg-black/40"></div>
+            <div class="overlay" style="background: linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 40%, transparent 100%);"></div>
+            
+            <div class="content-layer p-16 flex flex-col justify-center">
+                <div class="absolute top-16 right-16">
+                    \${logoHTML}
+                </div>
+
+                <div class="max-w-2xl mt-12 text-left">
+                    <div class="inline-block bg-cns-gold text-black px-4 py-2 font-bold tracking-widest text-lg uppercase mb-8" contenteditable="true">SCALE YOUR BRAND WITH US</div>
+                    <h2 class="text-white font-black text-8xl leading-[1] mb-6 uppercase tracking-tighter" contenteditable="true">BULK<br>APPAREL<br><span class="text-cns-gold text-outline" style="-webkit-text-stroke: 2px #d4af37; color: transparent;">MANUFACTURING</span></h2>
+                    <p class="text-gray-200 text-3xl font-light mb-12 leading-[1.4]" contenteditable="true">"Supplying top corporates, colleges, and startups with reliable, uncompromising quality."</p>
+                    
+                    <ul class="text-white text-2xl space-y-5 font-light mb-14" contenteditable="true">
+                        <li class="flex items-center gap-4"><span class="text-cns-gold">✔</span> End-to-end Manufacturing</li>
+                        <li class="flex items-center gap-4"><span class="text-cns-gold">✔</span> Strict Quality Control</li>
+                        <li class="flex items-center gap-4"><span class="text-cns-gold">✔</span> Pan-India Timely Delivery</li>
+                    </ul>
+
+                    <div class="bg-white text-black hover:bg-cns-gold inline-flex flex-col font-bold uppercase tracking-wider text-2xl px-12 py-5 transition-colors border-l-8 border-cns-gold" contenteditable="true">
+                        <span class="text-sm tracking-[0.2em] opacity-70 mb-1">CONNECT WITH US</span>
+                        <span>+91 99999 00000</span>
+                    </div>
+                </div>
+            </div>
+        \`,
+        custom_merch: \`
+            <div class="overlay bg-black/90"></div>
+            <div class="content-layer p-20 flex flex-col justify-center items-center text-center">
+                <div class="mb-20">
+                    \${logoHTML}
+                </div>
+                
+                <h2 class="text-white font-light text-5xl leading-[1.5] max-w-[900px] tracking-wide mb-12" contenteditable="true">"Your ideas. Our craftsmanship. Elevate your event or merchandise line with custom hoodies and premium tees engineered to perfection."</h2>
+                
+                <div class="w-32 h-1 bg-cns-gold mb-12"></div>
+                
+                <div class="flex flex-wrap justify-center gap-6 text-white/50 text-xl tracking-[0.2em] font-light uppercase border border-white/10 p-6 rounded" contenteditable="true">
+                    <span>Embroidery</span> •
+                    <span>Screen Print</span> •
+                    <span>Puff Print</span> •
+                    <span>Custom Tags</span>
+                </div>
+                
+                <div class="mt-20 border border-cns-gold text-cns-gold font-bold text-2xl tracking-widest uppercase px-12 py-4" contenteditable="true">Enquire Now</div>
+            </div>
+        \`,
+        brand_intro: \`
+            <div class="overlay" style="background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.9) 100%);"></div>
+            <div class="overlay bg-black/40"></div>
+            
+            <div class="content-layer p-16 flex flex-col justify-between items-center text-center">
+                <div class="mt-12">
+                   \${logoHTML}
+                </div>
+
+                <div class="w-full flex-1 flex flex-col justify-center items-center">
+                    <h1 class="text-cns-gold font-black text-8xl leading-none tracking-tighter mb-8" contenteditable="true">BUILT DIFFERENT.</h1>
+                    <p class="text-white text-4xl font-light max-w-4xl leading-relaxed" contenteditable="true">"We don't manufacture fast fashion. We manufacture premium quality apparel built to last."</p>
+                </div>
+                
+                <div class="mb-8">
+                    <div class="text-cns-gold font-bold text-xl tracking-[0.4em] uppercase" contenteditable="true">WWW.CUTNSTITCHAPPAREL.COM</div>
+                    <div class="text-gray-400 text-sm mt-4 tracking-widest uppercase" contenteditable="true">Follow us on IG / FB</div>
+                </div>
+            </div>
+        \`
+    };
+
+    let currentScale = 0.55;
+    
+    function zoom(delta) {
+        currentScale += delta;
+        if(currentScale < 0.2) currentScale = 0.2;
+        if(currentScale > 1.5) currentScale = 1.5;
+        document.getElementById('post-canvas').style.transform = \`scale(\${currentScale})\`;
+        document.getElementById('zoom-level').innerText = Math.round(currentScale * 100) + '%';
+    }
+
+    function loadTemplate(id) {
+        document.getElementById('template-container').innerHTML = templates[id];
+        
+        document.querySelectorAll('.template-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+    }
+
+    document.getElementById('imageUpload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('post-bg').src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    async function downloadPost() {
+        const canvasContainer = document.getElementById('post-canvas');
+        const statusEl = document.getElementById('dl-status');
+        const btn = document.querySelector('button[onclick="downloadPost()"]');
+        
+        try {
+            statusEl.innerText = "Generating high-res image...";
+            statusEl.className = "text-xs text-center text-yellow-500 mt-3";
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            const originalTransform = canvasContainer.style.transform;
+            canvasContainer.style.transform = 'scale(1)';
+            
+            const canvas = await html2canvas(canvasContainer, {
+                scale: 1, 
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#000000',
+                logging: false,
+                width: 1080,
+                height: 1080,
+                x: 0,
+                y: 0,
+                windowWidth: 1080,
+                windowHeight: 1080
+            });
+            
+            canvasContainer.style.transform = originalTransform;
+            
+            const url = canvas.toDataURL('image/png', 1.0);
+            const link = document.createElement('a');
+            link.download = \`cutnstitch-post-\${Date.now()}.png\`;
+            link.href = url;
+            link.click();
+            
+            statusEl.innerText = "Downloaded successfully!";
+            statusEl.className = "text-xs text-center text-green-500 mt-3";
+            
+            setTimeout(() => {
+                statusEl.innerText = "";
+            }, 3000);
+            
+        } catch (error) {
+            console.error(error);
+            statusEl.innerText = "Error generating image.";
+            statusEl.className = "text-xs text-center text-red-500 mt-3";
+        } finally {
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadTemplate('premium_quote');
+        const containerWidth = document.getElementById('main-area').clientWidth;
+        if(containerWidth < 700) {
+            currentScale = 0.35;
+            document.getElementById('post-canvas').style.transform = \`scale(\${currentScale})\`;
+            document.getElementById('zoom-level').innerText = '35%';
+        }
+    });
+
+    </script>
+</body>
+
+</html>
