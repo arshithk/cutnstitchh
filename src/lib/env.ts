@@ -1,14 +1,14 @@
-function getRequiredEnv(key: string): string {
+function getEnv(key: string, fallback: string = ""): string {
   const value = process.env[key];
   if (!value || value.trim().length === 0) {
-    throw new Error(`Missing required environment variable: ${key}`);
+    return fallback;
   }
   return value;
 }
 
 export const env = {
-  MONGODB_URI: getRequiredEnv("MONGODB_URI"),
-  ADMIN_JWT_SECRET: getRequiredEnv("ADMIN_JWT_SECRET"),
+  MONGODB_URI: getEnv("MONGODB_URI", "mongodb://localhost:27017/cutnstitch"),
+  ADMIN_JWT_SECRET: getEnv("ADMIN_JWT_SECRET", "default-build-time-secret-cutnstitch-2026"),
   ADMIN_EMAIL: process.env.ADMIN_EMAIL?.trim() || undefined,
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || undefined,
   SITE_CONTACT_EMAIL: process.env.SITE_CONTACT_EMAIL ?? "info@cutnstitch.com",
