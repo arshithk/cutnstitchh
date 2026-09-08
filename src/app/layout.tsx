@@ -8,8 +8,8 @@ import ScrollNavigation from "@/components/ScrollNavigation";
 export const metadata: Metadata = {
   metadataBase: new URL("https://cutnstitchapparel.com"),
   title: {
-    default: "Cut N Stitch Apparel | B2B Clothing & T-Shirt Manufacturer in Bangalore",
-    template: "%s | Cut N Stitch Apparel",
+    default: "Cut n Stitch Apparel | Premium B2B Apparel Manufacturing",
+    template: "%s | Cut n Stitch Apparel",
   },
   description:
     "Cut N Stitch Apparel is a premier B2B custom clothing & apparel manufacturer in Bangalore, India. Low MOQ, private label manufacturing, bulk T-shirts, polo shirts, hoodies, corporate uniforms, and custom merchandise.",
@@ -33,8 +33,22 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-48x48.png", sizes: "48x48", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/android-chrome-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+  },
   openGraph: {
-    title: "Cut N Stitch Apparel | B2B Clothing & T-Shirt Manufacturer in Bangalore",
+    title: "Cut n Stitch Apparel | Premium B2B Apparel Manufacturing",
     description:
       "Cut N Stitch Apparel is a premier B2B custom clothing & apparel manufacturer in Bangalore, India. Low MOQ, private label manufacturing, bulk T-shirts, polo shirts, hoodies, corporate uniforms, and custom merchandise.",
     url: "https://cutnstitchapparel.com",
@@ -43,19 +57,19 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/cut-n-stitch-apparel.jpeg",
-        width: 1200,
-        height: 630,
-        alt: "Cut N Stitch Apparel - B2B Apparel Manufacturer in Bangalore",
+        url: "https://cutnstitchapparel.com/images/cut-n-stitch-apparel.jpeg",
+        width: 1536,
+        height: 1024,
+        alt: "Cut n Stitch Apparel - Premium B2B Apparel Manufacturing",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Cut N Stitch Apparel | B2B Clothing & T-Shirt Manufacturer in Bangalore",
+    title: "Cut n Stitch Apparel | Premium B2B Apparel Manufacturing",
     description:
       "Cut N Stitch Apparel is a premier B2B custom clothing & apparel manufacturer in Bangalore, India. Low MOQ, private label manufacturing, and custom merchandise.",
-    images: ["/images/cut-n-stitch-apparel.jpeg"],
+    images: ["https://cutnstitchapparel.com/images/cut-n-stitch-apparel.jpeg"],
   },
   robots: {
     index: true,
@@ -75,7 +89,8 @@ const organizationSchema = {
   "@type": "Organization",
   name: "Cut N Stitch Apparel",
   url: "https://cutnstitchapparel.com",
-  logo: "https://cutnstitchapparel.com/images/cut-n-stitch-apparel.jpeg",
+  logo: "https://cutnstitchapparel.com/images/cut-n-stitch-logo.png",
+  image: "https://cutnstitchapparel.com/images/cut-n-stitch-apparel.jpeg",
   sameAs: [
     "https://instagram.com",
     "https://linkedin.com",
@@ -94,6 +109,7 @@ const localBusinessSchema = {
   "@type": "LocalBusiness",
   name: "Cut N Stitch Apparel",
   image: "https://cutnstitchapparel.com/images/cut-n-stitch-apparel.jpeg",
+  logo: "https://cutnstitchapparel.com/images/cut-n-stitch-logo.png",
   url: "https://cutnstitchapparel.com",
   telephone: "+91 99444 66311",
   email: "info@cutnstitch.com",
@@ -128,6 +144,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-48x48.png" sizes="48x48" type="image/png" />
+        <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+        <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
         <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18425343698"></script>
         <script
           dangerouslySetInnerHTML={{
