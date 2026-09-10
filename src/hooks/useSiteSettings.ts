@@ -11,9 +11,9 @@ export interface SiteSettingsData {
 }
 
 const defaultSiteSettings: SiteSettingsData = {
-  contactEmail: "info@cutnstitch.com",
-  phoneNumber: "+919999999999",
-  whatsAppNumber: "+919999999999",
+  contactEmail: "vidhyashankar@cutnstitchapparel.com",
+  phoneNumber: "+91 99 444 66 3 11",
+  whatsAppNumber: "+91 99444 66311",
   defaultMoq: "100 Pieces",
   productionLeadTime: "8-10 business days",
 };

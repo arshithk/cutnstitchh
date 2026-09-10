@@ -5,6 +5,7 @@ import { env } from "./env";
 interface MongooseGlobalCache {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
+  lastFailed?: number;
 }
 
 const globalWithMongoose = global as typeof globalThis & {
@@ -12,7 +13,7 @@ const globalWithMongoose = global as typeof globalThis & {
 };
 
 if (!globalWithMongoose.mongooseCache) {
-  globalWithMongoose.mongooseCache = { conn: null, promise: null };
+  globalWithMongoose.mongooseCache = { conn: null, promise: null, lastFailed: 0 };
 }
 
 export async function dbConnect() {
@@ -21,39 +22,38 @@ export async function dbConnect() {
   }
 
   if (!globalWithMongoose.mongooseCache) {
-    globalWithMongoose.mongooseCache = { conn: null, promise: null };
+    globalWithMongoose.mongooseCache = { conn: null, promise: null, lastFailed: 0 };
+  }
+
+  // If connection failed within the last 30 seconds, avoid hanging or spamming
+  if (
+    globalWithMongoose.mongooseCache.lastFailed &&
+    Date.now() - globalWithMongoose.mongooseCache.lastFailed < 30000
+  ) {
+    throw new Error("MongoDB connection in cooldown after recent failure");
   }
 
   if (!globalWithMongoose.mongooseCache.promise) {
     const uri = env.MONGODB_URI;
-    const host = (() => {
-      try {
-        const normalized = uri.replace(/^mongodb\+srv:\/\//, "https://");
-        return new URL(normalized).host;
-      } catch {
-        return "unknown";
-      }
-    })();
-
-    console.log("dbConnect: process.version", process.version);
-    console.log("dbConnect: mongoose.version", mongoose.version);
-    console.log("dbConnect: mongodb driver version", mongodbPackage.version);
-    console.log("dbConnect: NODE_ENV", process.env.NODE_ENV);
-    console.log("dbConnect: MONGODB_URI exists", Boolean(uri));
-    console.log("dbConnect: MongoDB host", host);
 
     globalWithMongoose.mongooseCache.promise = mongoose
-      .connect(uri)
-      .then((mongooseInstance) => mongooseInstance)
+      .connect(uri, {
+        serverSelectionTimeoutMS: 3000,
+        connectTimeoutMS: 3000,
+      })
+      .then((mongooseInstance) => {
+        if (globalWithMongoose.mongooseCache) {
+          globalWithMongoose.mongooseCache.lastFailed = 0;
+        }
+        return mongooseInstance;
+      })
       .catch((error) => {
-        globalWithMongoose.mongooseCache = { conn: null, promise: null };
-        console.error("dbConnect failed:", {
-          name: (error as any)?.name,
-          message: (error as any)?.message,
-          code: (error as any)?.code,
-          stack: (error as any)?.stack,
-          cause: (error as any)?.cause,
-        });
+        if (globalWithMongoose.mongooseCache) {
+          globalWithMongoose.mongooseCache.conn = null;
+          globalWithMongoose.mongooseCache.promise = null;
+          globalWithMongoose.mongooseCache.lastFailed = Date.now();
+        }
+        console.warn("dbConnect warning:", (error as any)?.message || error);
         throw error;
       });
   }

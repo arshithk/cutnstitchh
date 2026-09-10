@@ -8,19 +8,20 @@ import Product from "@/models/Product";
 import { getProductBySlug, products as fallbackProducts } from "@/data/products";
 
 async function loadProductData(slug: string) {
-  let product: any = null;
+  const staticProduct = getProductBySlug(slug);
+  if (staticProduct) {
+    return staticProduct;
+  }
+
   try {
     await dbConnect();
-    product = await Product.findOne({ slug }).lean();
+    const product = await Product.findOne({ slug }).lean();
+    if (product) return product;
   } catch (error) {
     // Database connection failed, use fallback data
   }
 
-  if (!product) {
-    product = getProductBySlug(slug);
-  }
-
-  return product;
+  return null;
 }
 
 export async function generateStaticParams() {

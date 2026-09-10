@@ -28,7 +28,7 @@ export default function VariantListing({ category }: VariantListingProps) {
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {category.variants.map((variant, index) => (
           <VariantCard
-            key={variant.slug}
+            key={`${category.slug}-${variant.slug || (variant as any).id || index}-${index}`}
             categorySlug={category.slug}
             variant={variant}
             variantIndex={index}

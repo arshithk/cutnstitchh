@@ -1,37 +1,17 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { getCatalogCategorySlugByLegacyProductSlug, products } from "@/data/products";
 import { normalizeImageSrc } from "@/lib/image";
-import { useEffect, useState } from "react";
 
 interface RelatedProductsProps {
   slugs: string[];
 }
 
 export default function RelatedProducts({ slugs }: RelatedProductsProps) {
-  const [items, setItems] = useState<any[]>([]);
+  const related = products.filter((product) => slugs.includes(product.slug));
 
-  useEffect(() => {
-    let mounted = true;
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => {
-        if (!mounted) return;
-        const products = Array.isArray(data) ? data : [];
-        setItems(products.filter((p: any) => slugs.includes(p.slug)));
-      })
-      .catch(() => {
-        if (!mounted) return;
-        setItems([]);
-      });
-    return () => {
-      mounted = false;
-    };
-  }, [slugs]);
-
-  if (items.length === 0) return null;
+  if (related.length === 0) return null;
 
   return (
     <section className="mt-16">
@@ -42,7 +22,7 @@ export default function RelatedProducts({ slugs }: RelatedProductsProps) {
         </div>
       </div>
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-        {items.map((product) => (
+        {related.map((product) => (
           <Link key={product.slug} href={`/products/details/${product.slug}`} className="group overflow-hidden rounded-3xl border border-white/10 bg-black/35 transition hover:-translate-y-1 hover:border-accent-custom/40">
             <div className="relative aspect-4/5 overflow-hidden">
               <Image src={normalizeImageSrc(product.heroImage)} alt={`${product.name} - Cut N Stitch Apparel B2B Manufacturer`} fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover object-center transition duration-500 group-hover:scale-105" />

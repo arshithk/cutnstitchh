@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/db";
 import Product from "@/models/Product";
+import { products as fallbackProducts } from "@/data/products";
 
 export async function GET() {
   try {
@@ -20,12 +21,22 @@ export async function GET() {
       .sort({ name: 1 })
       .lean();
 
-    return NextResponse.json(products);
+    if (products && products.length > 0) {
+      return NextResponse.json(products);
+    }
   } catch (error) {
-    const status = (error as any)?.status ?? 500;
-    return NextResponse.json(
-      { error: (error as Error).message ?? "Unable to load products" },
-      { status },
-    );
+    // Database connection failed, fall through to static products
   }
+
+  return NextResponse.json(
+    fallbackProducts.map((p) => ({
+      slug: p.slug,
+      name: p.name,
+      category: p.category,
+      tagline: p.tagline,
+      moq: p.moq,
+      heroImage: p.heroImage,
+      availableForBulk: p.availableForBulk,
+    })),
+  );
 }

@@ -112,7 +112,7 @@ const localBusinessSchema = {
   logo: "https://cutnstitchapparel.com/images/cut-n-stitch-logo.png",
   url: "https://cutnstitchapparel.com",
   telephone: "+91 99444 66311",
-  email: "info@cutnstitch.com",
+  email: "vidhyashankar@cutnstitchapparel.com",
   priceRange: "$$",
   address: {
     "@type": "PostalAddress",

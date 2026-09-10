@@ -19,24 +19,6 @@ const CATALOG_TO_PRODUCT_SLUG: Record<string, string> = {
 };
 
 async function loadCategoryData(category: string) {
-  try {
-    await dbConnect();
-
-    const productSlug = CATALOG_TO_PRODUCT_SLUG[category] ?? category;
-    const product = await Product.findOne({ slug: productSlug }).lean();
-
-    if (product) {
-      return {
-        name: product.name,
-        slug: category,
-        description: product.description,
-        variants: product.variants || [],
-      };
-    }
-  } catch (error) {
-    // Database connection failed, use fallback data
-  }
-
   const catalogCat = getCatalogCategoryBySlug(category);
   if (catalogCat) {
     return {
@@ -59,6 +41,21 @@ async function loadCategoryData(category: string) {
         slug: v.slug || v.id,
       })) as any,
     };
+  }
+
+  try {
+    await dbConnect();
+    const product = await Product.findOne({ slug: productSlug }).lean();
+    if (product) {
+      return {
+        name: product.name,
+        slug: category,
+        description: product.description,
+        variants: product.variants || [],
+      };
+    }
+  } catch (error) {
+    // Database connection failed
   }
 
   return null;

@@ -32,7 +32,7 @@ export default function Footer() {
         <div className="flex flex-col gap-6">
           <a href="#" className="flex items-center gap-2">
             <span className="font-sans font-black text-2xl tracking-tighter uppercase text-white">
-              Cut n <span className="text-accent-custom">Stitch</span>
+              <span className="text-accent-custom">Cut</span> n <span className="text-accent-custom">Stitch</span>
             </span>
             <span className="text-[10px] uppercase font-bold tracking-widest bg-accent-custom/20 text-accent-custom px-1.5 py-0.5 rounded border border-accent-custom/30">
               B2B
@@ -134,7 +134,15 @@ export default function Footer() {
             <li className="flex gap-3 items-start">
               <MapPin size={18} className="text-accent-custom shrink-0 mt-0.5" />
               <span>
-                <strong>Manufacturing Unit:</strong><br />
+                <strong>Office:</strong><br />
+                No.51(2), SUGAM RESIDENCY, 1st FLOOR,<br />
+                RAKKIYAPALAYAM ROAD, AMMAPALAYAM,<br />
+                TIRUPUR - 641 652<br /><br />
+                <strong>Manufacturing Unit 1:</strong><br />
+                52 K17, Thilagar Nagar,<br />
+                Anupparpalayam, Tirupur,<br />
+                Tamil Nadu - 641652<br /><br />
+                <strong>Manufacturing Unit 2:</strong><br />
                 339/2, Thilaga Nagar,<br />
                 Anupparapalayam, Tirupur,<br />
                 Tamil Nadu - 641 652
@@ -142,14 +150,14 @@ export default function Footer() {
             </li>
             <li className="flex gap-3 items-center">
               <Phone size={16} className="text-accent-custom shrink-0" />
-              <a href={`tel:${siteSettings.phoneNumber}`} className="hover:text-white transition-colors">
-                {siteSettings.phoneNumber}
+              <a href="tel:+919944466311" className="hover:text-white transition-colors">
+                +91 99 444 66 3 11
               </a>
             </li>
             <li className="flex gap-3 items-center">
               <Mail size={16} className="text-accent-custom shrink-0" />
-              <a href={`mailto:${siteSettings.contactEmail}`} className="hover:text-white transition-colors">
-                {siteSettings.contactEmail}
+              <a href="mailto:vidhyashankar@cutnstitchapparel.com" className="hover:text-white transition-colors">
+                vidhyashankar@cutnstitchapparel.com
               </a>
             </li>
           </ul>
@@ -158,16 +166,27 @@ export default function Footer() {
 
       {/* Sub-Footer */}
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-neutral-900 px-4 pt-8 text-xs text-neutral-500 sm:flex-row sm:px-6 lg:px-8">
-        <div>
-          &copy; {currentYear} Cut n Stitch Apparel. All rights reserved.
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+          <span>&copy; {currentYear} Cut <span className="text-white">n</span> Stitch Apparel. All rights reserved.</span>
+          <span className="hidden sm:inline text-neutral-700">|</span>
+          <span className="mt-1 sm:mt-0 text-neutral-400 font-medium">GSTIN: 33DDLPD5075B2ZV</span>
+          <span className="ml-2 sm:ml-4 text-neutral-500">ZED Silver MSME Cert No: 23062026_666796</span>
         </div>
         <div className="flex items-center gap-6">
           <span className="hover:text-neutral-400 cursor-pointer transition-colors">Privacy Policy</span>
           <span className="hover:text-neutral-400 cursor-pointer transition-colors">Terms of Service</span>
           <a href="/sitemap.xml" className="hover:text-neutral-400 transition-colors">Sitemap</a>
         </div>
-        <div className="text-[10px] text-neutral-600 font-medium">
-          Premium Apparel Manufacturing Solutions (PAN India/Overseas Delivery)
+        <div className="flex flex-col items-end gap-1">
+          <p className="text-sm leading-6 sm:mt-0">
+            Premium Apparel Manufacturing Solutions (PAN India/Overseas Delivery)
+          </p>
+          <a
+            href="/admin/login"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#D4AF37]/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-[#D4AF37]/70 transition-colors hover:border-[#D4AF37] hover:text-[#D4AF37]"
+          >
+            Admin
+          </a>
         </div>
       </div>
     </footer>

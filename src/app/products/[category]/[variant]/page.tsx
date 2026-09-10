@@ -21,28 +21,7 @@ const CATALOG_TO_PRODUCT_SLUG: Record<string, string> = {
 };
 
 async function loadVariantData(category: string, variant: string) {
-  let product: any = null;
-  const productSlug = CATALOG_TO_PRODUCT_SLUG[category] ?? category;
-
-  try {
-    await dbConnect();
-    product = await Product.findOne({
-      $or: [{ slug: category }, { slug: productSlug }],
-    }).lean();
-  } catch (error) {
-    // Database connection failed, use fallback data
-  }
-
-  if (product) {
-    const selectedVariant = (product.variants || []).find(
-      (v: any) => (v.slug || v.id) === variant,
-    );
-    if (selectedVariant) {
-      return { product, selectedVariant };
-    }
-  }
-
-  // Fallback to catalogCategories
+  // Check catalogCategories first (contains all high-res images and complete specs)
   const catalogVar = getCatalogVariantBySlug(category, variant);
   if (catalogVar) {
     const cat = getCatalogCategoryBySlug(category);
@@ -52,12 +31,31 @@ async function loadVariantData(category: string, variant: string) {
     };
   }
 
+  const productSlug = CATALOG_TO_PRODUCT_SLUG[category] ?? category;
   const fallbackProd = getProductBySlug(category) || getProductBySlug(productSlug);
   if (fallbackProd) {
     const v = (fallbackProd.variants || []).find((x: any) => (x.slug || x.id) === variant);
     if (v) {
       return { product: fallbackProd, selectedVariant: v };
     }
+  }
+
+  try {
+    await dbConnect();
+    const product: any = await Product.findOne({
+      $or: [{ slug: category }, { slug: productSlug }],
+    }).lean();
+
+    if (product) {
+      const selectedVariant = (product.variants || []).find(
+        (v: any) => (v.slug || v.id) === variant,
+      );
+      if (selectedVariant) {
+        return { product, selectedVariant };
+      }
+    }
+  } catch (error) {
+    // Database connection failed, use fallback data
   }
 
   return { product: null, selectedVariant: null };
