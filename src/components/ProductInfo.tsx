@@ -1,4 +1,6 @@
+import { Ruler } from "lucide-react";
 import FeatureCards from "@/components/FeatureCards";
+import SizeChart from "@/components/SizeChart";
 
 interface ProductInfoProps {
   product: any;
@@ -77,7 +79,15 @@ export default function ProductInfo({ product, selectedVariant, onVariantSelect 
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2">
         <div className="flex h-full flex-col justify-between rounded-4xl border border-white/10 bg-black/35 p-5 shadow-[0_18px_44px_rgba(0,0,0,0.16)]">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-muted-custom">Sizes</p>
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-muted-custom">Sizes</p>
+            <a
+              href="#size-chart"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-accent-custom hover:underline"
+            >
+              <Ruler size={12} /> Size Chart
+            </a>
+          </div>
           <p className="mt-3 text-lg font-semibold text-foreground">{(selectedVariant?.sizes ?? product.sizes).join(", ")}</p>
         </div>
 
@@ -85,6 +95,14 @@ export default function ProductInfo({ product, selectedVariant, onVariantSelect 
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-muted-custom">MOQ</p>
           <p className="mt-3 text-lg font-semibold text-foreground">{selectedVariant?.moq ?? product.moq}</p>
         </div>
+      </section>
+
+      <section className="mt-8">
+        <SizeChart
+          categorySlug={product.slug}
+          categoryName={product.category}
+          productName={product.name}
+        />
       </section>
 
       <section className="mt-8 rounded-4xl border border-white/10 bg-black/35 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)]">

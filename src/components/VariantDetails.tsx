@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Shirt, Sparkles } from "lucide-react";
+import { ArrowLeft, Ruler, Shirt, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { normalizeImageSrc } from "@/lib/image";
 import { getProductImageCandidates, normalizeColorName } from "@/lib/productImageMap";
 import type { ProductColor } from "@/models/Product";
 import PricingTable from "@/components/PricingTable";
+import SizeChart from "@/components/SizeChart";
 
 interface VariantDetailsProps {
   categoryName: string;
@@ -223,10 +224,28 @@ export default function VariantDetails({ categoryName, variant, pricing = [] }: 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {detailItems.map((item) => (
               <div key={item.label} className="rounded-2xl border border-border-custom/60 bg-background/80 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-custom">{item.label}</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-custom">{item.label}</p>
+                  {item.label === "Sizes" && (
+                    <a
+                      href="#size-chart"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-accent-custom hover:underline"
+                    >
+                      <Ruler size={12} /> Size Chart
+                    </a>
+                  )}
+                </div>
                 <p className="mt-2 text-sm font-semibold text-foreground">{item.value}</p>
               </div>
             ))}
+          </div>
+
+          <div className="mt-8">
+            <SizeChart
+              categoryName={categoryName}
+              categorySlug={variant.categorySlug}
+              productName={variant.name}
+            />
           </div>
 
           <div className="mt-8 space-y-4">
