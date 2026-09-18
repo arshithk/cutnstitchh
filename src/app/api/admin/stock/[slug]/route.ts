@@ -68,14 +68,16 @@ export async function PATCH(
     }
 
     await dbConnect();
-    const updated = await StockEntry.findOneAndUpdate({ slug }, updates, {
-      new: true,
-      runValidators: true,
-    }).lean();
-
-    if (!updated) {
-      return NextResponse.json({ error: "Stock entry not found" }, { status: 404 });
-    }
+    const updated = await StockEntry.findOneAndUpdate(
+      { slug },
+      { $set: updates },
+      {
+        new: true,
+        upsert: true,
+        runValidators: true,
+        setDefaultsOnInsert: true,
+      },
+    ).lean();
 
     return NextResponse.json(updated);
   } catch (error) {

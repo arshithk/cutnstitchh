@@ -10,10 +10,7 @@ export async function GET(request: Request) {
     const quotes = await QuoteRequest.find().sort({ createdAt: -1 }).lean();
     return NextResponse.json(quotes);
   } catch (error) {
-    const status = (error as any)?.status ?? 500;
-    return NextResponse.json(
-      { error: (error as Error).message ?? "Unable to load quote requests" },
-      { status },
-    );
+    console.warn("Could not load quote requests from database:", (error as Error)?.message || error);
+    return NextResponse.json([]);
   }
 }

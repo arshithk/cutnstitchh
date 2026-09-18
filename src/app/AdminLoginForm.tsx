@@ -15,20 +15,29 @@ export default function AdminLoginForm() {
     setError(null);
     setLoading(true);
 
-    const response = await fetch("/api/admin/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch("/api/admin/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    setLoading(false);
-    if (!response.ok) {
-      const body = await response.json().catch(() => null);
-      setError(body?.error || "Login failed");
-      return;
+      setLoading(false);
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        const rawError = body?.error || "Login failed";
+        const cleanError = rawError.includes("ECONNREFUSED") || rawError.includes("127.0.0.1:27017")
+          ? "Unable to connect to database. Please ensure MongoDB is running."
+          : rawError;
+        setError(cleanError);
+        return;
+      }
+
+      router.push("/admin");
+    } catch {
+      setLoading(false);
+      setError("Unable to reach server. Please make sure the Next.js server is running.");
     }
-
-    router.push("/admin");
   }
 
   return (

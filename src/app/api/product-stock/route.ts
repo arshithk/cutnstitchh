@@ -9,7 +9,7 @@ export async function GET() {
     await dbConnect();
     dbEntries = await StockEntry.find().lean();
   } catch (error) {
-    console.warn("Could not connect to MongoDB for live stock, using catalog fallback:", (error as Error)?.message || error);
+    console.warn("Could not connect to MongoDB for product-stock, using catalog fallback:", (error as Error)?.message || error);
   }
 
   const dbEntriesMap = new Map<string, any>();
@@ -46,6 +46,8 @@ export async function GET() {
           slug: v.slug,
           productName: v.name,
           productType: category.name,
+          productSlug: category.slug,
+          variantSlug: v.slug,
           fabric: v.fabric,
           gsmRange: v.gsm,
           lastUpdated: dbEntry.lastUpdated || new Date().toISOString(),
@@ -59,6 +61,8 @@ export async function GET() {
         slug: v.slug,
         productName: v.name,
         productType: category.name,
+        productSlug: category.slug,
+        variantSlug: v.slug,
         fabric: v.fabric,
         gsmRange: v.gsm,
         lastUpdated: new Date().toISOString(),
@@ -72,7 +76,6 @@ export async function GET() {
     }),
   );
 
-  // If there are additional custom entries in DB not in catalogCategories, append them
   for (const entry of dbEntries) {
     if (entry?.slug && !mergedStock.some((s) => s.slug === entry.slug)) {
       mergedStock.push({
@@ -80,6 +83,8 @@ export async function GET() {
         slug: entry.slug,
         productName: entry.productName,
         productType: entry.productType,
+        productSlug: entry.slug,
+        variantSlug: entry.slug,
         fabric: entry.fabric,
         gsmRange: entry.gsmRange,
         lastUpdated: entry.lastUpdated || new Date().toISOString(),

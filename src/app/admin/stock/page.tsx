@@ -4,20 +4,23 @@ import { verifyAdminToken } from "@/lib/auth";
 import { ADMIN_COOKIE_NAME } from "@/lib/adminAuth";
 import StockManagementPanel from "@/components/admin/StockManagementPanel";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminStockPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get(ADMIN_COOKIE_NAME)?.value ?? null;
-  if (!token || !verifyAdminToken(token)) {
+  const session = token ? verifyAdminToken(token) : null;
+  if (!session || session.email !== "admin@cutnstitch.com") {
     redirect("/admin/login");
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 p-6 text-slate-900">
-      <div className="mx-auto max-w-6xl rounded-3xl bg-white p-8 shadow-xl shadow-slate-200/80">
-        <h1 className="mb-4 text-3xl font-semibold">Live Stock</h1>
-        <p className="mb-6 text-sm text-slate-600">Manage live stock entries and color availability.</p>
-        <StockManagementPanel />
+    <div className="max-w-6xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Stock Management</h1>
+        <p className="text-neutral-400">Update stock quantities for each variant colour.</p>
       </div>
-    </main>
+      <StockManagementPanel />
+    </div>
   );
 }

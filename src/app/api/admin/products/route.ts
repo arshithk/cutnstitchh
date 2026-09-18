@@ -15,6 +15,8 @@ const REQUIRED_PRODUCT_FIELDS = [
   "heroImage",
 ];
 
+import { products as fallbackProducts } from "@/data/products";
+
 export async function GET(request: Request) {
   try {
     requireAdminSession(request);
@@ -22,10 +24,29 @@ export async function GET(request: Request) {
     const products = await Product.find().lean();
     return NextResponse.json(products);
   } catch (error) {
-    const status = (error as any)?.status ?? 500;
+    console.warn("Could not load products from MongoDB, falling back to static catalog:", (error as Error)?.message || error);
+    // If database is offline, fall back to static catalog
     return NextResponse.json(
-      { error: (error as Error).message ?? "Unable to load products" },
-      { status },
+      fallbackProducts.map((p, idx) => ({
+        _id: `fallback-${idx}`,
+        slug: p.slug,
+        name: p.name,
+        category: p.category,
+        tagline: p.tagline,
+        moq: p.moq,
+        fabric: p.fabric,
+        gsmRange: p.gsmRange,
+        description: p.description,
+        heroImage: p.heroImage,
+        availableForBulk: p.availableForBulk,
+        premiumQuality: p.premiumQuality,
+        deliveryTimeline: p.deliveryTimeline,
+        inquiryOnly: p.inquiryOnly,
+        pricing: p.pricing,
+        colors: p.colors,
+        sizes: p.sizes,
+        variants: p.variants,
+      })),
     );
   }
 }
@@ -87,9 +108,10 @@ export async function POST(request: Request) {
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
     const status = (error as any)?.status ?? 500;
-    return NextResponse.json(
-      { error: (error as Error).message ?? "Unable to create product" },
-      { status },
-    );
+    const msg = (error as Error).message ?? "Unable to create product";
+    const friendlyMsg = msg.includes("ECONNREFUSED") || msg.includes("MongoDB")
+      ? "Database connection unavailable. Please ensure MongoDB service is running."
+      : msg;
+    return NextResponse.json({ error: friendlyMsg }, { status });
   }
 }

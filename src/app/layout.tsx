@@ -92,8 +92,8 @@ const organizationSchema = {
   logo: "https://cutnstitchapparel.com/images/cut-n-stitch-logo.png",
   image: "https://cutnstitchapparel.com/images/cut-n-stitch-apparel.jpeg",
   sameAs: [
-    "https://instagram.com",
-    "https://linkedin.com",
+    "https://www.instagram.com/cutnstitchapparel?stkn=MW9yemN2dm9xMW9lbA==",
+    "https://www.facebook.com/share/1ceqrM5rX6/",
   ],
   contactPoint: {
     "@type": "ContactPoint",

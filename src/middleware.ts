@@ -1,29 +1,45 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { ADMIN_COOKIE_NAME } from "@/lib/adminAuth";
 
-function hasAdminToken(request: NextRequest) {
-  return Boolean(request.cookies.get(ADMIN_COOKIE_NAME)?.value);
+function isTokenValid(token: string | undefined): boolean {
+  if (!token) return false;
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return false;
+    const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf-8"));
+    if (payload.exp && Date.now() >= payload.exp * 1000) {
+      return false;
+    }
+    return payload.email === "admin@cutnstitch.com";
+  } catch {
+    return false;
+  }
 }
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isLoginRoute = pathname === "/admin/login";
+  const isLogoutRoute = pathname === "/admin/logout";
   const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
   const isAdminApiRoute = pathname === "/api/admin" || pathname.startsWith("/api/admin/");
-  const isAuthApiRoute = pathname === "/api/admin/auth/login" || pathname === "/api/admin/auth/logout";
-  const tokenPresent = hasAdminToken(request);
+  const isAuthApiRoute =
+    pathname === "/api/admin/auth/login" ||
+    pathname === "/api/admin/auth/logout" ||
+    pathname === "/api/admin/login" ||
+    pathname === "/api/admin/logout";
 
-  if (isLoginRoute && tokenPresent) {
-    return NextResponse.redirect(new URL("/admin", request.url));
-  }
+  const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
+  const authenticated = isTokenValid(token);
 
-  if (isAdminRoute && !isLoginRoute && !tokenPresent) {
+
+
+  if (isAdminRoute && !isLoginRoute && !isLogoutRoute && !authenticated) {
     const destination = new URL("/admin/login", request.url);
     destination.searchParams.set("redirectTo", pathname);
     return NextResponse.redirect(destination);
   }
 
-  if (isAdminApiRoute && !isAuthApiRoute && !tokenPresent) {
+  if (isAdminApiRoute && !isAuthApiRoute && !authenticated) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

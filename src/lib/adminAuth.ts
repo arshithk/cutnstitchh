@@ -39,9 +39,9 @@ export function requireAdminSession(request: Request | NextRequest) {
 const cookieSecurityFlags = process.env.NODE_ENV === "production" ? "Secure; " : "";
 
 export function createAdminCookie(token: string) {
-  return `${ADMIN_COOKIE_NAME}=${token}; HttpOnly; ${cookieSecurityFlags}Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+  return `${ADMIN_COOKIE_NAME}=${token}; HttpOnly; ${cookieSecurityFlags}Path=/; SameSite=Lax`;
 }
 
 export function clearAdminCookie() {
-  return `${ADMIN_COOKIE_NAME}=; HttpOnly; ${cookieSecurityFlags}Path=/; Max-Age=0; SameSite=Lax`;
+  return `${ADMIN_COOKIE_NAME}=; HttpOnly; ${cookieSecurityFlags}Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; SameSite=Lax`;
 }

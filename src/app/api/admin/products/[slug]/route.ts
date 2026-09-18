@@ -25,6 +25,8 @@ const UPDATE_FIELDS = [
   "variants",
 ];
 
+import { products as fallbackProducts } from "@/data/products";
+
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ slug: string }> },
@@ -39,10 +41,14 @@ export async function GET(
     }
     return NextResponse.json(product);
   } catch (error) {
-    const status = (error as any)?.status ?? 500;
+    console.warn("Could not load product from MongoDB, falling back to static catalog:", (error as Error)?.message || error);
+    const fallback = fallbackProducts.find((p) => p.slug === slug);
+    if (fallback) {
+      return NextResponse.json({ ...fallback, _id: `fallback-${slug}` });
+    }
     return NextResponse.json(
-      { error: (error as Error).message ?? "Unable to load product" },
-      { status },
+      { error: "Product not found" },
+      { status: 404 },
     );
   }
 }
@@ -94,10 +100,11 @@ export async function PATCH(
     return NextResponse.json(product);
   } catch (error) {
     const status = (error as any)?.status ?? 500;
-    return NextResponse.json(
-      { error: (error as Error).message ?? "Unable to update product" },
-      { status },
-    );
+    const msg = (error as Error).message ?? "Unable to update product";
+    const friendlyMsg = msg.includes("ECONNREFUSED") || msg.includes("MongoDB")
+      ? "Database connection unavailable. Please ensure MongoDB service is running."
+      : msg;
+    return NextResponse.json({ error: friendlyMsg }, { status });
   }
 }
 
@@ -116,9 +123,11 @@ export async function DELETE(
     return NextResponse.json({ ok: true });
   } catch (error) {
     const status = (error as any)?.status ?? 500;
-    return NextResponse.json(
-      { error: (error as Error).message ?? "Unable to delete product" },
-      { status },
-    );
+    const msg = (error as Error).message ?? "Unable to delete product";
+    const friendlyMsg = msg.includes("ECONNREFUSED") || msg.includes("MongoDB")
+      ? "Database connection unavailable. Please ensure MongoDB service is running."
+      : msg;
+    return NextResponse.json({ error: friendlyMsg }, { status });
   }
 }
+

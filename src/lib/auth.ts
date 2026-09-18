@@ -13,7 +13,13 @@ export function verifyPassword(password: string, passwordHash: string) {
   return bcrypt.compareSync(password, passwordHash);
 }
 
-export function generateAdminToken(user: Pick<AdminUserDocument, "_id" | "email" | "role">) {
+export interface AdminTokenUser {
+  _id: string | { toString(): string };
+  email: string;
+  role: "admin" | "editor" | string;
+}
+
+export function generateAdminToken(user: AdminTokenUser) {
   return jwt.sign(
     {
       sub: user._id.toString(),

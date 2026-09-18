@@ -17,7 +17,7 @@ if (!globalWithMongoose.mongooseCache) {
 }
 
 export async function dbConnect() {
-  if (globalWithMongoose.mongooseCache?.conn) {
+  if (globalWithMongoose.mongooseCache?.conn && (mongoose.connection.readyState as number) === 1) {
     return globalWithMongoose.mongooseCache.conn;
   }
 
@@ -25,15 +25,15 @@ export async function dbConnect() {
     globalWithMongoose.mongooseCache = { conn: null, promise: null, lastFailed: 0 };
   }
 
-  // If connection failed within the last 30 seconds, avoid hanging or spamming
+  // If connection failed within the last 3 seconds, avoid rapid spamming
   if (
     globalWithMongoose.mongooseCache.lastFailed &&
-    Date.now() - globalWithMongoose.mongooseCache.lastFailed < 30000
+    Date.now() - globalWithMongoose.mongooseCache.lastFailed < 3000
   ) {
-    throw new Error("MongoDB connection in cooldown after recent failure");
+    throw new Error("MongoDB service is currently unavailable. Retrying shortly...");
   }
 
-  if (!globalWithMongoose.mongooseCache.promise) {
+  if (!globalWithMongoose.mongooseCache.promise || (mongoose.connection.readyState as number) === 0) {
     const uri = env.MONGODB_URI;
 
     globalWithMongoose.mongooseCache.promise = mongoose
@@ -53,13 +53,37 @@ export async function dbConnect() {
           globalWithMongoose.mongooseCache.promise = null;
           globalWithMongoose.mongooseCache.lastFailed = Date.now();
         }
-        console.warn("dbConnect warning:", (error as any)?.message || error);
+        const errMsg = (error as any)?.message || String(error);
+        console.warn("dbConnect warning:", errMsg);
+        if (errMsg.includes("ECONNREFUSED")) {
+          throw new Error("Cannot connect to MongoDB server at 127.0.0.1:27017. Please ensure the MongoDB service is running.");
+        }
         throw error;
       });
   }
 
-  globalWithMongoose.mongooseCache.conn = await globalWithMongoose.mongooseCache.promise;
-  return globalWithMongoose.mongooseCache.conn;
+  try {
+    globalWithMongoose.mongooseCache.conn = await globalWithMongoose.mongooseCache.promise;
+    return globalWithMongoose.mongooseCache.conn;
+  } catch (err) {
+    if (globalWithMongoose.mongooseCache) {
+      globalWithMongoose.mongooseCache.conn = null;
+      globalWithMongoose.mongooseCache.promise = null;
+    }
+    throw err;
+  }
+}
+
+export async function isDbConnected(): Promise<boolean> {
+  if ((mongoose.connection.readyState as number) === 1) {
+    return true;
+  }
+  try {
+    const conn = await dbConnect();
+    return (conn.connection.readyState as number) === 1;
+  } catch {
+    return false;
+  }
 }
 
 export async function dbDisconnect() {
@@ -68,5 +92,6 @@ export async function dbDisconnect() {
   }
 
   await mongoose.disconnect();
-  globalWithMongoose.mongooseCache = { conn: null, promise: null };
+  globalWithMongoose.mongooseCache = { conn: null, promise: null, lastFailed: 0 };
 }
+

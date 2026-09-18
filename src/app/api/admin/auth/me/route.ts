@@ -9,11 +9,20 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  await dbConnect();
-  const user = await AdminUser.findById(session.sub).lean();
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (session.sub === "env-admin") {
+    return NextResponse.json({ email: session.email, role: session.role });
   }
 
-  return NextResponse.json({ email: user.email, role: user.role });
+  try {
+    await dbConnect();
+    const user = await AdminUser.findById(session.sub).lean();
+    if (user) {
+      return NextResponse.json({ email: user.email, role: user.role });
+    }
+  } catch (error) {
+    console.warn("Database lookup skipped in /api/admin/auth/me:", (error as Error)?.message || error);
+  }
+
+  return NextResponse.json({ email: session.email, role: session.role });
 }
+

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Lock, Mail, ArrowRight, RefreshCw, AlertCircle } from "lucide-react";
 
 export default function AdminLoginForm() {
   const router = useRouter();
@@ -15,60 +16,96 @@ export default function AdminLoginForm() {
     setError(null);
     setLoading(true);
 
-    const response = await fetch("/api/admin/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch("/api/admin/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
 
-    setLoading(false);
-
-    if (!response.ok) {
       const result = await response.json().catch(() => null);
-      setError(result?.error || "Login failed");
-      return;
-    }
 
-    router.push("/admin");
+      if (!response.ok || !result?.ok) {
+        setError(result?.error || "Invalid email or password");
+        setLoading(false);
+        return;
+      }
+
+      router.push("/admin");
+      router.refresh();
+    } catch {
+      setError("An unexpected error occurred. Please try again.");
+      setLoading(false);
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      {error ? <p className="rounded-3xl bg-rose-50 p-3 text-sm text-rose-700">{error}</p> : null}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <div className="flex items-center gap-2 rounded-xl bg-rose-950/50 border border-rose-800/80 p-3.5 text-xs text-rose-300">
+          <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
+          <span>{error}</span>
+        </div>
+      )}
+
       <div>
-        <label htmlFor="email" className="mb-2 block text-sm font-medium text-slate-700">
-          Email
+        <label
+          htmlFor="admin-login-email"
+          className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-neutral-400"
+        >
+          Admin Email
         </label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-          className="w-full rounded-3xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
-        />
+        <div className="relative">
+          <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
+          <input
+            id="admin-login-email"
+            type="email"
+            required
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="admin@cutnstitch.com"
+            className="w-full rounded-xl border border-neutral-800 bg-neutral-900 py-3 pl-10 pr-4 text-sm text-white placeholder-neutral-600 focus:border-[#D4AF37] focus:outline-none transition"
+          />
+        </div>
       </div>
 
       <div>
-        <label htmlFor="password" className="mb-2 block text-sm font-medium text-slate-700">
+        <label
+          htmlFor="admin-login-password"
+          className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-neutral-400"
+        >
           Password
         </label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-          className="w-full rounded-3xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
-        />
+        <div className="relative">
+          <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
+          <input
+            id="admin-login-password"
+            type="password"
+            required
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="••••••••"
+            className="w-full rounded-xl border border-neutral-800 bg-neutral-900 py-3 pl-10 pr-4 text-sm text-white placeholder-neutral-600 focus:border-[#D4AF37] focus:outline-none transition"
+          />
+        </div>
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="inline-flex w-full items-center justify-center rounded-3xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-500"
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#D4AF37] py-3.5 text-sm font-bold text-black transition-all hover:bg-[#C8A64A] disabled:opacity-50 shadow-lg shadow-[#D4AF37]/10"
       >
-        {loading ? "Signing in…" : "Sign in"}
+        {loading ? (
+          <>
+            <RefreshCw className="h-4 w-4 animate-spin" />
+            <span>Authenticating…</span>
+          </>
+        ) : (
+          <>
+            <span>Sign In</span>
+            <ArrowRight className="h-4 w-4" />
+          </>
+        )}
       </button>
     </form>
   );

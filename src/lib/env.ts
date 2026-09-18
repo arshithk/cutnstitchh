@@ -7,7 +7,7 @@ function getEnv(key: string, fallback: string = ""): string {
 }
 
 export const env = {
-  MONGODB_URI: getEnv("MONGODB_URI", "mongodb://localhost:27017/cutnstitch"),
+  MONGODB_URI: getEnv("MONGODB_URI", "mongodb://127.0.0.1:27017/cutnstitch"),
   ADMIN_JWT_SECRET: getEnv("ADMIN_JWT_SECRET", "default-build-time-secret-cutnstitch-2026"),
   ADMIN_EMAIL: process.env.ADMIN_EMAIL?.trim() || undefined,
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || undefined,

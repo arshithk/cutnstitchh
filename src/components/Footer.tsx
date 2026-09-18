@@ -43,7 +43,7 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-4">
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/cutnstitchapparel?stkn=MW9yemN2dm9xMW9lbA=="
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -56,26 +56,15 @@ export default function Footer() {
               </svg>
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://www.facebook.com/share/1ceqrM5rX6/"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="LinkedIn"
+              aria-label="Facebook"
               className="p-2 rounded-full bg-neutral-900 text-neutral-400 hover:bg-accent-custom hover:text-white transition-colors"
             >
               <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                <rect width="4" height="12" x="2" y="9"/>
-                <circle cx="4" cy="4" r="2"/>
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
               </svg>
-            </a>
-            <a
-              href={`https://wa.me/${siteSettings.whatsAppNumber.replace(/\D/g, "")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="WhatsApp"
-              className="p-2 rounded-full bg-neutral-900 text-neutral-400 hover:bg-accent-custom hover:text-white transition-colors"
-            >
-              <MessageSquare size={16} />
             </a>
           </div>
         </div>
