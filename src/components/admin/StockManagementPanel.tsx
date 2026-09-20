@@ -44,6 +44,7 @@ export default function StockManagementPanel() {
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [dbStatus, setDbStatus] = useState<"connected" | "reconnecting">("connected");
 
   const [newEntry, setNewEntry] = useState({
     slug: "",
@@ -56,15 +57,41 @@ export default function StockManagementPanel() {
     colorQty: 250,
   });
 
-  async function loadStocks() {
+  async function loadStocks(retryCount = 2) {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/admin/stock", { credentials: "include" });
-      if (!response.ok) throw new Error("Unable to load stock");
+      let response: Response | null = null;
+      let lastErr: Error | null = null;
+
+      for (let attempt = 0; attempt <= retryCount; attempt++) {
+        try {
+          response = await fetch("/api/admin/stock", { credentials: "include" });
+          if (response.ok) {
+            setDbStatus("connected");
+            break;
+          }
+          if (attempt < retryCount) {
+            setDbStatus("reconnecting");
+            await new Promise((r) => setTimeout(r, 600));
+          }
+        } catch (fetchErr) {
+          lastErr = fetchErr instanceof Error ? fetchErr : new Error(String(fetchErr));
+          if (attempt < retryCount) {
+            setDbStatus("reconnecting");
+            await new Promise((r) => setTimeout(r, 600));
+          }
+        }
+      }
+
+      if (!response || !response.ok) {
+        throw new Error(lastErr?.message || "Unable to load stock");
+      }
+
       const body = await response.json();
       const list: StockRecord[] = Array.isArray(body) ? body : [];
       setStocks(list);
+      setDbStatus("connected");
 
       // Expand all categories by default
       const cats: Record<string, boolean> = {};
@@ -84,6 +111,17 @@ export default function StockManagementPanel() {
 
   useEffect(() => {
     void loadStocks();
+
+    const onFocus = () => {
+      fetch("/api/admin/stock", { credentials: "include" })
+        .then((r) => {
+          if (r.ok) setDbStatus("connected");
+        })
+        .catch(() => {});
+    };
+
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
   }, []);
 
   const toggleCategory = (cat: string) => {
@@ -110,33 +148,57 @@ export default function StockManagementPanel() {
     );
   };
 
-  const handleSaveStock = async (stock: StockRecord) => {
+  const handleSaveStock = async (stock: StockRecord, retryCount = 2) => {
     setSavingSlug(stock.slug);
     setError(null);
     setMessage(null);
     try {
-      const res = await fetch(`/api/admin/stock/${stock.slug}`, {
-        method: "PATCH",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          slug: stock.slug,
-          productName: stock.productName,
-          productType: stock.productType,
-          fabric: stock.fabric,
-          gsmRange: stock.gsmRange,
-          availableForBulk: stock.availableForBulk ?? true,
-          colors: stock.colors,
-          lastUpdated: new Date().toISOString(),
-        }),
-      });
+      let res: Response | null = null;
+      let lastErr: Error | null = null;
 
-      if (res.ok) {
+      for (let attempt = 0; attempt <= retryCount; attempt++) {
+        try {
+          res = await fetch(`/api/admin/stock/${stock.slug}`, {
+            method: "PATCH",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              slug: stock.slug,
+              productName: stock.productName,
+              productType: stock.productType,
+              fabric: stock.fabric,
+              gsmRange: stock.gsmRange,
+              availableForBulk: stock.availableForBulk ?? true,
+              colors: stock.colors,
+              lastUpdated: new Date().toISOString(),
+            }),
+          });
+
+          if (res.ok) {
+            setDbStatus("connected");
+            break;
+          }
+
+          if (attempt < retryCount) {
+            setDbStatus("reconnecting");
+            await new Promise((r) => setTimeout(r, 600));
+          }
+        } catch (fetchErr) {
+          lastErr = fetchErr instanceof Error ? fetchErr : new Error(String(fetchErr));
+          if (attempt < retryCount) {
+            setDbStatus("reconnecting");
+            await new Promise((r) => setTimeout(r, 600));
+          }
+        }
+      }
+
+      if (res && res.ok) {
         setSavedSlug(stock.slug);
+        setDbStatus("connected");
         setTimeout(() => setSavedSlug(null), 2500);
       } else {
-        const body = await res.json().catch(() => null);
-        throw new Error(body?.error || "Save failed");
+        const body = res ? await res.json().catch(() => null) : null;
+        throw new Error(body?.error || lastErr?.message || "Save failed");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Save failed");
@@ -234,9 +296,29 @@ export default function StockManagementPanel() {
         </div>
       )}
       {error && (
-        <div className="flex items-center gap-2 rounded-xl bg-rose-950/50 border border-rose-800/80 p-4 text-sm text-rose-300">
-          <X className="h-4 w-4 shrink-0 text-rose-400" />
-          <span>{error}</span>
+        <div className="flex items-center justify-between gap-3 rounded-xl bg-rose-950/60 border border-rose-800/80 p-4 text-sm text-rose-300 shadow-lg">
+          <div className="flex items-center gap-2.5">
+            <X className="h-4 w-4 shrink-0 text-rose-400" />
+            <span>{error}</span>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => {
+                setError(null);
+                void loadStocks();
+              }}
+              className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-rose-900 hover:bg-rose-800 text-white border border-rose-700 transition"
+            >
+              Retry Connection
+            </button>
+            <button
+              onClick={() => setError(null)}
+              className="p-1 hover:bg-rose-900/50 rounded-lg text-rose-400 hover:text-white transition"
+              title="Dismiss"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       )}
 
@@ -256,6 +338,26 @@ export default function StockManagementPanel() {
 
         {/* Buttons and Counter */}
         <div className="flex items-center gap-3">
+          {/* Live DB status badge */}
+          <div className="hidden sm:flex items-center gap-2 rounded-xl border border-neutral-800 bg-[#111] px-3.5 py-2 text-xs">
+            <span className="relative flex h-2 w-2">
+              <span
+                className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                  dbStatus === "connected" ? "animate-ping bg-emerald-400" : "animate-pulse bg-amber-400"
+                }`}
+              />
+              <span
+                className={`relative inline-flex rounded-full h-2 w-2 ${
+                  dbStatus === "connected" ? "bg-emerald-500" : "bg-amber-500"
+                }`}
+              />
+            </span>
+            <span className="text-neutral-400">Database:</span>
+            <span className={`font-semibold ${dbStatus === "connected" ? "text-emerald-400" : "text-amber-400"}`}>
+              {dbStatus === "connected" ? "Connected" : "Reconnecting..."}
+            </span>
+          </div>
+
           <div className="hidden sm:flex items-center gap-2 rounded-xl border border-neutral-800 bg-[#111] px-3.5 py-2 text-xs text-neutral-300">
             <Package className="h-4 w-4 text-[#D4AF37]" />
             <span>

@@ -1,9 +1,20 @@
 "use client";
 
+import Link from "next/link";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { catalogCategories, products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
+
+const HOME_PRODUCT_PILLS = [
+  { name: "Regular Fit", href: "/products/regular-fit" },
+  { name: "Polo", href: "/products/polo" },
+  { name: "Oversized", href: "/products/oversized" },
+  { name: "Hoodies", href: "/products/hoodie" },
+  { name: "Sweatshirts", href: "/products/sweatshirt" },
+  { name: "Shorts", href: "/products/shorts" },
+  { name: "Joggers", href: "/products/joggers" },
+];
 
 export default function ProductCategories() {
   const containerRef = useRef(null);
@@ -28,6 +39,21 @@ export default function ProductCategories() {
           <p className="text-base leading-relaxed text-muted-custom">
             Explore our manufacturing-ready catalog with premium detail pages, bulk pricing, and a refined B2B experience.
           </p>
+
+          {/* Quick Product Category Navigation Pills */}
+          <div className="mt-3 flex justify-center overflow-x-auto hide-scrollbar">
+            <div className="inline-flex items-center gap-1 rounded-full border border-border-custom/80 bg-card/80 p-1.5 shadow-sm backdrop-blur-md">
+              {HOME_PRODUCT_PILLS.map((pill) => (
+                <Link
+                  key={pill.name}
+                  href={pill.href}
+                  className="rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-muted-custom transition-all hover:bg-foreground hover:text-background hover:shadow-sm whitespace-nowrap"
+                >
+                  {pill.name}
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

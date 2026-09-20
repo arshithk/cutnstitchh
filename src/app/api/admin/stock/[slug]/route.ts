@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { dbConnect } from "@/lib/db";
+import { withDbRetry } from "@/lib/db";
 import StockEntry from "@/models/StockEntry";
 import { requireAdminSession } from "@/lib/adminAuth";
 
@@ -20,8 +20,7 @@ export async function GET(
   const { slug } = await context.params;
   try {
     requireAdminSession(request);
-    await dbConnect();
-    const entry = await StockEntry.findOne({ slug }).lean();
+    const entry = await withDbRetry(() => StockEntry.findOne({ slug }).lean());
     if (!entry) {
       return NextResponse.json({ error: "Stock entry not found" }, { status: 404 });
     }
@@ -56,28 +55,29 @@ export async function PATCH(
     if (typeof body.availableForBulk === "boolean") updates.availableForBulk = body.availableForBulk;
     if (Array.isArray(body.colors) && body.colors.every(isValidColorEntry)) updates.colors = body.colors;
     if (typeof body.slug === "string") {
-      const slug = body.slug.trim();
-      if (slug.length === 0) {
+      const slugVal = body.slug.trim();
+      if (slugVal.length === 0) {
         return NextResponse.json({ error: "Slug cannot be empty" }, { status: 400 });
       }
-      updates.slug = slug;
+      updates.slug = slugVal;
     }
 
     if (Object.keys(updates).length === 0) {
       return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
     }
 
-    await dbConnect();
-    const updated = await StockEntry.findOneAndUpdate(
-      { slug },
-      { $set: updates },
-      {
-        new: true,
-        upsert: true,
-        runValidators: true,
-        setDefaultsOnInsert: true,
-      },
-    ).lean();
+    const updated = await withDbRetry(() =>
+      StockEntry.findOneAndUpdate(
+        { slug },
+        { $set: updates },
+        {
+          new: true,
+          upsert: true,
+          runValidators: true,
+          setDefaultsOnInsert: true,
+        },
+      ).lean()
+    );
 
     return NextResponse.json(updated);
   } catch (error) {
@@ -96,8 +96,7 @@ export async function DELETE(
   const { slug } = await context.params;
   try {
     requireAdminSession(request);
-    await dbConnect();
-    const deleted = await StockEntry.findOneAndDelete({ slug }).lean();
+    const deleted = await withDbRetry(() => StockEntry.findOneAndDelete({ slug }).lean());
     if (!deleted) {
       return NextResponse.json({ error: "Stock entry not found" }, { status: 404 });
     }

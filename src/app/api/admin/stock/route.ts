@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { dbConnect } from "@/lib/db";
+import { withDbRetry } from "@/lib/db";
 import StockEntry from "@/models/StockEntry";
 import { requireAdminSession } from "@/lib/adminAuth";
 import { catalogCategories } from "@/data/products";
@@ -32,8 +32,7 @@ export async function GET(request: Request) {
 
   let dbEntries: any[] = [];
   try {
-    await dbConnect();
-    dbEntries = await StockEntry.find().lean();
+    dbEntries = await withDbRetry(() => StockEntry.find().lean());
   } catch (error) {
     console.warn("Could not load stock entries from database:", (error as Error)?.message || error);
   }
@@ -141,23 +140,24 @@ export async function POST(request: Request) {
       );
     }
 
-    await dbConnect();
-    const created = await StockEntry.findOneAndUpdate(
-      { slug: body.slug.trim() },
-      {
-        $set: {
-          slug: body.slug.trim(),
-          productName: body.productName.trim(),
-          productType: body.productType.trim(),
-          fabric: body.fabric.trim(),
-          gsmRange: body.gsmRange.trim(),
-          lastUpdated: body.lastUpdated || new Date().toISOString(),
-          availableForBulk: body.availableForBulk ?? true,
-          colors: body.colors,
+    const created = await withDbRetry(() =>
+      StockEntry.findOneAndUpdate(
+        { slug: body.slug.trim() },
+        {
+          $set: {
+            slug: body.slug.trim(),
+            productName: body.productName.trim(),
+            productType: body.productType.trim(),
+            fabric: body.fabric.trim(),
+            gsmRange: body.gsmRange.trim(),
+            lastUpdated: body.lastUpdated || new Date().toISOString(),
+            availableForBulk: body.availableForBulk ?? true,
+            colors: body.colors,
+          },
         },
-      },
-      { new: true, upsert: true, runValidators: true },
-    ).lean();
+        { new: true, upsert: true, runValidators: true },
+      ).lean()
+    );
 
     return NextResponse.json(created, { status: 201 });
   } catch (error) {
