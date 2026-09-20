@@ -125,62 +125,61 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right Column: Model Spotlight Presentation */}
+        {/* Right Column: Model Spotlight Standing Merged Presentation */}
         <div className="relative mx-auto flex flex-col items-center justify-center md:col-span-6 lg:col-span-6 w-full">
-          {/* Glowing Halo / Spotlight centered behind model (matching reference image) */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[340px] w-[340px] sm:h-[440px] sm:w-[440px] rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.32)_0%,rgba(212,175,55,0.12)_45%,transparent_70%)] pointer-events-none blur-2xl" />
+          {/* Ambient Spotlight / Warm Golden Aura behind the standing model */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[380px] w-[380px] sm:h-[480px] sm:w-[480px] rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.3)_0%,rgba(212,175,55,0.08)_50%,transparent_75%)] pointer-events-none blur-3xl -z-10" />
 
-          {/* Model Card Container with AnimatePresence */}
-          <div className="relative w-full max-w-[360px] sm:max-w-[420px] md:max-w-[400px] lg:max-w-[440px] h-[440px] sm:h-[490px] md:h-[500px] lg:h-[530px]">
+          {/* Model Stage Container - Frame-less standing model merged with background */}
+          <div className="relative w-full max-w-[360px] sm:max-w-[420px] md:max-w-[420px] lg:max-w-[460px] h-[460px] sm:h-[520px] md:h-[540px] lg:h-[580px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeModel.id}
-                initial={{ opacity: 0, scale: 0.94, y: 20 }}
+                initial={{ opacity: 0, scale: 0.95, y: 15 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.96, y: -15 }}
+                exit={{ opacity: 0, scale: 0.97, y: -12 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
-                className="group relative h-full w-full overflow-hidden rounded-[2.5rem] border border-white/15 bg-neutral-950/70 p-2 shadow-[0_24px_60px_rgba(0,0,0,0.55)] backdrop-blur-xl"
+                className="group relative h-full w-full flex items-end justify-center"
               >
-                {/* Clickable Model Image leading to the product page */}
+                {/* Clickable Standing Model leading to the product page */}
                 <Link
                   href={activeModel.href}
-                  className="relative block h-full w-full overflow-hidden rounded-[2rem]"
-                  title={`View ${activeModel.name}`}
+                  className="relative block h-full w-full"
+                  title={`Explore ${activeModel.name}`}
                 >
-                  <Image
-                    src={activeModel.image}
-                    alt={`${activeModel.name} - Cut N Stitch B2B Apparel Manufacturing Bangalore`}
-                    fill
-                    sizes="(min-width: 1024px) 40vw, (min-width: 768px) 45vw, 90vw"
-                    className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
-                    priority
-                  />
+                  {/* Standing Model with Transparent Cutout & Soft Bottom Fade */}
+                  <div
+                    className="relative h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+                    style={{
+                      maskImage: "linear-gradient(to bottom, black 82%, transparent 100%)",
+                      WebkitMaskImage: "linear-gradient(to bottom, black 82%, transparent 100%)",
+                    }}
+                  >
+                    <Image
+                      src={activeModel.image}
+                      alt={`${activeModel.name} - Cut N Stitch B2B Apparel Manufacturing Bangalore`}
+                      fill
+                      sizes="(min-width: 1024px) 45vw, (min-width: 768px) 50vw, 92vw"
+                      className="object-contain object-bottom drop-shadow-[0_20px_45px_rgba(0,0,0,0.85)]"
+                      priority
+                    />
+                  </div>
 
-                  {/* Gradient vignettes */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent opacity-85 group-hover:opacity-75 transition-opacity" />
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,transparent_60%,rgba(0,0,0,0.4)_100%)]" />
+                  {/* Floor Ambient Reflection / Contact Shadow under standing model */}
+                  <div className="pointer-events-none absolute -bottom-2 left-1/2 -translate-x-1/2 h-8 w-4/5 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.9)_0%,rgba(212,175,55,0.15)_40%,transparent_75%)] blur-lg z-10" />
 
-                  {/* Floating Badge on Model */}
-                  <div className="absolute top-4 left-4 z-20">
-                    <span className="rounded-full border border-white/20 bg-black/60 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white backdrop-blur-md shadow-md">
+                  {/* Sleek Floating Category Tag */}
+                  <div className="absolute top-3 left-4 z-20">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-accent-custom/40 bg-black/60 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-accent-custom backdrop-blur-md shadow-lg">
+                      <Sparkles size={11} className="text-accent-custom" />
                       {activeModel.navLabel}
                     </span>
                   </div>
 
-                  {/* Hover Prompt CTA Banner */}
-                  <div className="absolute inset-x-4 bottom-4 z-20 flex items-center justify-between rounded-2xl border border-white/20 bg-black/75 px-4 py-3 backdrop-blur-md shadow-lg transition-transform duration-300 group-hover:translate-y-[-2px]">
-                    <div className="flex flex-col">
-                      <span className="text-xs font-extrabold text-white">
-                        {activeModel.name}
-                      </span>
-                      <span className="text-[11px] text-accent-custom font-semibold">
-                        View Product Details & MOQ →
-                      </span>
-                    </div>
-
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-custom text-black shadow-md">
-                      <ArrowRight size={15} />
-                    </div>
+                  {/* Floating Interactive CTA Pill */}
+                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 rounded-full border border-white/20 bg-neutral-950/80 px-4 py-2 text-xs font-bold text-white backdrop-blur-md shadow-2xl transition-all duration-300 group-hover:scale-105 group-hover:border-accent-custom group-hover:bg-accent-custom group-hover:text-black">
+                    <span>Explore {activeModel.name}</span>
+                    <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
                   </div>
                 </Link>
               </motion.div>
@@ -191,7 +190,7 @@ export default function Hero() {
               type="button"
               onClick={() => heroModelCtx?.prevModel()}
               aria-label="Previous model"
-              className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-30 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-white/20 bg-neutral-900/90 text-white shadow-xl backdrop-blur-md transition-all hover:scale-110 hover:bg-accent-custom hover:text-black hover:border-accent-custom active:scale-95"
+              className="absolute -left-3 sm:-left-6 top-1/2 -translate-y-1/2 z-30 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-white/20 bg-neutral-900/90 text-white shadow-2xl backdrop-blur-md transition-all hover:scale-110 hover:bg-accent-custom hover:text-black hover:border-accent-custom active:scale-95"
             >
               <ChevronLeft size={20} />
             </button>
@@ -200,7 +199,7 @@ export default function Hero() {
               type="button"
               onClick={() => heroModelCtx?.nextModel()}
               aria-label="Next model"
-              className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-30 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-white/20 bg-neutral-900/90 text-white shadow-xl backdrop-blur-md transition-all hover:scale-110 hover:bg-accent-custom hover:text-black hover:border-accent-custom active:scale-95"
+              className="absolute -right-3 sm:-right-6 top-1/2 -translate-y-1/2 z-30 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-white/20 bg-neutral-900/90 text-white shadow-2xl backdrop-blur-md transition-all hover:scale-110 hover:bg-accent-custom hover:text-black hover:border-accent-custom active:scale-95"
             >
               <ChevronRight size={20} />
             </button>

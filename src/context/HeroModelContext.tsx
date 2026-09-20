@@ -29,7 +29,7 @@ export const HERO_PRODUCT_MODELS: HeroProductModel[] = [
     subheadline: "Everyday essentials crafted with perfection.",
     description:
       "Retail-grade 180 GSM combed cotton tailored for comfort, structure, and high-impact custom branding. Engineered for modern apparel programs.",
-    image: "/images/cotton-regular-fit-tshirt-black.jpeg",
+    image: "/images/cotton-regular-fit-tshirt-black-cutout.png",
     tagline: "Retail Grade • 180 GSM Bio-Washed Cotton",
     href: "/products/regular-fit",
     accentColor: "#d4af37",
@@ -45,7 +45,7 @@ export const HERO_PRODUCT_MODELS: HeroProductModel[] = [
     subheadline: "The gold standard for corporate & lifestyle.",
     description:
       "Premium 220-240 GSM Pique and Combed Cotton Polos with crisp collars, tipping details, and enduring durability for executive merchandising.",
-    image: "/images/cotton-polo-black.jpeg",
+    image: "/images/cotton-polo-black-cutout.png",
     tagline: "Structured Knit • Premium Collar Finish",
     href: "/products/polo",
     accentColor: "#d4af37",
@@ -61,7 +61,7 @@ export const HERO_PRODUCT_MODELS: HeroProductModel[] = [
     subheadline: "Drop-shoulder aesthetic with heavy drape.",
     description:
       "Heavyweight 220-240 GSM French Terry and dense single jersey with a drop-shoulder cut, boxy drape, and street-ready retail appeal.",
-    image: "/images/oversized-frenchterry-black.png",
+    image: "/images/oversized-frenchterry-black-cutout.png",
     tagline: "Drop Shoulder • Heavyweight 240 GSM",
     href: "/products/oversized",
     accentColor: "#d4af37",
@@ -77,7 +77,7 @@ export const HERO_PRODUCT_MODELS: HeroProductModel[] = [
     subheadline: "Heavyweight hoodies built to endure.",
     description:
       "Ultra-soft brushed fleece interior, double-layered hood, and reinforced kangaroo pockets. The definitive luxury hoodie base for streetwear collections.",
-    image: "/images/hoodie-without-zip-black.png",
+    image: "/images/hoodie-without-zip-black-cutout.png",
     tagline: "Brushed Fleece • Double-Layered Hood",
     href: "/products/hoodie",
     accentColor: "#d4af37",
@@ -93,7 +93,7 @@ export const HERO_PRODUCT_MODELS: HeroProductModel[] = [
     subheadline: "Clean crewnecks for modern brands.",
     description:
       "Tailored crewneck sweatshirts with ribbed trims, smooth surface for high-resolution DTF and embroidery, and cozy all-day warmth.",
-    image: "/images/sweatshirt-cotton-fleece-black.png",
+    image: "/images/sweatshirt-cotton-fleece-black-cutout.png",
     tagline: "Loopknit Interior • Ribbed Trims",
     href: "/products/sweatshirt",
     accentColor: "#d4af37",
@@ -109,7 +109,7 @@ export const HERO_PRODUCT_MODELS: HeroProductModel[] = [
     subheadline: "Engineered for active lifestyles and loungewear.",
     description:
       "Breathable French Terry and 4-way stretch Lycra shorts with elasticated waistband, custom drawstrings, and deep secure pockets.",
-    image: "/images/shorts-navy-blue.jpeg",
+    image: "/images/shorts-navy-blue-cutout.png",
     tagline: "French Terry • Elastic Waistband",
     href: "/products/shorts",
     accentColor: "#d4af37",
@@ -125,7 +125,7 @@ export const HERO_PRODUCT_MODELS: HeroProductModel[] = [
     subheadline: "Sporty structure with retail aesthetics.",
     description:
       "Tapered athletic joggers with ribbed ankle cuffs, zippered pockets, and structured drape that keeps its shape wash after wash.",
-    image: "/images/joggers-black.png",
+    image: "/images/joggers-black-cutout.png",
     tagline: "Tapered Fit • Ribbed Ankle Cuffs",
     href: "/products/joggers",
     accentColor: "#d4af37",
