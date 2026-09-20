@@ -2,12 +2,22 @@
 
 import Link from "next/link";
 import { MessageCircle, Sparkles } from "lucide-react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 interface StickyCTAProps {
   productName: string;
 }
 
 export default function StickyCTA({ productName }: StickyCTAProps) {
+  const siteSettings = useSiteSettings();
+  const phoneNumber = siteSettings.whatsAppNumber
+    ? siteSettings.whatsAppNumber.replace(/\D/g, "")
+    : "919944466311";
+
+  const message = productName
+    ? `Hi Cut N Stitch Apparel 👋\n\nI’m interested in your custom apparel manufacturing services for ${productName}. I’d like to know more about products, pricing, MOQ, and customization options.\n\nPlease share the details. Thank you!`
+    : `Hi Cut N Stitch Apparel 👋\n\nI’m interested in your custom apparel manufacturing services. I’d like to know more about your products, pricing, MOQ, and customization options.\n\nPlease share the details. Thank you!`;
+
   return (
     <div className="sticky bottom-4 z-30 mt-10 rounded-3xl border border-accent-custom/30 bg-black/80 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur xl:bottom-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -23,7 +33,7 @@ export default function StickyCTA({ productName }: StickyCTAProps) {
             Get Quote
           </Link>
           <a
-            href="https://wa.me/919999999999?text=Hello%20CutnStitch%2C%20I%20would%20like%20to%20inquire%20about%20the%20selected%20product."
+            href={`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`}
             target="_blank"
             rel="noreferrer"
             className="flex items-center justify-center gap-2 rounded-full border border-accent-custom/40 px-5 py-3 text-sm font-semibold text-accent-custom transition hover:bg-accent-custom hover:text-black"

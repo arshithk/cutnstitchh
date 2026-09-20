@@ -130,10 +130,13 @@ export default function Contact() {
   };
 
   const handleWhatsAppChat = () => {
-    const text = encodeURIComponent(
-      `Hi Cut n Stitch team, my name is ${formData.name || "[Name]"} from ${formData.company || "[Company]"}. We are looking to manufacture custom ${formData.product} (Target Qty: ${formData.quantity || "100"} pcs). Please connect us with a merchant.`
-    );
-    const phoneNumber = siteSettings.whatsAppNumber.replace(/\D/g, "");
+    const hasCustomInput = Boolean(formData.name.trim() || formData.company.trim() || formData.message.trim());
+    const message = hasCustomInput
+      ? `Hi Cut N Stitch Apparel 👋\n\nI’m interested in your custom apparel manufacturing services. My name is ${formData.name || "[Name]"}${formData.company ? ` from ${formData.company}` : ""}. We are looking to manufacture custom ${formData.product} (Target Qty: ${formData.quantity || "100"} pcs).\n\nPlease share the details. Thank you!`
+      : `Hi Cut N Stitch Apparel 👋\n\nI’m interested in your custom apparel manufacturing services. I’d like to know more about your products, pricing, MOQ, and customization options.\n\nPlease share the details. Thank you!`;
+
+    const text = encodeURIComponent(message);
+    const phoneNumber = siteSettings.whatsAppNumber.replace(/\D/g, "") || "919944466311";
     window.open(`https://wa.me/${phoneNumber}?text=${text}`, "_blank");
   };
 

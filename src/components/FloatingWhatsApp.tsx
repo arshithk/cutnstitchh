@@ -1,9 +1,18 @@
+"use client";
+
 import React from "react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 export default function FloatingWhatsApp() {
-  const phoneNumber = "919944466311";
-  const defaultMessage =
-    "Hi Cut n Stitch team, my name is [Name] from [Company]. We are looking to manufacture custom Oversized T-Shirts (220 GSM – 100% Cotton, Target Qty: 100 pcs). Please connect us with a merchant.";
+  const siteSettings = useSiteSettings();
+  const phoneNumber = siteSettings.whatsAppNumber
+    ? siteSettings.whatsAppNumber.replace(/\D/g, "")
+    : "919944466311";
+  const defaultMessage = `Hi Cut N Stitch Apparel 👋
+
+I’m interested in your custom apparel manufacturing services. I’d like to know more about your products, pricing, MOQ, and customization options.
+
+Please share the details. Thank you!`;
 
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMessage)}`;
 
