@@ -79,6 +79,39 @@ export async function generateStaticParams() {
   }
 }
 
+import { getKeywordsForCategory } from "@/lib/seoKeywords";
+
+const CATEGORY_CUSTOM_TITLES: Record<string, { title: string; desc: string }> = {
+  "regular-fit": {
+    title: "Round Neck T-Shirt Manufacturer in Bangalore | 180 GSM Bio-Washed Tees",
+    desc: "Premium 180 GSM bio-washed combed cotton regular fit round neck t-shirts. Custom screen printing, DTF, embroidery & private labeling in Bangalore. Low MOQ 100 pcs.",
+  },
+  oversized: {
+    title: "Oversized T-Shirt Manufacturer India | 240 GSM Heavyweight Streetwear Blanks",
+    desc: "India's leading oversized t-shirt manufacturer. Heavyweight 220-280 GSM French Terry, drop-shoulder cuts, custom puff printing & private label tags in Bangalore.",
+  },
+  polo: {
+    title: "Polo T-Shirt Manufacturer in Bangalore | Custom Embroidered Corporate Polos",
+    desc: "Manufacturer of premium 220-240 GSM Pique, Matty & Combed Cotton polo t-shirts in Bangalore. Custom embroidery, tipping collars & corporate uniform orders.",
+  },
+  hoodie: {
+    title: "Custom Hoodie Manufacturer in Bangalore | 300-360 GSM Heavyweight Fleece",
+    desc: "Custom hoodies manufacturer in Bangalore. Premium 300-360 GSM brushed fleece and French Terry, double-layered hoods, zip & pullover styles, low MOQ 100 pcs.",
+  },
+  sweatshirt: {
+    title: "Custom Sweatshirt Manufacturer in Bangalore | French Terry & Fleece Crewnecks",
+    desc: "Tailored crewneck sweatshirts manufacturer in Bangalore. French Terry loopknit, ribbed trims, soft-touch fabric, custom printing and embroidery.",
+  },
+  shorts: {
+    title: "Custom Shorts Manufacturer in Bangalore | French Terry & 2-Way Lycra Athletic",
+    desc: "Custom gym shorts & French Terry lounge shorts manufacturer in Bangalore. 2-way Lycra stretch, zipper pockets, custom drawstrings, bulk wholesale supply.",
+  },
+  joggers: {
+    title: "Custom Joggers Manufacturer in Bangalore | 4-Way Lycra Performance Track Pants",
+    desc: "Tapered athletic joggers & sweatpants manufacturer in Bangalore. 4-way Lycra stretch, zippered pockets, ribbed cuffs & activewear branding.",
+  },
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -89,14 +122,19 @@ export async function generateMetadata({
     const categoryData = await loadCategoryData(category);
     const categoryName = categoryData?.name ?? category.replace(/-/g, " ");
 
-    const title = `${categoryName} Manufacturer in Bangalore`;
+    const customMeta = CATEGORY_CUSTOM_TITLES[category];
+    const title = customMeta ? customMeta.title : `${categoryName} Manufacturer in Bangalore | Cut N Stitch`;
     const description =
+      customMeta?.desc ??
       categoryData?.description ??
-      `Custom ${categoryName} manufacturing in Bangalore, India. Premium fabrics, low MOQ, private labeling, and bulk supply.`;
+      `Custom ${categoryName} manufacturing in Bangalore, India. Direct factory prices, premium fabrics, low MOQ (100 pcs), private labeling, and bulk supply.`;
+
+    const keywords = getKeywordsForCategory(category);
 
     return {
       title,
       description,
+      keywords,
       alternates: {
         canonical: `/products/${category}`,
       },

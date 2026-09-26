@@ -3,25 +3,28 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LiveStockPage from "@/components/LiveStockPage";
 
+import { CATEGORY_KEYWORDS, MASTER_GLOBAL_KEYWORDS } from "@/lib/seoKeywords";
+
 export const metadata: Metadata = {
-  title: "Ready Live Stock Inventory in Bangalore",
+  title: "Ready Stock Plain T-Shirts & Blank Garments Bangalore | Live Inventory",
   description:
-    "Check real-time ready fabric and blank garment inventory in Bangalore for quick-turnaround bulk manufacturing, custom screen printing, and DTF embroidery.",
+    "Check live stock inventory of ready plain t-shirts, oversized tees, polo shirts & hoodies in Bangalore. Instant dispatch, ready for custom screen printing & DTF embroidery.",
+  keywords: [...CATEGORY_KEYWORDS["live-stock"], ...MASTER_GLOBAL_KEYWORDS.slice(0, 15)],
   alternates: {
     canonical: "/live-stock",
   },
   openGraph: {
-    title: "Ready Live Stock Inventory | Cut N Stitch Apparel Bangalore",
+    title: "Ready Stock Plain T-Shirts & Blank Garments Bangalore | Live Inventory",
     description:
-      "Check real-time ready fabric and blank garment inventory in Bangalore for quick-turnaround bulk manufacturing.",
+      "Check real-time ready fabric and blank garment inventory in Bangalore for quick-turnaround bulk manufacturing, custom screen printing, and DTF embroidery.",
     url: "https://cutnstitchapparel.com/live-stock",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ready Live Stock Inventory | Cut N Stitch Apparel Bangalore",
+    title: "Ready Stock Plain T-Shirts Bangalore | Cut N Stitch Apparel",
     description:
-      "Check real-time ready fabric and blank garment inventory in Bangalore for rapid bulk manufacturing.",
+      "Check real-time ready fabric and blank garment inventory in Bangalore for rapid bulk manufacturing and same-day dispatch.",
   },
 };
 

@@ -90,6 +90,8 @@ export async function generateStaticParams() {
   return params;
 }
 
+import { getKeywordsForProduct } from "@/lib/seoKeywords";
+
 export async function generateMetadata({
   params,
 }: {
@@ -105,12 +107,18 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${selectedVariant.name} (${selectedVariant.gsmRange || selectedVariant.gsm || ""})`;
-  const description = `${selectedVariant.description || product.description} Custom manufacturing, low MOQ, and bulk supply in Bangalore, India.`;
+  const title = `${selectedVariant.name} (${selectedVariant.gsmRange || selectedVariant.gsm || ""}) Manufacturer in Bangalore`;
+  const description = `${selectedVariant.description || product.description} Custom manufacturing, low MOQ (100 pcs), private labeling, and bulk supply in Bangalore, India.`;
+  const keywords = getKeywordsForProduct(
+    selectedVariant.name,
+    selectedVariant.fabric,
+    selectedVariant.gsmRange || selectedVariant.gsm
+  );
 
   return {
     title,
     description,
+    keywords,
     alternates: {
       canonical: `/products/${category}/${variant}`,
     },
@@ -151,11 +159,18 @@ export default async function VariantPage({ params }: VariantPageProps) {
 
   const lowestPrice = pricing.length ? Math.min(...pricing.map((p: any) => p.price)) : undefined;
 
+  const variantKeywords = getKeywordsForProduct(
+    selectedVariant.name,
+    selectedVariant.fabric,
+    selectedVariant.gsmRange || selectedVariant.gsm
+  );
+
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: `${selectedVariant.name} - ${product.name}`,
     description: selectedVariant.description || product.description,
+    keywords: variantKeywords.slice(0, 25).join(", "),
     image: selectedVariant.heroImage
       ? `https://cutnstitchapparel.com${selectedVariant.heroImage}`
       : undefined,

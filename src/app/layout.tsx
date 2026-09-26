@@ -6,28 +6,17 @@ import TextileSimulation from "@/components/TextileSimulation";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import ScrollNavigation from "@/components/ScrollNavigation";
 
+import { MASTER_GLOBAL_KEYWORDS, ORGANIZATION_KNOWS_ABOUT } from "@/lib/seoKeywords";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://cutnstitchapparel.com"),
   title: {
-    default: "Cut n Stitch Apparel | Premium B2B Apparel Manufacturing",
+    default: "Cut n Stitch Apparel | Premium B2B Apparel Manufacturing Bangalore",
     template: "%s | Cut n Stitch Apparel",
   },
   description:
-    "Cut N Stitch Apparel is a premier B2B custom clothing & apparel manufacturer in Bangalore, India. Low MOQ, private label manufacturing, bulk T-shirts, polo shirts, hoodies, corporate uniforms, and custom merchandise.",
-  keywords: [
-    "apparel manufacturer in Bangalore",
-    "clothing manufacturer in Bangalore",
-    "T-shirt manufacturer in Bangalore",
-    "custom apparel manufacturer India",
-    "custom T-shirt manufacturer India",
-    "oversized T-shirt manufacturer",
-    "polo T-shirt manufacturer",
-    "hoodie manufacturer India",
-    "corporate uniform manufacturer",
-    "custom merchandise manufacturer",
-    "private label clothing manufacturer India",
-    "bulk T-shirt manufacturer",
-  ],
+    "Cut N Stitch Apparel is Bangalore's premier B2B custom clothing & apparel manufacturer. Low MOQ (100 pcs), direct Tirupur factory pricing, private label manufacturing, bulk T-shirts, oversized tees, polo shirts, hoodies, corporate uniforms, and custom merchandise.",
+  keywords: MASTER_GLOBAL_KEYWORDS,
   authors: [{ name: "Cut N Stitch Apparel", url: "https://cutnstitchapparel.com" }],
   creator: "Cut N Stitch Apparel",
   publisher: "Cut N Stitch Apparel",
@@ -92,6 +81,10 @@ const organizationSchema = {
   url: "https://cutnstitchapparel.com",
   logo: "https://cutnstitchapparel.com/images/cut-n-stitch-logo.png",
   image: "https://cutnstitchapparel.com/images/cut-n-stitch-apparel.jpeg",
+  description:
+    "Premier B2B custom clothing and private label apparel manufacturer in Bangalore and Tirupur, India. Low MOQ of 100 pcs, bulk T-shirts, oversized tees, hoodies, and corporate uniforms.",
+  keywords: MASTER_GLOBAL_KEYWORDS.slice(0, 25).join(", "),
+  knowsAbout: ORGANIZATION_KNOWS_ABOUT,
   sameAs: [
     "https://www.instagram.com/cutnstitchapparel?stkn=MW9yemN2dm9xMW9lbA==",
     "https://www.facebook.com/share/1ceqrM5rX6/",
@@ -100,7 +93,7 @@ const organizationSchema = {
     "@type": "ContactPoint",
     telephone: "+91 99444 66311",
     contactType: "sales",
-    areaServed: ["IN", "Worldwide"],
+    areaServed: ["IN", "Worldwide", "US", "GB", "AE"],
     availableLanguage: ["English", "Hindi", "Tamil", "Kannada"],
   },
 };
@@ -115,6 +108,8 @@ const localBusinessSchema = {
   telephone: "+91 99444 66311",
   email: "vidhyashankar@cutnstitchapparel.com",
   priceRange: "$$",
+  currenciesAccepted: "INR, USD, EUR, GBP",
+  paymentAccepted: "Cash, Credit Card, Bank Transfer, UPI",
   address: {
     "@type": "PostalAddress",
     streetAddress: "339/2, Thilaga Nagar, Anupparapalayam",
@@ -129,10 +124,16 @@ const localBusinessSchema = {
       name: "Bangalore",
     },
     {
+      "@type": "City",
+      name: "Tirupur",
+    },
+    {
       "@type": "Country",
       name: "India",
     },
   ],
+  knowsAbout: ORGANIZATION_KNOWS_ABOUT,
+  keywords: MASTER_GLOBAL_KEYWORDS.slice(0, 30).join(", "),
   description:
     "B2B apparel and custom clothing manufacturer in Bangalore and Tirupur, India. Providing bulk T-shirts, polo shirts, oversized tees, hoodies, and corporate uniforms.",
 };

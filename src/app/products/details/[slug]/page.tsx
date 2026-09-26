@@ -38,6 +38,8 @@ export async function generateStaticParams() {
   return fallbackProducts.map((d) => ({ slug: d.slug }));
 }
 
+import { getKeywordsForProduct } from "@/lib/seoKeywords";
+
 export async function generateMetadata({
   params,
 }: {
@@ -53,12 +55,14 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${product.name} Manufacturer in Bangalore`;
-  const description = `${product.description} High-quality custom manufacturing, low MOQ, private labeling, and bulk supply in Bangalore, India.`;
+  const title = `${product.name} Manufacturer in Bangalore | Cut N Stitch`;
+  const description = `${product.description} High-quality custom manufacturing, low MOQ (100 pcs), private labeling, and bulk supply in Bangalore, India.`;
+  const keywords = getKeywordsForProduct(product.name, product.fabric, product.gsmRange);
 
   return {
     title,
     description,
+    keywords,
     alternates: {
       canonical: `/products/details/${slug}`,
     },
@@ -103,11 +107,18 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     ? Math.min(...safeProduct.pricing.map((p: any) => p.price))
     : undefined;
 
+  const productKeywords = getKeywordsForProduct(
+    safeProduct.name,
+    safeProduct.fabric,
+    safeProduct.gsmRange
+  );
+
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: safeProduct.name,
     description: safeProduct.description,
+    keywords: productKeywords.slice(0, 25).join(", "),
     image: safeProduct.heroImage
       ? `https://cutnstitchapparel.com${safeProduct.heroImage}`
       : undefined,

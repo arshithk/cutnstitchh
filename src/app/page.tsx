@@ -12,13 +12,34 @@ import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
+import type { Metadata } from "next";
+import { MASTER_GLOBAL_KEYWORDS } from "@/lib/seoKeywords";
+
+export const metadata: Metadata = {
+  title: "B2B Apparel & Custom Clothing Manufacturer in Bangalore | Cut N Stitch",
+  description:
+    "Cut N Stitch Apparel is Bangalore's premier B2B custom clothing & apparel manufacturer. Low MOQ (100 pcs), direct Tirupur factory pricing, private label, bulk T-shirts, oversized tees, polo shirts, hoodies & corporate uniforms.",
+  keywords: MASTER_GLOBAL_KEYWORDS,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "B2B Apparel & Custom Clothing Manufacturer in Bangalore | Cut N Stitch",
+    description:
+      "Premier B2B custom clothing & apparel manufacturer in Bangalore & Tirupur. Low MOQ (100 pcs), private label, bulk T-shirts, oversized tees, hoodies & corporate uniforms.",
+    url: "https://cutnstitchapparel.com",
+    type: "website",
+  },
+};
+
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "Cut N Stitch Apparel",
   url: "https://cutnstitchapparel.com",
   description:
-    "B2B custom apparel and clothing manufacturer in Bangalore, India. Low MOQ, private label clothing manufacturing, bulk T-shirts, polo shirts, and uniforms.",
+    "B2B custom apparel and clothing manufacturer in Bangalore, India. Low MOQ (100 pcs), private label clothing manufacturing, bulk T-shirts, polo shirts, and uniforms.",
+  keywords: MASTER_GLOBAL_KEYWORDS.slice(0, 30).join(", "),
   potentialAction: {
     "@type": "SearchAction",
     target: "https://cutnstitchapparel.com/products?search={search_term_string}",

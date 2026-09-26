@@ -83,9 +83,21 @@
   </url>
   <url>
     <loc>https://cutnstitchapparel.com/products/oversized</loc>
-    <lastmod>2026-09-08</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://cutnstitchapparel.com/products/hoodie</loc>
+    <lastmod>2026-09-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://cutnstitchapparel.com/products/sweatshirt</loc>
+    <lastmod>2026-09-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
   </url>
 
   <!-- Product Details Pages -->

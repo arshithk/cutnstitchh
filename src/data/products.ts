@@ -19,10 +19,19 @@ export interface ProductFeature {
 }
 
 const GENERAL_KEYWORDS = [
+  "Apparel Manufacturer in Bangalore",
+  "Clothing Manufacturer in Bangalore",
+  "Custom Apparel Manufacturer India",
+  "Private Label Clothing Manufacturer India",
+  "Low MOQ 100 Pieces",
+  "Tirupur Factory Direct Pricing",
   "Screen Printing",
-  "Embroidery",
+  "High Density Embroidery",
+  "Direct to Film DTF Printing",
+  "Puff 3D Printing",
   "Heat Transfer Printing",
   "Corporate Uniforms",
+  "Custom Merchandise Manufacturer",
   "School Uniforms",
   "College Uniforms",
   "Sportswear",
@@ -33,12 +42,14 @@ const GENERAL_KEYWORDS = [
   "Team Wear",
   "Event Merchandise",
   "Bulk Manufacturing",
-  "Premium Quality",
+  "Premium Quality Bio-Washed",
   "Comfortable Fit",
   "Durable Stitching",
   "Breathable Fabric",
+  "Custom Woven Neck Labels",
   "Custom Branding",
   "Logo Printing",
+  "PAN India Shipping",
 ];
 
 const STANDARD_PRODUCT_PRICING: ProductPricingTier[] = [
@@ -224,13 +235,13 @@ const KEYWORDS_DRI_FIT_180 = [
 ];
 
 // Additional sets (honeycomb, saleena, polos, hoodies, oversized) — keep concise
-const KEYWORDS_HONEYCOMB_160 = ["Honeycomb Knit Fabric", "160 GSM", "Textured Fabric", "DTF Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms"];
-const KEYWORDS_SALEENA_160 = ["Selena Knit Fabric", "160 GSM", "DTF Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms"];
-const KEYWORDS_POLY_Polo_220 = ["Poly Cotton Blend", "220 GSM", "DTF Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms"];
-const KEYWORDS_COTTON_POLO = ["100% Premium Cotton", "Bio Washed", "DTF Printing", "DTG Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms", "Premium Brand Merchandise"];
-const KEYWORDS_POLY_HOODIES = ["Poly Cotton Blend", "Heavy GSM", "Soft Fleece", "Warm Fabric", "DTF Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery"];
-const KEYWORDS_COTTON_HOODIES = ["100% Cotton", "Bio Washed", "Heavy GSM", "Soft Brushed Interior", "DTG Printing", "DTF Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery"];
-const KEYWORDS_OVERSIZED = ["Oversized Fit", "Relaxed Fit", "Streetwear", "DTF Printing", "DTG Printing", "Screen Printing", "Sublimation", "Heat Transfer Printing", "Embroidery"];
+const KEYWORDS_HONEYCOMB_160 = ["Polo T-Shirt Manufacturer Bangalore", "Honeycomb Knit Fabric", "160 GSM", "Textured Fabric", "DTF Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms"];
+const KEYWORDS_SALEENA_160 = ["Polo T-Shirt Manufacturer Bangalore", "Selena Knit Fabric", "160 GSM", "DTF Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms"];
+const KEYWORDS_POLY_Polo_220 = ["Polo T-Shirt Manufacturer Bangalore", "Poly Cotton Blend", "220 GSM", "Corporate Uniforms with Logo", "DTF Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery", "Corporate Uniforms"];
+const KEYWORDS_COTTON_POLO = ["Polo T-Shirt Manufacturer Bangalore", "100% Premium Cotton", "Pique Cotton Polo", "Bio Washed", "DTF Printing", "DTG Printing", "Screen Printing", "Heat Transfer Printing", "High Density Embroidery", "Corporate Uniforms", "Premium Brand Merchandise"];
+const KEYWORDS_POLY_HOODIES = ["Custom Hoodie Manufacturer India", "Hoodie Manufacturer Bangalore", "Poly Cotton Blend", "Heavy GSM", "Soft Fleece", "340 GSM Heavyweight Hoodie", "Warm Fabric", "DTF Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery"];
+const KEYWORDS_COTTON_HOODIES = ["Custom Hoodie Manufacturer India", "Hoodie Manufacturer Bangalore", "100% Cotton", "Bio Washed", "300 GSM Brushed Fleece", "Heavy GSM", "Soft Brushed Interior", "DTG Printing", "DTF Printing", "Screen Printing", "Heat Transfer Printing", "Embroidery"];
+const KEYWORDS_OVERSIZED = ["Oversized T-Shirt Manufacturer India", "Streetwear Clothing Manufacturer Bangalore", "240 GSM Oversized T-Shirt", "Heavyweight Streetwear Blanks", "Drop Shoulder T-Shirt", "Oversized Fit", "Relaxed Fit", "Streetwear", "Puff 3D Printing", "DTF Printing", "DTG Printing", "Screen Printing", "Sublimation", "Heat Transfer Printing", "Embroidery"];
 
 function getProductKeywords(variant: CatalogVariant): string[] {
   const name = (variant.name ?? "").toLowerCase();

@@ -3,15 +3,18 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCategories from "@/components/ProductCategories";
 
+import { CATEGORY_KEYWORDS, MASTER_GLOBAL_KEYWORDS } from "@/lib/seoKeywords";
+
 export const metadata: Metadata = {
-  title: "B2B Apparel Catalog & Products",
+  title: "B2B Apparel Manufacturing Catalog & Wholesale Garments | Cut N Stitch",
   description:
-    "Explore our B2B apparel manufacturing catalog: oversized T-shirts, polo shirts, regular fit tees, hoodies, sweatshirts, shorts, joggers, uniforms, and custom merchandise. Low MOQ, private label in Bangalore.",
+    "Browse our B2B apparel catalog: regular fit tees, 240 GSM oversized t-shirts, pique polo shirts, fleece hoodies, joggers & uniforms. Low MOQ & direct factory pricing in Bangalore, India.",
+  keywords: [...CATEGORY_KEYWORDS.catalog, ...MASTER_GLOBAL_KEYWORDS.slice(0, 20)],
   alternates: {
     canonical: "/products",
   },
   openGraph: {
-    title: "B2B Apparel Catalog & Products | Cut N Stitch Apparel",
+    title: "B2B Apparel Manufacturing Catalog & Wholesale Garments | Cut N Stitch",
     description:
       "Explore our B2B apparel manufacturing catalog: oversized T-shirts, polo shirts, regular fit tees, hoodies, sweatshirts, shorts, joggers, uniforms, and custom merchandise.",
     url: "https://cutnstitchapparel.com/products",
@@ -19,7 +22,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "B2B Apparel Catalog & Products | Cut N Stitch Apparel",
+    title: "B2B Apparel Manufacturing Catalog | Cut N Stitch Apparel",
     description:
       "Explore our wholesale B2B clothing catalog with low MOQs and premium garment finishes in Bangalore, India.",
   },
