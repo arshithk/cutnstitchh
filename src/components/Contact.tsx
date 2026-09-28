@@ -202,10 +202,27 @@ export default function Contact() {
                 className="flex flex-col items-center text-center py-16 gap-4"
               >
                 <CheckCircle2 size={64} className="text-accent-custom animate-bounce" />
-                <h3 className="text-2xl font-black text-foreground">Inquiry Submitted!</h3>
-                <p className="text-sm text-muted-custom max-w-sm leading-relaxed mt-2">
-                  Thank you for contacting Cut n Stitch Apparel. A dedicated merchant has been assigned to your project and will reach out to <strong>{formData.email}</strong> shortly.
+                <h3 className="text-2xl font-black text-foreground">Inquiry Sent Successfully!</h3>
+                <p className="text-sm text-muted-custom max-w-md leading-relaxed mt-2">
+                  Thank you, <strong>{formData.name}</strong>. Your manufacturing inquiry for <strong>{formData.product} ({formData.quantity} pcs)</strong> has been routed to our merchandising desk at <strong>vidhyashankar@cutnstitchapparel.com</strong>. We will review your specifications and reply shortly.
                 </p>
+                <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
+                  <a
+                    href={`mailto:vidhyashankar@cutnstitchapparel.com?subject=Manufacturing Inquiry: ${encodeURIComponent(formData.company || formData.name)} - ${encodeURIComponent(formData.product)}&body=${encodeURIComponent(
+                      `Hi Vidhyashankar,\n\nI just submitted an apparel manufacturing inquiry on cutnstitchapparel.com:\n\nClient Name: ${formData.name}\nCompany: ${formData.company}\nPhone: ${formData.phone}\nEmail: ${formData.email}\nProduct Category: ${formData.product}\nTarget Quantity: ${formData.quantity} pcs\n\nRequirements:\n${formData.message || "Standard production quotation requested"}`
+                    )}`}
+                    className="inline-flex items-center gap-2 rounded-xl bg-card border border-border-custom px-4 py-2.5 text-xs font-bold text-foreground hover:border-accent-custom transition-all"
+                  >
+                    <Mail size={16} /> Open Email Direct
+                  </a>
+                  <button
+                    type="button"
+                    onClick={handleWhatsAppChat}
+                    className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-emerald-500 transition-all cursor-pointer"
+                  >
+                    <MessageSquare size={16} /> Chat on WhatsApp
+                  </button>
+                </div>
                 <button
                   onClick={() => {
                     setStatus("idle");
@@ -219,7 +236,7 @@ export default function Contact() {
                       message: "",
                     });
                   }}
-                  className="mt-6 px-6 py-2 border border-border-custom hover:border-foreground/20 rounded-xl text-xs font-semibold cursor-pointer"
+                  className="mt-4 px-6 py-2 border border-border-custom hover:border-foreground/20 rounded-xl text-xs font-semibold cursor-pointer"
                 >
                   Submit Another Inquiry
                 </button>

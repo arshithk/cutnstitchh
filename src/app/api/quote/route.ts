@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { withDbRetry } from "@/lib/db";
 import QuoteRequest from "@/models/QuoteRequest";
+import { sendQuoteNotificationEmail } from "@/lib/mailer";
 
 function isValidEmail(value: unknown) {
   return typeof value === "string" && /\S+@\S+\.\S+/.test(value);
@@ -40,35 +41,51 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "A valid phone number is required" }, { status: 400 });
     }
 
-    const quoteRequest = await withDbRetry(async () => {
-      return await QuoteRequest.create({
-        name,
-        company,
-        email,
-        phone,
-        product,
-        quantity,
-        message: message || "No message provided",
-      });
-    }, 2);
-
-    return NextResponse.json({ ok: true, quoteRequest }, { status: 201 });
-  } catch (error) {
-    console.error("Quote submission error:", error);
-    const rawMsg = (error as Error)?.message || "";
-
-    let userMessage = "Unable to submit inquiry at this moment. Please reach out directly via WhatsApp for an immediate quotation!";
-    if (
-      rawMsg.includes("buffering timed out") ||
-      rawMsg.includes("Cannot connect") ||
-      rawMsg.includes("timed out") ||
-      rawMsg.includes("ECONNREFUSED")
-    ) {
-      userMessage = "Our inquiry server is temporarily taking longer to respond. Please click the button below to send your inquiry directly via WhatsApp!";
+    // Attempt to save to MongoDB, but never fail the user inquiry if database is slow/offline
+    let quoteRequest = null;
+    try {
+      quoteRequest = await withDbRetry(async () => {
+        return await QuoteRequest.create({
+          name,
+          company,
+          email,
+          phone,
+          product,
+          quantity,
+          message: message || "No message provided",
+        });
+      }, 1);
+    } catch (dbErr) {
+      console.warn("[Quote API] MongoDB save bypassed or timed out:", (dbErr as Error)?.message);
     }
 
+    // Dispatch email notification to vidhyashankar@cutnstitchapparel.com
+    const emailResult = await sendQuoteNotificationEmail({
+      name,
+      company,
+      email,
+      phone,
+      product,
+      quantity,
+      message,
+    });
+
     return NextResponse.json(
-      { error: userMessage },
+      {
+        ok: true,
+        quoteRequest,
+        emailSent: emailResult.sent,
+        emailReason: emailResult.reason,
+        recipient: "vidhyashankar@cutnstitchapparel.com",
+      },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Quote submission error:", error);
+    return NextResponse.json(
+      {
+        error: "Unable to process inquiry at this moment. Please reach out directly to vidhyashankar@cutnstitchapparel.com or via WhatsApp.",
+      },
       { status: 500 },
     );
   }
