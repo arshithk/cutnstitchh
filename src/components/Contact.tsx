@@ -227,8 +227,35 @@ export default function Contact() {
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 {submissionError ? (
-                  <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-700/50 dark:bg-red-900/30 dark:text-red-200">
-                    {submissionError}
+                  <div className="rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 sm:p-5 text-sm flex flex-col gap-3">
+                    <div className="flex items-start gap-2.5">
+                      <AlertCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-semibold text-foreground text-sm">{submissionError}</p>
+                        <p className="text-xs text-muted-custom mt-1">
+                          Your inquiry details are safely preserved above. You can send them directly to our manufacturing desk right now:
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3 pt-1">
+                      <button
+                        type="button"
+                        onClick={handleWhatsAppChat}
+                        className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-emerald-500 transition-all cursor-pointer"
+                      >
+                        <MessageSquare className="h-4 w-4" />
+                        Send via WhatsApp
+                      </button>
+                      <a
+                        href={`mailto:${siteSettings.contactEmail}?subject=Manufacturing Inquiry - ${encodeURIComponent(formData.company || formData.name || "Custom Apparel")}&body=${encodeURIComponent(
+                          `Hi Cut N Stitch Apparel,\n\nName: ${formData.name}\nCompany: ${formData.company}\nPhone: ${formData.phone}\nEmail: ${formData.email}\nProduct: ${formData.product}\nTarget Quantity: ${formData.quantity}\n\nMessage:\n${formData.message}`
+                        )}`}
+                        className="inline-flex items-center gap-2 rounded-xl border border-border-custom bg-card/60 px-4 py-2.5 text-xs font-bold text-foreground hover:border-accent-custom transition-all"
+                      >
+                        <Mail className="h-4 w-4" />
+                        Send via Email
+                      </a>
+                    </div>
                   </div>
                 ) : null}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

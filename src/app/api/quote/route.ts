@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { dbConnect } from "@/lib/db";
+import { withDbRetry } from "@/lib/db";
 import QuoteRequest from "@/models/QuoteRequest";
 
 function isValidEmail(value: unknown) {
@@ -40,23 +40,36 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "A valid phone number is required" }, { status: 400 });
     }
 
-    await dbConnect();
-    const quoteRequest = await QuoteRequest.create({
-      name,
-      company,
-      email,
-      phone,
-      product,
-      quantity,
-      message: message || "No message provided",
-    });
+    const quoteRequest = await withDbRetry(async () => {
+      return await QuoteRequest.create({
+        name,
+        company,
+        email,
+        phone,
+        product,
+        quantity,
+        message: message || "No message provided",
+      });
+    }, 2);
 
     return NextResponse.json({ ok: true, quoteRequest }, { status: 201 });
   } catch (error) {
-    const status = (error as any)?.status ?? 500;
+    console.error("Quote submission error:", error);
+    const rawMsg = (error as Error)?.message || "";
+
+    let userMessage = "Unable to submit inquiry at this moment. Please reach out directly via WhatsApp for an immediate quotation!";
+    if (
+      rawMsg.includes("buffering timed out") ||
+      rawMsg.includes("Cannot connect") ||
+      rawMsg.includes("timed out") ||
+      rawMsg.includes("ECONNREFUSED")
+    ) {
+      userMessage = "Our inquiry server is temporarily taking longer to respond. Please click the button below to send your inquiry directly via WhatsApp!";
+    }
+
     return NextResponse.json(
-      { error: (error as Error).message ?? "Unable to submit quote request" },
-      { status },
+      { error: userMessage },
+      { status: 500 },
     );
   }
 }

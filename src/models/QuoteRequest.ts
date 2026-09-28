@@ -31,7 +31,7 @@ const QuoteRequestSchema = new Schema<QuoteRequestDocument>(
       default: "pending",
     },
   },
-  { timestamps: true },
+  { timestamps: true, bufferCommands: false },
 );
 
 const QuoteRequest: Model<QuoteRequestDocument> =

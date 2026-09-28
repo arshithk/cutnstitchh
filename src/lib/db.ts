@@ -17,23 +17,43 @@ if (!globalWithMongoose.mongooseCache) {
   globalWithMongoose.mongooseCache = { conn: null, promise: null, lastFailed: 0 };
 }
 
-const MONGO_OPTIONS: mongoose.ConnectOptions = {
-  serverSelectionTimeoutMS: 8000,
-  connectTimeoutMS: 10000,
-  socketTimeoutMS: 45000,
-  family: 4, // Force IPv4 (127.0.0.1) to avoid Windows IPv6 resolution latency
-  maxPoolSize: 20, // Sufficient connection pool
-  minPoolSize: 2, // Always keep at least 2 warm connections alive
-  maxIdleTimeMS: 30000, // Recycle idle sockets before OS disconnects them
-  heartbeatFrequencyMS: 5000, // MongoDB driver background heartbeat
-  directConnection: true, // Direct connection to local standalone MongoDB
-  autoIndex: true,
-};
+function getMongoOptions(uri: string): mongoose.ConnectOptions {
+  const isSrv = uri.startsWith("mongodb+srv://");
+  const isLocal = uri.includes("127.0.0.1") || uri.includes("localhost");
+
+  const opts: mongoose.ConnectOptions = {
+    serverSelectionTimeoutMS: 5000,
+    connectTimeoutMS: 10000,
+    socketTimeoutMS: 45000,
+    maxPoolSize: 15,
+    minPoolSize: 0,
+    autoIndex: process.env.NODE_ENV !== "production",
+  };
+
+  // Only force IPv4 on local Windows standalone to prevent localhost IPv6 resolution delay
+  if (isLocal && !isSrv) {
+    opts.family = 4;
+  }
+
+  // CRITICAL: NEVER set directConnection: true for MongoDB Atlas (mongodb+srv://) or replica sets!
+  // directConnection: true forces connection to a single node, which is often a read-only secondary
+  // that rejects insertOne/write operations, causing 'buffering timed out after 10000ms'.
+  if (uri.includes("directConnection=true")) {
+    opts.directConnection = true;
+  }
+
+  return opts;
+}
 
 function startKeepAliveHeartbeat() {
+  // Do NOT run background timers in serverless environments (e.g. Vercel, AWS Lambda)
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    return;
+  }
+
   if (globalWithMongoose.mongooseCache?.heartbeatTimer) return;
 
-  // Background ping every 10 seconds to keep connection alive and auto-recover
+  // Background ping every 15 seconds to keep connection alive and auto-recover
   const timer = setInterval(async () => {
     try {
       const state = mongoose.connection.readyState;
@@ -53,7 +73,7 @@ function startKeepAliveHeartbeat() {
         globalWithMongoose.mongooseCache.promise = null;
       }
     }
-  }, 10000);
+  }, 15000);
 
   // Allow Node process to exit cleanly if needed
   if (timer.unref) {
@@ -81,10 +101,12 @@ function attachConnectionListeners() {
       globalWithMongoose.mongooseCache.conn = null;
       globalWithMongoose.mongooseCache.promise = null;
     }
-    // Proactively reconnect in background
-    setTimeout(() => {
-      void dbConnect(2).catch(() => {});
-    }, 500);
+    // Only auto-reconnect in persistent environments, not serverless
+    if (!process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+      setTimeout(() => {
+        void dbConnect(2).catch(() => {});
+      }, 500);
+    }
   });
 
   mongoose.connection.on("error", (err) => {
@@ -98,12 +120,15 @@ function attachConnectionListeners() {
   startKeepAliveHeartbeat();
 }
 
-export async function dbConnect(retries = 4): Promise<typeof mongoose> {
+export async function dbConnect(retries = 3): Promise<typeof mongoose> {
   attachConnectionListeners();
 
   // If already connected and ready, return immediately
-  if (globalWithMongoose.mongooseCache?.conn && (mongoose.connection.readyState as number) === 1) {
-    return globalWithMongoose.mongooseCache.conn;
+  if ((mongoose.connection.readyState as number) === 1) {
+    if (globalWithMongoose.mongooseCache) {
+      globalWithMongoose.mongooseCache.conn = mongoose;
+    }
+    return mongoose;
   }
 
   // If connection is in progress, await it
@@ -115,10 +140,19 @@ export async function dbConnect(retries = 4): Promise<typeof mongoose> {
       }
     } catch {
       // If previous promise rejected, reset and proceed with fresh attempt
+      if (globalWithMongoose.mongooseCache) {
+        globalWithMongoose.mongooseCache.conn = null;
+        globalWithMongoose.mongooseCache.promise = null;
+      }
     }
   }
 
   const uri = env.MONGODB_URI;
+  if (!uri) {
+    throw new Error("MONGODB_URI is not configured in environment variables.");
+  }
+
+  const options = getMongoOptions(uri);
 
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
@@ -126,12 +160,14 @@ export async function dbConnect(retries = 4): Promise<typeof mongoose> {
         globalWithMongoose.mongooseCache = { conn: null, promise: null, lastFailed: 0 };
       }
 
-      globalWithMongoose.mongooseCache.promise = mongoose.connect(uri, MONGO_OPTIONS);
+      globalWithMongoose.mongooseCache.promise = mongoose.connect(uri, options);
       const conn = await globalWithMongoose.mongooseCache.promise;
 
-      globalWithMongoose.mongooseCache.conn = conn;
-      globalWithMongoose.mongooseCache.lastFailed = 0;
-      return conn;
+      if ((mongoose.connection.readyState as number) === 1) {
+        globalWithMongoose.mongooseCache.conn = conn;
+        globalWithMongoose.mongooseCache.lastFailed = 0;
+        return conn;
+      }
     } catch (error) {
       const errMsg = (error as any)?.message || String(error);
       if (globalWithMongoose.mongooseCache) {
@@ -143,11 +179,16 @@ export async function dbConnect(retries = 4): Promise<typeof mongoose> {
       console.warn(`dbConnect attempt ${attempt}/${retries} failed:`, errMsg);
 
       if (attempt < retries) {
-        // Exponential backoff: 300ms, 600ms, 1200ms
+        // Exponential backoff: 300ms, 600ms
         await new Promise((resolve) => setTimeout(resolve, attempt * 300));
       } else {
         if (errMsg.includes("ECONNREFUSED") || errMsg.includes("Server selection timed out") || errMsg.includes("HostUnreachable")) {
-          throw new Error("Cannot connect to MongoDB server at 127.0.0.1:27017. Please ensure the MongoDB service is running.");
+          const isLocal = uri.includes("127.0.0.1") || uri.includes("localhost");
+          if (isLocal) {
+            throw new Error("Cannot connect to local MongoDB server at 127.0.0.1:27017. Please ensure MongoDB service is running, or set MONGODB_URI to your cloud database.");
+          } else {
+            throw new Error("Cannot connect to remote MongoDB cluster. Please check MONGODB_URI and Network Access / IP Whitelist settings in MongoDB Atlas.");
+          }
         }
         throw error;
       }
@@ -178,7 +219,9 @@ export async function withDbRetry<T>(operation: () => Promise<T>, maxRetries = 2
         msg.includes("Server selection timed out") ||
         msg.includes("buffering timed out") ||
         msg.includes("topology was destroyed") ||
-        msg.includes("connection closed");
+        msg.includes("connection closed") ||
+        msg.includes("not connected") ||
+        msg.includes("pool is closed");
 
       if (isTransient && attempt < maxRetries) {
         console.warn(`Transient DB error on attempt ${attempt}, reconnecting and retrying:`, msg);
@@ -186,7 +229,12 @@ export async function withDbRetry<T>(operation: () => Promise<T>, maxRetries = 2
           globalWithMongoose.mongooseCache.conn = null;
           globalWithMongoose.mongooseCache.promise = null;
         }
-        await new Promise((resolve) => setTimeout(resolve, 400));
+        try {
+          await mongoose.disconnect();
+        } catch {
+          // ignore disconnect error
+        }
+        await new Promise((resolve) => setTimeout(resolve, 500 * attempt));
         continue;
       }
       throw err;
@@ -221,5 +269,3 @@ export async function dbDisconnect() {
   globalWithMongoose.mongooseCache = { conn: null, promise: null, lastFailed: 0 };
 }
 
-// Proactive bootstrap connection in background on module load
-void dbConnect(2).catch(() => {});
