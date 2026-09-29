@@ -97,6 +97,22 @@ function getImageBaseName(context: ProductImageContext) {
   const variantName = (context.variantName ?? "").toLowerCase();
   const variantSlug = (context.variantSlug ?? "").toLowerCase();
 
+  if (categorySlug.includes("kids-hoodie") || categorySlug.startsWith("kids-hoodie")) {
+    return "kids-hoodie";
+  }
+
+  if (categorySlug.includes("kids-sweatshirt") || categorySlug.startsWith("kids-sweatshirt")) {
+    return "kids-sweatshirt";
+  }
+
+  if (categorySlug.includes("kids-polo") || categorySlug.startsWith("kids-polo")) {
+    return "kids-polo-tshirt";
+  }
+
+  if (categorySlug.includes("kids-regular-fit") || categorySlug.startsWith("kids-regular-fit")) {
+    return "kids-regular-fit-tshirt";
+  }
+
   if (categorySlug.includes("hoodie")) {
     return variantName.includes("without zip") || variantSlug.includes("without-zip")
       ? "hoodie-without-zip"

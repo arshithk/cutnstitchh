@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { catalogCategories, products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 
@@ -12,17 +13,57 @@ const HOME_PRODUCT_PILLS = [
   { name: "Oversized", href: "/products/oversized" },
   { name: "Hoodies", href: "/products/hoodie" },
   { name: "Sweatshirts", href: "/products/sweatshirt" },
+  { name: "Kids Regular Fit", href: "/products/kids-regular-fit" },
+  { name: "Kids Polo", href: "/products/kids-polo" },
+  { name: "Kids Sweatshirts", href: "/products/kids-sweatshirt" },
+  { name: "Kids Hoodies", href: "/products/kids-hoodie" },
   { name: "Shorts", href: "/products/shorts" },
   { name: "Joggers", href: "/products/joggers" },
 ];
 
 export default function ProductCategories() {
   const containerRef = useRef(null);
+  const scrollTrackRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScrollability = useCallback(() => {
+    const el = scrollTrackRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 6);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 6);
+  }, []);
+
+  useEffect(() => {
+    checkScrollability();
+    window.addEventListener("resize", checkScrollability);
+    return () => window.removeEventListener("resize", checkScrollability);
+  }, [checkScrollability]);
+
+  const handleScroll = (direction: "left" | "right") => {
+    const el = scrollTrackRef.current;
+    if (!el) return;
+    const scrollAmount = 260;
+    el.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
+    setTimeout(checkScrollability, 350);
+  };
+
   const isInView = useInView(containerRef, { once: true, margin: "-50px" });
   const catalogCategorySlugs = new Set(catalogCategories.map((category) => category.slug));
   const legacyProducts = products.filter(
     (product) =>
-      !["regular-fit-t-shirts", "polo-t-shirts", "oversized-t-shirts"].includes(product.slug) &&
+      ![
+        "regular-fit-t-shirts",
+        "polo-t-shirts",
+        "oversized-t-shirts",
+        "kids-regular-fit-t-shirts",
+        "kids-polo-t-shirts",
+        "kids-sweatshirts",
+        "kids-hoodies",
+      ].includes(product.slug) &&
       !catalogCategorySlugs.has(product.slug),
   );
   const catalogCards = [
@@ -40,19 +81,54 @@ export default function ProductCategories() {
             Explore our manufacturing-ready catalog with premium detail pages, bulk pricing, and a refined B2B experience.
           </p>
 
-          {/* Quick Product Category Navigation Pills */}
-          <div className="mt-3 flex justify-center overflow-x-auto hide-scrollbar">
-            <div className="inline-flex items-center gap-1 rounded-full border border-border-custom/80 bg-card/80 p-1.5 shadow-sm backdrop-blur-md">
+          {/* Quick Product Category Navigation Pills with Left and Right Navigation Arrows */}
+          <div className="mt-4 flex items-center justify-center gap-2.5 max-w-full">
+            {/* Left Navigation Arrow */}
+            <button
+              type="button"
+              onClick={() => handleScroll("left")}
+              disabled={!canScrollLeft}
+              aria-label="Navigate products left"
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-custom/80 bg-card/90 text-foreground backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95 hover:bg-foreground hover:text-background shadow-sm ${
+                !canScrollLeft
+                  ? "opacity-25 cursor-not-allowed pointer-events-none"
+                  : "opacity-90 hover:opacity-100 cursor-pointer"
+              }`}
+            >
+              <ChevronLeft size={18} />
+            </button>
+
+            {/* Scrollable Pills Track inside rounded capsule */}
+            <div
+              ref={scrollTrackRef}
+              onScroll={checkScrollability}
+              className="flex max-w-[calc(100vw-110px)] sm:max-w-xl md:max-w-2xl lg:max-w-3xl items-center gap-1 rounded-full border border-border-custom/80 bg-card/80 p-1.5 shadow-sm backdrop-blur-md overflow-x-auto hide-scrollbar scroll-smooth"
+            >
               {HOME_PRODUCT_PILLS.map((pill) => (
                 <Link
                   key={pill.name}
                   href={pill.href}
-                  className="rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-muted-custom transition-all hover:bg-foreground hover:text-background hover:shadow-sm whitespace-nowrap"
+                  className="rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-muted-custom transition-all hover:bg-foreground hover:text-background hover:shadow-sm whitespace-nowrap shrink-0"
                 >
                   {pill.name}
                 </Link>
               ))}
             </div>
+
+            {/* Right Navigation Arrow */}
+            <button
+              type="button"
+              onClick={() => handleScroll("right")}
+              disabled={!canScrollRight}
+              aria-label="Navigate products right"
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-custom/80 bg-card/90 text-foreground backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95 hover:bg-foreground hover:text-background shadow-sm ${
+                !canScrollRight
+                  ? "opacity-25 cursor-not-allowed pointer-events-none"
+                  : "opacity-90 hover:opacity-100 cursor-pointer"
+              }`}
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
         </div>
 

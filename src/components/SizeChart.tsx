@@ -314,10 +314,170 @@ const CATEGORY_CHARTS: Record<string, SizeChartData> = {
       { title: "Custom Grading", instruction: "Custom corporate fit specifications and plus-size grading are available on request for bulk contracts." },
     ],
   },
+  "kids-regular-fit": {
+    title: "Kids Regular Fit T-Shirt",
+    fitBadge: "Junior Classic Fit",
+    sizes: ["2-3Y", "4-5Y", "6-7Y", "8-9Y", "10-11Y", "12-13Y", "14-15Y"],
+    metrics: [
+      {
+        name: "½ Chest (Pit to Pit)",
+        description: "Measured flat across chest from armpit seam to armpit seam",
+        inches: [12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5],
+        cm: [31.5, 34.0, 37.0, 39.5, 42.0, 44.5, 47.0],
+      },
+      {
+        name: "Full Chest",
+        description: "Total circumference around the widest chest area",
+        inches: [25, 27, 29, 31, 33, 35, 37],
+        cm: [63.5, 68.5, 73.5, 78.5, 84.0, 89.0, 94.0],
+      },
+      {
+        name: "Body Length",
+        description: "From highest point of shoulder down to bottom hem",
+        inches: [16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5],
+        cm: [42.0, 45.5, 49.5, 53.5, 57.0, 61.0, 65.0],
+      },
+      {
+        name: "Shoulder Width",
+        description: "Shoulder seam to shoulder seam straight across back",
+        inches: [10.5, 11.5, 12.5, 13.5, 14.5, 15.5, 16.5],
+        cm: [26.5, 29.0, 31.5, 34.0, 37.0, 39.5, 42.0],
+      },
+      {
+        name: "Sleeve Length",
+        description: "From shoulder seam down to cuff edge",
+        inches: [4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5],
+        cm: [11.5, 12.5, 14.0, 15.0, 16.5, 18.0, 19.0],
+      },
+    ],
+    guideTips: [
+      { title: "Age & Height", instruction: "Choose size according to the child's age bracket and height for standard comfortable fit." },
+      { title: "Chest", instruction: "Measure around fullest part of chest, keeping tape comfortably loose." },
+      { title: "Length", instruction: "Measure from highest point of shoulder down to hemline." },
+    ],
+  },
+  "kids-polo": {
+    title: "Kids Polo T-Shirt",
+    fitBadge: "Junior Smart Casual Fit",
+    sizes: ["2-3Y", "4-5Y", "6-7Y", "8-9Y", "10-11Y", "12-13Y", "14-15Y"],
+    metrics: [
+      {
+        name: "½ Chest (Pit to Pit)",
+        description: "Measured flat across chest from armpit seam to armpit seam",
+        inches: [12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5],
+        cm: [31.5, 34.0, 37.0, 39.5, 42.0, 44.5, 47.0],
+      },
+      {
+        name: "Full Chest",
+        description: "Total circumference around the widest chest area",
+        inches: [25, 27, 29, 31, 33, 35, 37],
+        cm: [63.5, 68.5, 73.5, 78.5, 84.0, 89.0, 94.0],
+      },
+      {
+        name: "Body Length",
+        description: "From collar seam down to bottom edge of hem",
+        inches: [16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5],
+        cm: [42.0, 45.5, 49.5, 53.5, 57.0, 61.0, 65.0],
+      },
+      {
+        name: "Shoulder Width",
+        description: "Shoulder point across back to opposite shoulder point",
+        inches: [10.5, 11.5, 12.5, 13.5, 14.5, 15.5, 16.5],
+        cm: [26.5, 29.0, 31.5, 34.0, 37.0, 39.5, 42.0],
+      },
+      {
+        name: "Sleeve Length",
+        description: "Shoulder seam to bottom of ribbed sleeve band",
+        inches: [4.75, 5.25, 5.75, 6.25, 6.75, 7.25, 7.75],
+        cm: [12.0, 13.5, 14.5, 16.0, 17.0, 18.5, 19.5],
+      },
+    ],
+    guideTips: [
+      { title: "Collar & Placket", instruction: "Features a structured ribbed collar with 2-button placket for school and sports uniforms." },
+      { title: "Comfort Fit", instruction: "Gentle pique knit allows natural airflow and freedom of movement." },
+    ],
+  },
+  "kids-sweatshirt": {
+    title: "Kids Sweatshirt",
+    fitBadge: "Junior Crewneck Comfort Fit",
+    sizes: ["2-3Y", "4-5Y", "6-7Y", "8-9Y", "10-11Y", "12-13Y", "14-15Y"],
+    metrics: [
+      {
+        name: "½ Chest (Pit to Pit)",
+        description: "Measured flat across chest from armpit seam to armpit seam",
+        inches: [13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5],
+        cm: [34.0, 37.0, 39.5, 42.0, 44.5, 47.0, 49.5],
+      },
+      {
+        name: "Full Chest",
+        description: "Total circumference around widest chest area",
+        inches: [27, 29, 31, 33, 35, 37, 39],
+        cm: [68.5, 73.5, 78.5, 84.0, 89.0, 94.0, 99.0],
+      },
+      {
+        name: "Body Length",
+        description: "Collar seam straight down to bottom rib hem",
+        inches: [17.0, 18.5, 20.0, 21.5, 23.0, 24.5, 26.0],
+        cm: [43.0, 47.0, 51.0, 54.5, 58.5, 62.0, 66.0],
+      },
+      {
+        name: "Sleeve Length",
+        description: "Shoulder seam down to wrist rib cuff",
+        inches: [14.0, 15.5, 17.0, 18.5, 20.0, 21.5, 23.0],
+        cm: [35.5, 39.5, 43.0, 47.0, 51.0, 54.5, 58.5],
+      },
+    ],
+    guideTips: [
+      { title: "Warmth & Layering", instruction: "Generously cut to layer comfortably over t-shirts and shirts." },
+      { title: "Ribbed Trims", instruction: "Spandex-reinforced cuffs and hem retain shape through repeat washing." },
+    ],
+  },
+  "kids-hoodie": {
+    title: "Kids Hoodie",
+    fitBadge: "Junior Cozy Fleece Fit",
+    sizes: ["2-3Y", "4-5Y", "6-7Y", "8-9Y", "10-11Y", "12-13Y", "14-15Y"],
+    metrics: [
+      {
+        name: "½ Chest (Pit to Pit)",
+        description: "Measured flat across chest from armpit seam to armpit seam",
+        inches: [14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0],
+        cm: [35.5, 38.0, 40.5, 43.0, 45.5, 48.0, 51.0],
+      },
+      {
+        name: "Full Chest",
+        description: "Total circumference around widest chest area",
+        inches: [28, 30, 32, 34, 36, 38, 40],
+        cm: [71.0, 76.0, 81.5, 86.5, 91.5, 96.5, 101.5],
+      },
+      {
+        name: "Body Length",
+        description: "Shoulder point down to bottom edge of hem",
+        inches: [17.5, 19.0, 20.5, 22.0, 23.5, 25.0, 26.5],
+        cm: [44.5, 48.0, 52.0, 56.0, 59.5, 63.5, 67.5],
+      },
+      {
+        name: "Sleeve Length",
+        description: "Shoulder seam down to wrist cuff edge",
+        inches: [14.0, 15.5, 17.0, 18.5, 20.0, 21.5, 23.0],
+        cm: [35.5, 39.5, 43.0, 47.0, 51.0, 54.5, 58.5],
+      },
+    ],
+    guideTips: [
+      { title: "Safety Hood", instruction: "Engineered without hazardous neck drawcords adhering to international child safety apparel standards." },
+      { title: "Kangaroo Pocket", instruction: "Spacious front pouch pocket with bartack reinforced stress points." },
+    ],
+  },
 };
 
 function resolveChartKey(categorySlug?: string, categoryName?: string, productName?: string): string {
   const combined = `${categorySlug || ""} ${categoryName || ""} ${productName || ""}`.toLowerCase();
+
+  if (combined.includes("kids")) {
+    if (combined.includes("polo")) return "kids-polo";
+    if (combined.includes("hoodie")) return "kids-hoodie";
+    if (combined.includes("sweatshirt")) return "kids-sweatshirt";
+    return "kids-regular-fit";
+  }
 
   if (combined.includes("oversize")) return "oversized";
   if (combined.includes("polo")) return "polo";

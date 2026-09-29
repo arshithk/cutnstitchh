@@ -18,6 +18,10 @@ const CATALOG_TO_PRODUCT_SLUG: Record<string, string> = {
   oversized: "oversized-t-shirts",
   shorts: "shorts",
   joggers: "joggers",
+  "kids-regular-fit": "kids-regular-fit-t-shirts",
+  "kids-polo": "kids-polo-t-shirts",
+  "kids-sweatshirt": "kids-sweatshirts",
+  "kids-hoodie": "kids-hoodies",
 };
 
 async function loadVariantData(category: string, variant: string) {
