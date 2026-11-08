@@ -401,20 +401,13 @@ function getPaletteForContext(context?: ProductImageContext) {
 
 function buildAvailableColors(colors: ProductColor[], fallbackImagePath: string, context?: ProductImageContext): ProductColor[] {
   const palette = getPaletteForContext(context);
-  const paletteNames = new Set(palette.map((c) => c.name));
 
-  // Special case: PolyCotton Fleece 340 GSM Hoodie variants should only show their explicit colors
-  const is340GSMHoodie =
-    context?.variantSlug === "polycotton-fleece-340gsm-hoodie-with-zip" ||
-    context?.variantSlug === "polycotton-fleece-340gsm-hoodie-without-zip";
-
+  // Each product variant keeps its own defined colors and colour combos
   let baseColors: ProductColor[];
-  if (is340GSMHoodie && colors.length > 0) {
-    // For 340GSM hoodies, use only the explicit variant colors.
-    const filteredColors = colors.filter((color) => paletteNames.has(color.name));
-    baseColors = filteredColors.length > 0 ? filteredColors : (palette as ProductColor[]);
+  if (colors && colors.length > 0) {
+    baseColors = colors;
   } else {
-    // For all other products, use the full allowed palette.
+    // Fall back to category palette only if no explicit colors are configured
     baseColors = palette as ProductColor[];
   }
 
@@ -904,7 +897,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "polo",
       },
       {
-        slug: "polyester-110gsm",
+        slug: "polo-polyester-110gsm",
         name: "Polyester 110 GSM Polo Neck T-Shirt",
         gsm: "110 GSM",
         fabric: "PP-Polyester",
@@ -929,7 +922,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "polo",
       },
       {
-        slug: "polyester-140gsm",
+        slug: "polo-polyester-140gsm",
         name: "Polyester 140 GSM Polo Neck T-Shirt",
         gsm: "140 GSM",
         fabric: "PP-Polyester",
@@ -954,7 +947,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "polo",
       },
       {
-        slug: "dri-fit-mars-200gsm",
+        slug: "polo-dri-fit-mars-200gsm",
         name: "Dri Fit Mars 200 GSM Polo Neck T-Shirt",
         gsm: "200 GSM",
         fabric: "Dri Fit Mars Polyester",
@@ -1703,7 +1696,7 @@ const baseCatalogCategories: CatalogCategory[] = [
     heroImage: "/images/kids-regular-fit-tshirt-red.jpg",
     variants: [
       {
-        slug: "cotton-180gsm",
+        slug: "kids-cotton-180gsm",
         name: "Kids Cotton 180 GSM Round Neck T-Shirt",
         gsm: "180 GSM",
         fabric: "S/Jersey",
@@ -1729,7 +1722,7 @@ const baseCatalogCategories: CatalogCategory[] = [
       },
       
       {
-        slug: "polycotton-180gsm",
+        slug: "kids-polycotton-180gsm",
         name: "Kids PolyCotton 180 GSM Round Neck T-Shirt",
         gsm: "180 GSM",
         fabric: "PolyCotton Blend",
@@ -1754,7 +1747,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-regular-fit",
       },
       {
-        slug: "polyester-90gsm",
+        slug: "kids-polyester-90gsm",
         name: "Kids Polyester 90 GSM Round Neck T-Shirt",
         gsm: "90 GSM",
         fabric: "100% Polyester",
@@ -1779,7 +1772,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-regular-fit",
       },
       {
-        slug: "polyester-140gsm",
+        slug: "kids-polyester-140gsm",
         name: "Kids Polyester 140 GSM Round Neck T-Shirt",
         gsm: "140 GSM",
         fabric: "100% Polyester",
@@ -1804,7 +1797,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-regular-fit",
       },
       {
-        slug: "polyester-110gsm",
+        slug: "kids-polyester-110gsm",
         name: "Kids Polyester 110 GSM Round Neck T-Shirt",
         gsm: "110 GSM",
         fabric: "100% Polyester",
@@ -1829,7 +1822,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-regular-fit",
       },
       {
-        slug: "dri-fit-mars-200gsm",
+        slug: "kids-dri-fit-mars-200gsm",
         name: "Kids Dri Fit Mars 200 GSM Round Neck T-Shirt",
         gsm: "200 GSM",
         fabric: "Dri Fit Mars Polyester",
@@ -1854,7 +1847,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-regular-fit",
       },
       {
-        slug: "dot-knit-160gsm",
+        slug: "kids-dot-knit-160gsm",
         name: "Kids Dot Knit 160 GSM Round Neck T-Shirt",
         gsm: "160 GSM",
         fabric: "Dot Knit Polyester",
@@ -1888,7 +1881,7 @@ const baseCatalogCategories: CatalogCategory[] = [
     heroImage: "/images/kids-polo-tshirt-red.jpg",
     variants: [
       {
-        slug: "cotton-220gsm",
+        slug: "kids-cotton-220gsm",
         name: "Kids Cotton 220 GSM Polo Neck T-Shirt",
         gsm: "220 GSM",
         fabric: "100% Cotton-Airtex",
@@ -1913,7 +1906,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-polo",
       },
       {
-        slug: "cotton-240gsm",
+        slug: "kids-cotton-240gsm",
         name: "Kids Cotton 240 GSM Polo Neck T-Shirt",
         gsm: "240 GSM",
         fabric: "100% Cotton-Airtex",
@@ -1938,7 +1931,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-polo",
       },
       {
-        slug: "cotton-240gsm-tipping",
+        slug: "kids-cotton-240gsm-tipping",
         name: "Kids Cotton 240 GSM Tipping Polo Neck T-Shirt",
         gsm: "240 GSM",
         fabric: "100% Cotton-Airtex",
@@ -1963,7 +1956,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-polo",
       },
       {
-        slug: "cotton-220gsm-dual-tipping",
+        slug: "kids-cotton-220gsm-dual-tipping",
         name: "Kids Cotton 220 GSM Dual Tipping Polo Neck T-Shirt",
         gsm: "220 GSM",
         fabric: "100% Cotton-Airtex",
@@ -1991,7 +1984,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-polo",
       },
       {
-        slug: "premium-cotton-240gsm",
+        slug: "kids-premium-cotton-240gsm",
         name: "Kids Premium Cotton 240 GSM Polo Neck T-Shirt",
         gsm: "240 GSM",
         fabric: "Premium Cotton Piqué",
@@ -2016,7 +2009,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-polo",
       },
       {
-        slug: "polycotton-220gsm",
+        slug: "kids-polycotton-220gsm",
         name: "Kids PolyCotton 220 GSM Polo Neck T-Shirt",
         gsm: "220 GSM",
         fabric: "PolyCotton Piqué",
@@ -2041,7 +2034,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-polo",
       },
       {
-        slug: "polyester-110gsm",
+        slug: "kids-polo-polyester-110gsm",
         name: "Kids Polyester 110 GSM Polo Neck T-Shirt",
         gsm: "110 GSM",
         fabric: "PP-Polyester",
@@ -2066,7 +2059,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-polo",
       },
       {
-        slug: "polyester-140gsm",
+        slug: "kids-polo-polyester-140gsm",
         name: "Kids Polyester 140 GSM Polo Neck T-Shirt",
         gsm: "140 GSM",
         fabric: "PP-Polyester",
@@ -2091,7 +2084,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-polo",
       },
       {
-        slug: "dri-fit-mars-200gsm",
+        slug: "kids-polo-dri-fit-mars-200gsm",
         name: "Kids Dri Fit Mars 200 GSM Polo Neck T-Shirt",
         gsm: "200 GSM",
         fabric: "Dri Fit Mars Polyester",
@@ -2116,7 +2109,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-polo",
       },
       {
-        slug: "dot-knit-180gsm",
+        slug: "kids-dot-knit-180gsm",
         name: "Kids Dot Knit 180 GSM Polo Neck T-Shirt",
         gsm: "180 GSM",
         fabric: "Dot Knit Polyester",
@@ -2141,7 +2134,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-polo",
       },
       {
-        slug: "saleena-polo-160gsm",
+        slug: "kids-saleena-polo-160gsm",
         name: "Kids Saleena Polo 160 GSM Polo Neck T-Shirt",
         gsm: "160 GSM",
         fabric: "Saleena Knit Polyester",
@@ -2166,7 +2159,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-polo",
       },
       {
-        slug: "honeycomb-160gsm-polo",
+        slug: "kids-honeycomb-160gsm-polo",
         name: "Kids Honeycomb 160 GSM Polo Neck T-Shirt",
         gsm: "160 GSM",
         fabric: "Honeycomb Knit Polyester",
@@ -2200,7 +2193,7 @@ const baseCatalogCategories: CatalogCategory[] = [
     heroImage: "/images/kids-hoodie-red.jpg",
     variants: [
       {
-        slug: "cotton-fleece-300gsm-hoodie-with-zip",
+        slug: "kids-cotton-fleece-300gsm-hoodie-with-zip",
         name: "Kids Cotton Fleece 300 GSM Hoodie with full zip",
         gsm: "300 GSM",
         fabric: "100% Cotton Fleece",
@@ -2226,7 +2219,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-hoodie",
       },
       {
-        slug: "cotton-fleece-300gsm-hoodie-without-zip",
+        slug: "kids-cotton-fleece-300gsm-hoodie-without-zip",
         name: "Kids Cotton Fleece 300 GSM Hoodie without zip",
         gsm: "300 GSM",
         fabric: "100% Cotton Fleece",
@@ -2252,7 +2245,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-hoodie",
       },
       {
-        slug: "cotton-fleece-360gsm-hoodie-with-zip",
+        slug: "kids-cotton-fleece-360gsm-hoodie-with-zip",
         name: "Kids Cotton Fleece 360 GSM Hoodie with full zip",
         gsm: "360 GSM",
         fabric: "100% Cotton Fleece",
@@ -2273,7 +2266,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-hoodie",
       },
       {
-        slug: "cotton-fleece-360gsm-hoodie-without-zip",
+        slug: "kids-cotton-fleece-360gsm-hoodie-without-zip",
         name: "Kids Cotton Fleece 360 GSM Hoodie without zip",
         gsm: "360 GSM",
         fabric: "100% Cotton Fleece",
@@ -2294,7 +2287,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-hoodie",
       },
       {
-        slug: "polycotton-fleece-300gsm-hoodie-with-zip",
+        slug: "kids-polycotton-fleece-300gsm-hoodie-with-zip",
         name: "Kids PolyCotton Fleece 300 GSM Hoodie with full zip",
         gsm: "300 GSM",
         fabric: "PolyCotton Fleece",
@@ -2320,7 +2313,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-hoodie",
       },
       {
-        slug: "polycotton-fleece-300gsm-hoodie-without-zip",
+        slug: "kids-polycotton-fleece-300gsm-hoodie-without-zip",
         name: "Kids PolyCotton Fleece 300 GSM Hoodie without zip",
         gsm: "300 GSM",
         fabric: "PolyCotton Fleece",
@@ -2346,7 +2339,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-hoodie",
       },
       {
-        slug: "polycotton-fleece-340gsm-hoodie-with-zip",
+        slug: "kids-polycotton-fleece-340gsm-hoodie-with-zip",
         name: "Kids PolyCotton Fleece 340 GSM Hoodie with full zip",
         gsm: "340 GSM",
         fabric: "PolyCotton Fleece",
@@ -2372,7 +2365,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-hoodie",
       },
       {
-        slug: "polycotton-fleece-340gsm-hoodie-without-zip",
+        slug: "kids-polycotton-fleece-340gsm-hoodie-without-zip",
         name: "Kids PolyCotton Fleece 340 GSM Hoodie without zip",
         gsm: "340 GSM",
         fabric: "PolyCotton Fleece",
@@ -2407,7 +2400,7 @@ const baseCatalogCategories: CatalogCategory[] = [
     heroImage: "/images/kids-sweatshirt-red.jpg",
     variants: [
       {
-        slug: "cotton-french-terry-240gsm-sweatshirt",
+        slug: "kids-cotton-french-terry-240gsm-sweatshirt",
         name: "Kids Cotton French Terry 240 GSM Sweatshirt",
         gsm: "240 GSM",
         fabric: "100% Cotton French Terry",
@@ -2433,7 +2426,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-sweatshirt",
       },
       {
-        slug: "cotton-fleece-280gsm-sweatshirt",
+        slug: "kids-cotton-fleece-280gsm-sweatshirt",
         name: "Kids Cotton Fleece 300 GSM Sweatshirt",
         gsm: "300 GSM",
         fabric: "100% Cotton Fleece",
@@ -2459,7 +2452,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-sweatshirt",
       },
       {
-        slug: "polycotton-french-terry-240gsm-sweatshirt",
+        slug: "kids-polycotton-french-terry-240gsm-sweatshirt",
         name: "Kids PolyCotton French Terry 240 GSM Sweatshirt",
         gsm: "240 GSM",
         fabric: "PolyCotton French Terry",
@@ -2485,7 +2478,7 @@ const baseCatalogCategories: CatalogCategory[] = [
         categorySlug: "kids-sweatshirt",
       },
       {
-        slug: "polycotton-fleece-300gsm-sweatshirt",
+        slug: "kids-polycotton-fleece-300gsm-sweatshirt",
         name: "Kids PolyCotton Fleece 300 GSM Sweatshirt",
         gsm: "300 GSM",
         fabric: "PolyCotton Fleece",
@@ -2570,7 +2563,14 @@ export function getCatalogCategorySlugByLegacyProductSlug(slug: string) {
 
 export function getCatalogVariantBySlug(categorySlug: string, variantSlug: string) {
   const category = getCatalogCategoryBySlug(categorySlug);
-  const variant = category?.variants.find((variant) => variant.slug === variantSlug);
+  const variant = category?.variants.find(
+    (variant) =>
+      variant.slug === variantSlug ||
+      variant.slug === `kids-${variantSlug}` ||
+      variant.slug === `polo-${variantSlug}` ||
+      variant.slug === `kids-polo-${variantSlug}` ||
+      variant.slug.replace(/^(kids-polo-|kids-|polo-)/, "") === variantSlug,
+  );
   if (!variant) return variant;
 
   // Resolve pricing for catalog variants using authoritative product data

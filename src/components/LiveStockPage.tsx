@@ -30,6 +30,10 @@ const stockProductTypeToCategorySlug: Record<string, string> = {
   Jogger: "joggers",
   Joggers: "joggers",
   Shorts: "shorts",
+  "Kids Regular Fit T-Shirt": "kids-regular-fit",
+  "Kids Polo T-Shirt": "kids-polo",
+  "Kids Hoodie": "kids-hoodie",
+  "Kids Sweatshirt": "kids-sweatshirt",
 };
 
 const getProductTypes = () => {

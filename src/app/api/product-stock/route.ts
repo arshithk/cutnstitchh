@@ -42,7 +42,7 @@ export async function GET() {
         }));
 
         return {
-          _id: dbEntry._id?.toString() || v.slug,
+          _id: dbEntry._id?.toString() || `${category.slug}-${v.slug}`,
           slug: v.slug,
           productName: v.name,
           productType: category.name,
@@ -57,7 +57,7 @@ export async function GET() {
       }
 
       return {
-        _id: v.slug,
+        _id: `${category.slug}-${v.slug}`,
         slug: v.slug,
         productName: v.name,
         productType: category.name,

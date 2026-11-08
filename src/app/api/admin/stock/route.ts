@@ -67,10 +67,12 @@ export async function GET(request: Request) {
         }));
 
         return {
-          _id: dbEntry._id?.toString() || v.slug,
+          _id: dbEntry._id?.toString() || `${category.slug}-${v.slug}`,
           slug: v.slug,
           productName: v.name,
           productType: category.name,
+          productSlug: category.slug,
+          variantSlug: v.slug,
           fabric: v.fabric,
           gsmRange: v.gsm,
           lastUpdated: dbEntry.lastUpdated || new Date().toISOString(),
@@ -80,10 +82,12 @@ export async function GET(request: Request) {
       }
 
       return {
-        _id: v.slug,
+        _id: `${category.slug}-${v.slug}`,
         slug: v.slug,
         productName: v.name,
         productType: category.name,
+        productSlug: category.slug,
+        variantSlug: v.slug,
         fabric: v.fabric,
         gsmRange: v.gsm,
         lastUpdated: new Date().toISOString(),
@@ -104,6 +108,8 @@ export async function GET(request: Request) {
         slug: entry.slug,
         productName: entry.productName,
         productType: entry.productType,
+        productSlug: entry.slug,
+        variantSlug: entry.slug,
         fabric: entry.fabric,
         gsmRange: entry.gsmRange,
         lastUpdated: entry.lastUpdated || new Date().toISOString(),

@@ -25,6 +25,8 @@ interface StockRecord {
   slug: string;
   productName: string;
   productType: string;
+  productSlug?: string;
+  variantSlug?: string;
   fabric: string;
   gsmRange: string;
   lastUpdated: string;
@@ -132,13 +134,13 @@ export default function StockManagementPanel() {
     setExpandedVariants((prev) => ({ ...prev, [slug]: !prev[slug] }));
   };
 
-  const handleQuantityChange = (stockSlug: string, colorIndex: number, newQty: string) => {
+  const handleQuantityChange = (stockSlug: string, productType: string, colorIndex: number, newQty: string) => {
     const qty = parseInt(newQty, 10);
     const validQty = isNaN(qty) ? 0 : Math.max(0, qty);
 
     setStocks((prev) =>
       prev.map((s) => {
-        if (s.slug !== stockSlug) return s;
+        if (s.slug !== stockSlug || s.productType !== productType) return s;
         const newColors = [...(s.colors || [])];
         if (newColors[colorIndex]) {
           newColors[colorIndex] = { ...newColors[colorIndex], quantity: validQty };
@@ -149,7 +151,8 @@ export default function StockManagementPanel() {
   };
 
   const handleSaveStock = async (stock: StockRecord, retryCount = 2) => {
-    setSavingSlug(stock.slug);
+    const saveKey = `${stock.productType}___${stock.slug}`;
+    setSavingSlug(saveKey);
     setError(null);
     setMessage(null);
     try {
@@ -193,7 +196,7 @@ export default function StockManagementPanel() {
       }
 
       if (res && res.ok) {
-        setSavedSlug(stock.slug);
+        setSavedSlug(saveKey);
         setDbStatus("connected");
         setTimeout(() => setSavedSlug(null), 2500);
       } else {
@@ -571,15 +574,16 @@ export default function StockManagementPanel() {
                   <div className="border-t border-neutral-800 divide-y divide-neutral-800/60">
                     {items.map((stock) => {
                       const isVarExpanded = expandedVariants[stock.slug] ?? true;
-                      const isSaving = savingSlug === stock.slug;
-                      const isSaved = savedSlug === stock.slug;
+                      const saveKey = `${stock.productType}___${stock.slug}`;
+                      const isSaving = savingSlug === saveKey;
+                      const isSaved = savedSlug === saveKey;
                       const variantPieces = (stock.colors || []).reduce(
                         (sum, c) => sum + (c.quantity || 0),
                         0
                       );
 
                       return (
-                        <div key={stock.slug} className="bg-neutral-900/30">
+                        <div key={`${stock.productType}-${stock.slug}`} className="bg-neutral-900/30">
                           {/* Variant Header */}
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 gap-3">
                             <button
@@ -654,7 +658,7 @@ export default function StockManagementPanel() {
                                         min="0"
                                         value={c.quantity}
                                         onChange={(e) =>
-                                          handleQuantityChange(stock.slug, cIdx, e.target.value)
+                                          handleQuantityChange(stock.slug, stock.productType, cIdx, e.target.value)
                                         }
                                         className="w-20 rounded-lg border border-neutral-700 bg-neutral-900 px-2 py-1 text-right text-xs font-medium text-white focus:border-[#D4AF37] focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
                                       />
