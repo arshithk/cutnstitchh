@@ -3,13 +3,15 @@ import { dbConnect } from "@/lib/db";
 import StockEntry from "@/models/StockEntry";
 import { catalogCategories } from "@/data/products";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   let dbEntries: any[] = [];
   try {
     await dbConnect();
     dbEntries = await StockEntry.find().lean();
   } catch (error) {
-    console.warn("Could not connect to MongoDB for product-stock, using catalog fallback:", (error as Error)?.message || error);
+    console.warn("Could not connect to MongoDB for product-stock:", (error as Error)?.message || error);
   }
 
   const dbEntriesMap = new Map<string, any>();
@@ -23,41 +25,25 @@ export async function GET() {
   const mergedStock = catalogCategories.flatMap((category) =>
     category.variants.map((v) => {
       const dbEntry = dbEntriesMap.get(v.slug);
-      if (dbEntry) {
-        const savedColorsMap = new Map<string, number>();
-        if (Array.isArray(dbEntry.colors)) {
-          for (const c of dbEntry.colors) {
-            if (c?.color) {
-              savedColorsMap.set(c.color.toLowerCase(), c.quantity);
-            }
+      const savedColorsMap = new Map<string, number>();
+      if (dbEntry && Array.isArray(dbEntry.colors)) {
+        for (const c of dbEntry.colors) {
+          if (c?.color) {
+            savedColorsMap.set(c.color.toLowerCase(), Math.max(0, Number(c.quantity) || 0));
           }
         }
-
-        const colors = (v.colors || []).map((c) => ({
-          color: c.name,
-          hex: c.hex,
-          quantity: savedColorsMap.has(c.name.toLowerCase())
-            ? savedColorsMap.get(c.name.toLowerCase())!
-            : 250,
-        }));
-
-        return {
-          _id: dbEntry._id?.toString() || `${category.slug}-${v.slug}`,
-          slug: v.slug,
-          productName: v.name,
-          productType: category.name,
-          productSlug: category.slug,
-          variantSlug: v.slug,
-          fabric: v.fabric,
-          gsmRange: v.gsm,
-          lastUpdated: dbEntry.lastUpdated || new Date().toISOString(),
-          availableForBulk: dbEntry.availableForBulk ?? true,
-          colors,
-        };
       }
 
+      const colors = (v.colors || []).map((c) => ({
+        color: c.name,
+        hex: c.hex,
+        quantity: savedColorsMap.has(c.name.toLowerCase())
+          ? savedColorsMap.get(c.name.toLowerCase())!
+          : 0,
+      }));
+
       return {
-        _id: `${category.slug}-${v.slug}`,
+        _id: dbEntry?._id?.toString() || `${category.slug}-${v.slug}`,
         slug: v.slug,
         productName: v.name,
         productType: category.name,
@@ -65,13 +51,9 @@ export async function GET() {
         variantSlug: v.slug,
         fabric: v.fabric,
         gsmRange: v.gsm,
-        lastUpdated: new Date().toISOString(),
-        availableForBulk: true,
-        colors: (v.colors || []).map((c) => ({
-          color: c.name,
-          hex: c.hex,
-          quantity: 250,
-        })),
+        lastUpdated: dbEntry?.lastUpdated || new Date().toISOString(),
+        availableForBulk: dbEntry?.availableForBulk ?? true,
+        colors,
       };
     }),
   );
@@ -89,7 +71,11 @@ export async function GET() {
         gsmRange: entry.gsmRange,
         lastUpdated: entry.lastUpdated || new Date().toISOString(),
         availableForBulk: entry.availableForBulk ?? true,
-        colors: entry.colors || [],
+        colors: (entry.colors || []).map((c: any) => ({
+          color: c.color,
+          hex: c.hex,
+          quantity: Math.max(0, Number(c.quantity) || 0),
+        })),
       });
     }
   }

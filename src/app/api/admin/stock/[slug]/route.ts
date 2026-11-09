@@ -3,13 +3,15 @@ import { withDbRetry } from "@/lib/db";
 import StockEntry from "@/models/StockEntry";
 import { requireAdminSession } from "@/lib/adminAuth";
 
+export const dynamic = "force-dynamic";
+
 function isValidColorEntry(entry: any) {
   return (
     entry &&
     typeof entry === "object" &&
     typeof entry.color === "string" &&
     typeof entry.hex === "string" &&
-    typeof entry.quantity === "number"
+    (typeof entry.quantity === "number" || typeof entry.quantity === "string")
   );
 }
 
@@ -18,9 +20,10 @@ export async function GET(
   context: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await context.params;
+  const decodedSlug = decodeURIComponent(slug);
   try {
     requireAdminSession(request);
-    const entry = await withDbRetry(() => StockEntry.findOne({ slug }).lean());
+    const entry = await withDbRetry(() => StockEntry.findOne({ slug: decodedSlug }).lean());
     if (!entry) {
       return NextResponse.json({ error: "Stock entry not found" }, { status: 404 });
     }
@@ -39,6 +42,7 @@ export async function PATCH(
   context: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await context.params;
+  const decodedSlug = decodeURIComponent(slug);
   try {
     requireAdminSession(request);
     const body = await request.json().catch(() => null);
@@ -53,14 +57,14 @@ export async function PATCH(
     if (typeof body.gsmRange === "string") updates.gsmRange = body.gsmRange.trim();
     if (typeof body.lastUpdated === "string") updates.lastUpdated = body.lastUpdated.trim();
     if (typeof body.availableForBulk === "boolean") updates.availableForBulk = body.availableForBulk;
-    if (Array.isArray(body.colors) && body.colors.every(isValidColorEntry)) updates.colors = body.colors;
-    if (typeof body.slug === "string") {
-      const slugVal = body.slug.trim();
-      if (slugVal.length === 0) {
-        return NextResponse.json({ error: "Slug cannot be empty" }, { status: 400 });
-      }
-      updates.slug = slugVal;
+    if (Array.isArray(body.colors) && body.colors.every(isValidColorEntry)) {
+      updates.colors = body.colors.map((c: any) => ({
+        color: String(c.color).trim(),
+        hex: String(c.hex).trim(),
+        quantity: Math.max(0, Number(c.quantity) || 0),
+      }));
     }
+    updates.slug = decodedSlug;
 
     if (Object.keys(updates).length === 0) {
       return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
@@ -68,7 +72,7 @@ export async function PATCH(
 
     const updated = await withDbRetry(() =>
       StockEntry.findOneAndUpdate(
-        { slug },
+        { slug: decodedSlug },
         { $set: updates },
         {
           new: true,
@@ -94,13 +98,14 @@ export async function DELETE(
   context: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await context.params;
+  const decodedSlug = decodeURIComponent(slug);
   try {
     requireAdminSession(request);
-    const deleted = await withDbRetry(() => StockEntry.findOneAndDelete({ slug }).lean());
+    const deleted = await withDbRetry(() => StockEntry.findOneAndDelete({ slug: decodedSlug }).lean());
     if (!deleted) {
       return NextResponse.json({ error: "Stock entry not found" }, { status: 404 });
     }
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ message: "Stock entry deleted successfully" });
   } catch (error) {
     const status = (error as any)?.status ?? 500;
     return NextResponse.json(

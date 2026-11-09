@@ -68,7 +68,7 @@ export default function StockManagementPanel() {
 
       for (let attempt = 0; attempt <= retryCount; attempt++) {
         try {
-          response = await fetch("/api/admin/stock", { credentials: "include" });
+          response = await fetch("/api/admin/stock", { credentials: "include", cache: "no-store" });
           if (response.ok) {
             setDbStatus("connected");
             break;
@@ -115,7 +115,7 @@ export default function StockManagementPanel() {
     void loadStocks();
 
     const onFocus = () => {
-      fetch("/api/admin/stock", { credentials: "include" })
+      fetch("/api/admin/stock", { credentials: "include", cache: "no-store" })
         .then((r) => {
           if (r.ok) setDbStatus("connected");
         })
@@ -161,7 +161,7 @@ export default function StockManagementPanel() {
 
       for (let attempt = 0; attempt <= retryCount; attempt++) {
         try {
-          res = await fetch(`/api/admin/stock/${stock.slug}`, {
+          res = await fetch(`/api/admin/stock/${encodeURIComponent(stock.slug)}`, {
             method: "PATCH",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
@@ -169,6 +169,8 @@ export default function StockManagementPanel() {
               slug: stock.slug,
               productName: stock.productName,
               productType: stock.productType,
+              productSlug: stock.productSlug,
+              variantSlug: stock.variantSlug || stock.slug,
               fabric: stock.fabric,
               gsmRange: stock.gsmRange,
               availableForBulk: stock.availableForBulk ?? true,
@@ -198,6 +200,13 @@ export default function StockManagementPanel() {
       if (res && res.ok) {
         setSavedSlug(saveKey);
         setDbStatus("connected");
+        setStocks((prev) =>
+          prev.map((s) =>
+            s.slug === stock.slug && s.productType === stock.productType
+              ? { ...s, lastUpdated: new Date().toISOString() }
+              : s
+          )
+        );
         setTimeout(() => setSavedSlug(null), 2500);
       } else {
         const body = res ? await res.json().catch(() => null) : null;

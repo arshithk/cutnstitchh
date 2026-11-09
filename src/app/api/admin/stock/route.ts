@@ -4,6 +4,8 @@ import StockEntry from "@/models/StockEntry";
 import { requireAdminSession } from "@/lib/adminAuth";
 import { catalogCategories } from "@/data/products";
 
+export const dynamic = "force-dynamic";
+
 const REQUIRED_STOCK_FIELDS = [
   "slug",
   "productName",
@@ -48,41 +50,26 @@ export async function GET(request: Request) {
   const mergedStock = catalogCategories.flatMap((category) =>
     category.variants.map((v) => {
       const dbEntry = dbEntriesMap.get(v.slug);
-      if (dbEntry) {
-        const savedColorsMap = new Map<string, number>();
-        if (Array.isArray(dbEntry.colors)) {
-          for (const c of dbEntry.colors) {
-            if (c?.color) {
-              savedColorsMap.set(c.color.toLowerCase(), c.quantity);
-            }
+      const savedColorsMap = new Map<string, number>();
+      if (dbEntry && Array.isArray(dbEntry.colors)) {
+        for (const c of dbEntry.colors) {
+          if (c?.color) {
+            savedColorsMap.set(c.color.toLowerCase(), Math.max(0, Number(c.quantity) || 0));
           }
         }
-
-        const colors = (v.colors || []).map((c) => ({
-          color: c.name,
-          hex: c.hex,
-          quantity: savedColorsMap.has(c.name.toLowerCase())
-            ? savedColorsMap.get(c.name.toLowerCase())!
-            : 250,
-        }));
-
-        return {
-          _id: dbEntry._id?.toString() || `${category.slug}-${v.slug}`,
-          slug: v.slug,
-          productName: v.name,
-          productType: category.name,
-          productSlug: category.slug,
-          variantSlug: v.slug,
-          fabric: v.fabric,
-          gsmRange: v.gsm,
-          lastUpdated: dbEntry.lastUpdated || new Date().toISOString(),
-          availableForBulk: dbEntry.availableForBulk ?? true,
-          colors,
-        };
       }
 
+      // Show ALL available colors of the particular variant so admin can change stock
+      const colors = (v.colors || []).map((c) => ({
+        color: c.name,
+        hex: c.hex,
+        quantity: savedColorsMap.has(c.name.toLowerCase())
+          ? savedColorsMap.get(c.name.toLowerCase())!
+          : 0,
+      }));
+
       return {
-        _id: `${category.slug}-${v.slug}`,
+        _id: dbEntry?._id?.toString() || `${category.slug}-${v.slug}`,
         slug: v.slug,
         productName: v.name,
         productType: category.name,
@@ -90,17 +77,14 @@ export async function GET(request: Request) {
         variantSlug: v.slug,
         fabric: v.fabric,
         gsmRange: v.gsm,
-        lastUpdated: new Date().toISOString(),
-        availableForBulk: true,
-        colors: (v.colors || []).map((c) => ({
-          color: c.name,
-          hex: c.hex,
-          quantity: 250,
-        })),
+        lastUpdated: dbEntry?.lastUpdated || new Date().toISOString(),
+        availableForBulk: dbEntry?.availableForBulk ?? true,
+        colors,
       };
     }),
   );
 
+  // Standalone custom entries in DB not matching any catalog variant
   for (const entry of dbEntries) {
     if (entry?.slug && !mergedStock.some((s) => s.slug === entry.slug)) {
       mergedStock.push({
@@ -114,7 +98,11 @@ export async function GET(request: Request) {
         gsmRange: entry.gsmRange,
         lastUpdated: entry.lastUpdated || new Date().toISOString(),
         availableForBulk: entry.availableForBulk ?? true,
-        colors: entry.colors || [],
+        colors: (entry.colors || []).map((c: any) => ({
+          color: c.color,
+          hex: c.hex,
+          quantity: Math.max(0, Number(c.quantity) || 0),
+        })),
       });
     }
   }
@@ -146,6 +134,12 @@ export async function POST(request: Request) {
       );
     }
 
+    const cleanedColors = body.colors.map((c: any) => ({
+      color: String(c.color).trim(),
+      hex: String(c.hex).trim(),
+      quantity: Math.max(0, Number(c.quantity) || 0),
+    }));
+
     const created = await withDbRetry(() =>
       StockEntry.findOneAndUpdate(
         { slug: body.slug.trim() },
@@ -158,10 +152,10 @@ export async function POST(request: Request) {
             gsmRange: body.gsmRange.trim(),
             lastUpdated: body.lastUpdated || new Date().toISOString(),
             availableForBulk: body.availableForBulk ?? true,
-            colors: body.colors,
+            colors: cleanedColors,
           },
         },
-        { new: true, upsert: true, runValidators: true },
+        { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true },
       ).lean()
     );
 

@@ -49,10 +49,16 @@ const getProductTypes = () => {
 function VariantCard({ variant }: { variant: VariantItem }) {
   const [selectedColor, setSelectedColor] = useState("All");
 
+  // Keep selectedColor valid: if selectedColor is no longer in available colors, fall back to "All"
+  const activeColor =
+    selectedColor === "All" || variant.colors.some((c) => c.color === selectedColor)
+      ? selectedColor
+      : "All";
+
   const displayQuantity =
-    selectedColor === "All"
+    activeColor === "All"
       ? variant.quantity
-      : variant.colors.find((c) => c.color === selectedColor)?.quantity ?? 0;
+      : variant.colors.find((c) => c.color === activeColor)?.quantity ?? 0;
 
   const displayFabric = variant.fabric
     .replace(/100% Cotton S-Jersey/gi, "Elite Cotton")
@@ -77,7 +83,7 @@ function VariantCard({ variant }: { variant: VariantItem }) {
             type="button"
             onClick={() => setSelectedColor("All")}
             className={`py-1.5 px-3 rounded-full text-[10px] font-semibold border transition-all ${
-              selectedColor === "All"
+              activeColor === "All"
                 ? "border-[#D4AF37] bg-[#D4AF37]/10 text-[#8A6A1F] dark:text-[#D4AF37]"
                 : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400"
             }`}
@@ -92,7 +98,7 @@ function VariantCard({ variant }: { variant: VariantItem }) {
               title={`${c.color} (${c.quantity} pcs)`}
               onClick={() => setSelectedColor(c.color)}
               className={`h-7 w-7 rounded-full border-2 transition-all p-0.5 flex items-center justify-center ${
-                selectedColor === c.color
+                activeColor === c.color
                   ? "border-[#D4AF37] scale-110 ring-2 ring-[#D4AF37]/30"
                   : "border-slate-200 dark:border-slate-700 hover:scale-105"
               }`}
@@ -109,7 +115,7 @@ function VariantCard({ variant }: { variant: VariantItem }) {
           <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
             {displayQuantity} pcs{" "}
             <span className="font-normal text-slate-500 text-xs">
-              {selectedColor === "All" ? "ready in stock" : `ready in ${selectedColor}`}
+              {activeColor === "All" ? "ready in stock" : `ready in ${activeColor}`}
             </span>
           </span>
         </div>
@@ -123,11 +129,11 @@ export default function LiveStockPage() {
   const [liveStock, setLiveStock] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch live stock from backend with fallback
+  // Fetch live stock from backend (only returns saved items with available stock)
   useEffect(() => {
     async function fetchStock() {
       try {
-        const res = await fetch("/api/stock");
+        const res = await fetch("/api/stock", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data)) {
@@ -154,50 +160,77 @@ export default function LiveStockPage() {
     const category = catalogCategories.find((item) => item.slug === selectedCategorySlug);
     if (!category) return [];
 
-    return category.variants
-      .map((variant) => {
-        // Find matching live stock entry by slug or matching variant
-        const entry = liveStock.find(
-          (item: any) =>
-            item.slug === variant.slug ||
-            item.variantSlug === variant.slug ||
-            (item.productSlug === selectedCategorySlug && item.variantSlug === variant.slug),
-        );
+    const variants: VariantItem[] = [];
 
-        // Take colors from the category variant definition (products.ts) to show all options
-        const colors: ColorItem[] = (variant.colors || []).map((vc) => {
-          let quantity = 250;
-          if (entry?.colors && Array.isArray(entry.colors)) {
-            const sc = entry.colors.find(
-              (c: any) => (c.color || c.name)?.toLowerCase() === vc.name.toLowerCase(),
-            );
-            if (sc && typeof sc.quantity === "number") {
-              quantity = sc.quantity;
-            }
-          }
-          return {
+    for (const variant of category.variants) {
+      // Find matching live stock entry in liveStock (which only contains saved items with quantity > 0)
+      const entry = liveStock.find(
+        (item: any) =>
+          item.slug === variant.slug ||
+          item.variantSlug === variant.slug ||
+          (item.productSlug === selectedCategorySlug && item.variantSlug === variant.slug),
+      );
+
+      // Only show if saved entry exists in liveStock and is available
+      if (!entry || entry.availableForBulk === false) {
+        continue;
+      }
+
+      // Filter colors to ONLY available stock colors (quantity > 0)
+      const colors: ColorItem[] = [];
+      const entryColors = Array.isArray(entry.colors) ? entry.colors : [];
+
+      for (const vc of variant.colors || []) {
+        const sc = entryColors.find(
+          (c: any) => (c.color || c.name)?.toLowerCase() === vc.name.toLowerCase(),
+        );
+        const qty = sc && typeof sc.quantity === "number" ? Math.max(0, sc.quantity) : 0;
+        if (qty > 0) {
+          colors.push({
             color: vc.name,
             hex: vc.hex,
-            quantity,
-          };
-        });
+            quantity: qty,
+          });
+        }
+      }
 
-        const quantity = colors.reduce((sum, c) => sum + c.quantity, 0);
+      // Also check any extra color entries in entry that have quantity > 0
+      for (const sc of entryColors) {
+        const colorName = sc.color || sc.name;
+        if (
+          colorName &&
+          typeof sc.quantity === "number" &&
+          sc.quantity > 0 &&
+          !colors.some((c) => c.color.toLowerCase() === colorName.toLowerCase())
+        ) {
+          colors.push({
+            color: colorName,
+            hex: sc.hex || "#111111",
+            quantity: sc.quantity,
+          });
+        }
+      }
 
-        return {
+      const totalQuantity = colors.reduce((sum, c) => sum + c.quantity, 0);
+
+      // Only show variant if it has available stock colors and totalQuantity > 0
+      if (colors.length > 0 && totalQuantity > 0) {
+        variants.push({
           slug: variant.slug,
           gsm: variant.gsm,
           fabric: variant.fabric,
           name: variant.name,
-          quantity,
+          quantity: totalQuantity,
           colors,
-        };
-      })
-      .sort((a, b) => {
-        const aNum = Number(a.gsm.replace(/\D/g, ""));
-        const bNum = Number(b.gsm.replace(/\D/g, ""));
-        return aNum - bNum;
-      });
+        });
+      }
+    }
+
+    return variants.sort((a, b) => {
+      const aNum = Number(a.gsm.replace(/\D/g, ""));
+      const bNum = Number(b.gsm.replace(/\D/g, ""));
+      return aNum - bNum;
+    });
   }, [selectedCategorySlug, liveStock]);
 
   return (
@@ -229,7 +262,9 @@ export default function LiveStockPage() {
             <PackageCheck className="h-4 w-4" />
             {selectedCategorySlug === "All"
               ? "Select a product type to review fabric variants"
-              : `${availableProductVariants.length} variants available`}
+              : availableProductVariants.length === 1
+              ? "1 variant available in stock"
+              : `${availableProductVariants.length} variants available in stock`}
           </div>
         </div>
 
@@ -266,7 +301,7 @@ export default function LiveStockPage() {
           </div>
         ) : selectedCategorySlug !== "All" ? (
           <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-300">
-            No fabric variants found for the selected product type.
+            No live stock currently available for {selectedCategoryName || "this product type"}.
           </div>
         ) : null}
       </div>
