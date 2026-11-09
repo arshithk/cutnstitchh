@@ -401,13 +401,21 @@ function getPaletteForContext(context?: ProductImageContext) {
 
 function buildAvailableColors(colors: ProductColor[], fallbackImagePath: string, context?: ProductImageContext): ProductColor[] {
   const palette = getPaletteForContext(context);
+  const paletteNames = new Set(palette.map((c) => c.name));
 
-  // Each product variant keeps its own defined colors and colour combos
+  // Special case: PolyCotton Fleece 340 GSM Hoodie variants should only show their explicit colors
+  const is340GSMHoodie =
+    context?.variantSlug === "polycotton-fleece-340gsm-hoodie-with-zip" ||
+    context?.variantSlug === "polycotton-fleece-340gsm-hoodie-without-zip" ||
+    context?.variantSlug === "kids-polycotton-fleece-340gsm-hoodie-with-zip" ||
+    context?.variantSlug === "kids-polycotton-fleece-340gsm-hoodie-without-zip";
+
   let baseColors: ProductColor[];
-  if (colors && colors.length > 0) {
-    baseColors = colors;
+  if (is340GSMHoodie && colors && colors.length > 0) {
+    const filteredColors = colors.filter((color) => paletteNames.has(color.name));
+    baseColors = filteredColors.length > 0 ? filteredColors : (palette as ProductColor[]);
   } else {
-    // Fall back to category palette only if no explicit colors are configured
+    // For all other products, use the full 12-color palette
     baseColors = palette as ProductColor[];
   }
 
