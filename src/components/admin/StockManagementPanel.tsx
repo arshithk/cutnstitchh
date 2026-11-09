@@ -46,7 +46,7 @@ export default function StockManagementPanel() {
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-  const [dbStatus, setDbStatus] = useState<"connected" | "reconnecting">("connected");
+  const [dbStatus, setDbStatus] = useState<"connected" | "disconnected" | "reconnecting">("reconnecting");
 
   const [newEntry, setNewEntry] = useState({
     slug: "",
@@ -62,6 +62,7 @@ export default function StockManagementPanel() {
   async function loadStocks(retryCount = 2) {
     setLoading(true);
     setError(null);
+    setDbStatus("reconnecting");
     try {
       let response: Response | null = null;
       let lastErr: Error | null = null;
@@ -87,13 +88,16 @@ export default function StockManagementPanel() {
       }
 
       if (!response || !response.ok) {
-        throw new Error(lastErr?.message || "Unable to load stock");
+        setDbStatus("disconnected");
+        const errBody = response ? await response.json().catch(() => null) : null;
+        throw new Error(errBody?.error || lastErr?.message || "Unable to connect to database");
       }
 
       const body = await response.json();
-      const list: StockRecord[] = Array.isArray(body) ? body : [];
+      const list: StockRecord[] = Array.isArray(body) ? body : Array.isArray(body?.stocks) ? body.stocks : [];
       setStocks(list);
       setDbStatus("connected");
+      setError(null);
 
       // Expand all categories by default
       const cats: Record<string, boolean> = {};
@@ -105,6 +109,7 @@ export default function StockManagementPanel() {
       setExpandedCategories((prev) => (Object.keys(prev).length === 0 ? cats : prev));
       setExpandedVariants((prev) => (Object.keys(prev).length === 0 ? vars : prev));
     } catch (err) {
+      setDbStatus("disconnected");
       setError(err instanceof Error ? err.message : "Unable to load stock");
     } finally {
       setLoading(false);
@@ -117,9 +122,13 @@ export default function StockManagementPanel() {
     const onFocus = () => {
       fetch("/api/admin/stock", { credentials: "include", cache: "no-store" })
         .then((r) => {
-          if (r.ok) setDbStatus("connected");
+          if (r.ok) {
+            setDbStatus("connected");
+          } else {
+            setDbStatus("disconnected");
+          }
         })
-        .catch(() => {});
+        .catch(() => setDbStatus("disconnected"));
     };
 
     window.addEventListener("focus", onFocus);
@@ -200,6 +209,7 @@ export default function StockManagementPanel() {
       if (res && res.ok) {
         setSavedSlug(saveKey);
         setDbStatus("connected");
+        setError(null);
         setStocks((prev) =>
           prev.map((s) =>
             s.slug === stock.slug && s.productType === stock.productType
@@ -210,9 +220,11 @@ export default function StockManagementPanel() {
         setTimeout(() => setSavedSlug(null), 2500);
       } else {
         const body = res ? await res.json().catch(() => null) : null;
+        setDbStatus("disconnected");
         throw new Error(body?.error || lastErr?.message || "Save failed");
       }
     } catch (err) {
+      setDbStatus("disconnected");
       setError(err instanceof Error ? err.message : "Save failed");
     } finally {
       setSavingSlug(null);
@@ -355,18 +367,34 @@ export default function StockManagementPanel() {
             <span className="relative flex h-2 w-2">
               <span
                 className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                  dbStatus === "connected" ? "animate-ping bg-emerald-400" : "animate-pulse bg-amber-400"
+                  dbStatus === "connected"
+                    ? "animate-ping bg-emerald-400"
+                    : dbStatus === "reconnecting"
+                    ? "animate-pulse bg-amber-400"
+                    : "animate-pulse bg-rose-500"
                 }`}
               />
               <span
                 className={`relative inline-flex rounded-full h-2 w-2 ${
-                  dbStatus === "connected" ? "bg-emerald-500" : "bg-amber-500"
+                  dbStatus === "connected"
+                    ? "bg-emerald-500"
+                    : dbStatus === "reconnecting"
+                    ? "bg-amber-500"
+                    : "bg-rose-500"
                 }`}
               />
             </span>
             <span className="text-neutral-400">Database:</span>
-            <span className={`font-semibold ${dbStatus === "connected" ? "text-emerald-400" : "text-amber-400"}`}>
-              {dbStatus === "connected" ? "Connected" : "Reconnecting..."}
+            <span
+              className={`font-semibold ${
+                dbStatus === "connected"
+                  ? "text-emerald-400"
+                  : dbStatus === "reconnecting"
+                  ? "text-amber-400"
+                  : "text-rose-400"
+              }`}
+            >
+              {dbStatus === "connected" ? "Connected" : dbStatus === "reconnecting" ? "Connecting..." : "Disconnected"}
             </span>
           </div>
 

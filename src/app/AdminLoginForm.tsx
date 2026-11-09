@@ -26,9 +26,10 @@ export default function AdminLoginForm() {
       if (!response.ok) {
         const body = await response.json().catch(() => null);
         const rawError = body?.error || "Login failed";
-        const cleanError = rawError.includes("ECONNREFUSED") || rawError.includes("127.0.0.1:27017")
-          ? "Unable to connect to database. Please ensure MongoDB is running."
-          : rawError;
+        const cleanError =
+          rawError.includes("ECONNREFUSED") || rawError.includes("127.0.0.1") || rawError.includes("Mongo")
+            ? "Unable to connect to database. Please check your MongoDB Atlas connection settings."
+            : rawError;
         setError(cleanError);
         return;
       }

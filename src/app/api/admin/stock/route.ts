@@ -36,7 +36,15 @@ export async function GET(request: Request) {
   try {
     dbEntries = await withDbRetry(() => StockEntry.find().lean());
   } catch (error) {
-    console.warn("Could not load stock entries from database:", (error as Error)?.message || error);
+    console.error("Could not load stock entries from database:", (error as Error)?.message || error);
+    const errMsg = (error as Error)?.message || "Database connection error";
+    return NextResponse.json(
+      {
+        error: errMsg,
+        dbStatus: "disconnected",
+      },
+      { status: 503 },
+    );
   }
 
   const dbEntriesMap = new Map<string, any>();

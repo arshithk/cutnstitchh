@@ -1,20 +1,19 @@
 import mongoose from "mongoose";
-import { env } from "./env";
+import { getMongoUri } from "./env";
 
 interface MongooseGlobalCache {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
-  lastFailed?: number;
-  heartbeatTimer?: NodeJS.Timeout;
 }
 
-const globalWithMongoose = global as typeof globalThis & {
-  mongooseCache?: MongooseGlobalCache;
-  hasAttachedMongoListeners?: boolean;
-};
+declare global {
+  // eslint-disable-next-line no-var
+  var mongooseCache: MongooseGlobalCache | undefined;
+}
 
-if (!globalWithMongoose.mongooseCache) {
-  globalWithMongoose.mongooseCache = { conn: null, promise: null, lastFailed: 0 };
+let cached: MongooseGlobalCache = global.mongooseCache || { conn: null, promise: null };
+if (!global.mongooseCache) {
+  global.mongooseCache = cached;
 }
 
 function getMongoOptions(uri: string): mongoose.ConnectOptions {
@@ -22,22 +21,23 @@ function getMongoOptions(uri: string): mongoose.ConnectOptions {
   const isLocal = uri.includes("127.0.0.1") || uri.includes("localhost");
 
   const opts: mongoose.ConnectOptions = {
-    serverSelectionTimeoutMS: 5000,
+    // 10s server selection gives Atlas SRV & TLS cold start enough time on Vercel lambdas
+    serverSelectionTimeoutMS: 10000,
     connectTimeoutMS: 10000,
     socketTimeoutMS: 45000,
-    maxPoolSize: 15,
+    // Keep pool size small for serverless to prevent Atlas connection exhaustion
+    maxPoolSize: 10,
     minPoolSize: 0,
     autoIndex: process.env.NODE_ENV !== "production",
+    bufferCommands: false,
   };
 
-  // Only force IPv4 on local Windows standalone to prevent localhost IPv6 resolution delay
+  // Only force IPv4 on local standalone to prevent localhost IPv6 delay
   if (isLocal && !isSrv) {
     opts.family = 4;
   }
 
-  // CRITICAL: NEVER set directConnection: true for MongoDB Atlas (mongodb+srv://) or replica sets!
-  // directConnection: true forces connection to a single node, which is often a read-only secondary
-  // that rejects insertOne/write operations, causing 'buffering timed out after 10000ms'.
+  // Preserve directConnection only if explicitly present in URI
   if (uri.includes("directConnection=true")) {
     opts.directConnection = true;
   }
@@ -45,149 +45,65 @@ function getMongoOptions(uri: string): mongoose.ConnectOptions {
   return opts;
 }
 
-function startKeepAliveHeartbeat() {
-  // Do NOT run background timers in serverless environments (e.g. Vercel, AWS Lambda)
-  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
-    return;
-  }
-
-  if (globalWithMongoose.mongooseCache?.heartbeatTimer) return;
-
-  // Background ping every 15 seconds to keep connection alive and auto-recover
-  const timer = setInterval(async () => {
-    try {
-      const state = mongoose.connection.readyState;
-      if (state === 1) {
-        // Ping database to keep socket warm
-        if (mongoose.connection.db) {
-          await mongoose.connection.db.command({ ping: 1 });
-        }
-      } else if (state === 0 || state === 3) {
-        // Disconnected or disconnecting - trigger background reconnect
-        void dbConnect(2).catch(() => {});
-      }
-    } catch {
-      // Invalidate cached connection on ping failure so next call re-establishes cleanly
-      if (globalWithMongoose.mongooseCache) {
-        globalWithMongoose.mongooseCache.conn = null;
-        globalWithMongoose.mongooseCache.promise = null;
-      }
-    }
-  }, 15000);
-
-  // Allow Node process to exit cleanly if needed
-  if (timer.unref) {
-    timer.unref();
-  }
-
-  if (globalWithMongoose.mongooseCache) {
-    globalWithMongoose.mongooseCache.heartbeatTimer = timer;
-  }
-}
-
-function attachConnectionListeners() {
-  if (globalWithMongoose.hasAttachedMongoListeners) return;
-  globalWithMongoose.hasAttachedMongoListeners = true;
-
-  mongoose.connection.on("connected", () => {
-    if (globalWithMongoose.mongooseCache) {
-      globalWithMongoose.mongooseCache.lastFailed = 0;
-    }
-    startKeepAliveHeartbeat();
-  });
-
-  mongoose.connection.on("disconnected", () => {
-    if (globalWithMongoose.mongooseCache) {
-      globalWithMongoose.mongooseCache.conn = null;
-      globalWithMongoose.mongooseCache.promise = null;
-    }
-    // Only auto-reconnect in persistent environments, not serverless
-    if (!process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
-      setTimeout(() => {
-        void dbConnect(2).catch(() => {});
-      }, 500);
-    }
-  });
-
-  mongoose.connection.on("error", (err) => {
-    console.warn("MongoDB connection event notice:", (err as Error)?.message || err);
-    if (globalWithMongoose.mongooseCache) {
-      globalWithMongoose.mongooseCache.conn = null;
-      globalWithMongoose.mongooseCache.promise = null;
-    }
-  });
-
-  startKeepAliveHeartbeat();
-}
-
 export async function dbConnect(retries = 3): Promise<typeof mongoose> {
-  attachConnectionListeners();
-
-  // If already connected and ready, return immediately
+  // If already connected and ready, reuse connection immediately
   if ((mongoose.connection.readyState as number) === 1) {
-    if (globalWithMongoose.mongooseCache) {
-      globalWithMongoose.mongooseCache.conn = mongoose;
-    }
+    cached.conn = mongoose;
     return mongoose;
   }
 
-  // If connection is in progress, await it
-  if (globalWithMongoose.mongooseCache?.promise && (mongoose.connection.readyState as number) === 2) {
+  // If connection is in progress, await the ongoing promise
+  if (cached.promise && (mongoose.connection.readyState as number) === 2) {
     try {
-      const conn = await globalWithMongoose.mongooseCache.promise;
+      const conn = await cached.promise;
       if ((mongoose.connection.readyState as number) === 1) {
+        cached.conn = conn;
         return conn;
       }
     } catch {
       // If previous promise rejected, reset and proceed with fresh attempt
-      if (globalWithMongoose.mongooseCache) {
-        globalWithMongoose.mongooseCache.conn = null;
-        globalWithMongoose.mongooseCache.promise = null;
-      }
+      cached.conn = null;
+      cached.promise = null;
     }
   }
 
-  const uri = env.MONGODB_URI;
-  if (!uri) {
-    throw new Error("MONGODB_URI is not configured in environment variables.");
-  }
-
+  const uri = getMongoUri();
   const options = getMongoOptions(uri);
 
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      if (!globalWithMongoose.mongooseCache) {
-        globalWithMongoose.mongooseCache = { conn: null, promise: null, lastFailed: 0 };
-      }
-
-      globalWithMongoose.mongooseCache.promise = mongoose.connect(uri, options);
-      const conn = await globalWithMongoose.mongooseCache.promise;
+      cached.promise = mongoose.connect(uri, options);
+      const conn = await cached.promise;
 
       if ((mongoose.connection.readyState as number) === 1) {
-        globalWithMongoose.mongooseCache.conn = conn;
-        globalWithMongoose.mongooseCache.lastFailed = 0;
+        cached.conn = conn;
         return conn;
       }
     } catch (error) {
+      cached.conn = null;
+      cached.promise = null;
       const errMsg = (error as any)?.message || String(error);
-      if (globalWithMongoose.mongooseCache) {
-        globalWithMongoose.mongooseCache.conn = null;
-        globalWithMongoose.mongooseCache.promise = null;
-        globalWithMongoose.mongooseCache.lastFailed = Date.now();
-      }
-
-      console.warn(`dbConnect attempt ${attempt}/${retries} failed:`, errMsg);
+      console.warn(`[MongoDB] Connection attempt ${attempt}/${retries} failed:`, errMsg);
 
       if (attempt < retries) {
         // Exponential backoff: 300ms, 600ms
         await new Promise((resolve) => setTimeout(resolve, attempt * 300));
       } else {
-        if (errMsg.includes("ECONNREFUSED") || errMsg.includes("Server selection timed out") || errMsg.includes("HostUnreachable")) {
+        if (
+          errMsg.includes("ECONNREFUSED") ||
+          errMsg.includes("Server selection timed out") ||
+          errMsg.includes("HostUnreachable") ||
+          errMsg.includes("ENOTFOUND")
+        ) {
           const isLocal = uri.includes("127.0.0.1") || uri.includes("localhost");
           if (isLocal) {
-            throw new Error("Cannot connect to local MongoDB server at 127.0.0.1:27017. Please ensure MongoDB service is running, or set MONGODB_URI to your cloud database.");
+            throw new Error(
+              "Cannot connect to local MongoDB server at 127.0.0.1:27017. Please ensure MongoDB service is running, or set MONGODB_URI to your cloud MongoDB Atlas database."
+            );
           } else {
-            throw new Error("Cannot connect to remote MongoDB cluster. Please check MONGODB_URI and Network Access / IP Whitelist settings in MongoDB Atlas.");
+            throw new Error(
+              "Cannot connect to MongoDB Atlas cluster. Please check that MONGODB_URI is correctly configured in Vercel, and that MongoDB Atlas Network Access allows connections (IP Whitelist is set to 0.0.0.0/0 for Vercel)."
+            );
           }
         }
         throw error;
@@ -224,11 +140,9 @@ export async function withDbRetry<T>(operation: () => Promise<T>, maxRetries = 2
         msg.includes("pool is closed");
 
       if (isTransient && attempt < maxRetries) {
-        console.warn(`Transient DB error on attempt ${attempt}, reconnecting and retrying:`, msg);
-        if (globalWithMongoose.mongooseCache) {
-          globalWithMongoose.mongooseCache.conn = null;
-          globalWithMongoose.mongooseCache.promise = null;
-        }
+        console.warn(`[MongoDB] Transient DB error on attempt ${attempt}, reconnecting and retrying:`, msg);
+        cached.conn = null;
+        cached.promise = null;
         try {
           await mongoose.disconnect();
         } catch {
@@ -256,16 +170,10 @@ export async function isDbConnected(): Promise<boolean> {
 }
 
 export async function dbDisconnect() {
-  if (globalWithMongoose.mongooseCache?.heartbeatTimer) {
-    clearInterval(globalWithMongoose.mongooseCache.heartbeatTimer);
-    globalWithMongoose.mongooseCache.heartbeatTimer = undefined;
-  }
-
-  if (!globalWithMongoose.mongooseCache?.conn) {
+  if (!cached.conn) {
     return;
   }
-
   await mongoose.disconnect();
-  globalWithMongoose.mongooseCache = { conn: null, promise: null, lastFailed: 0 };
+  cached.conn = null;
+  cached.promise = null;
 }
-

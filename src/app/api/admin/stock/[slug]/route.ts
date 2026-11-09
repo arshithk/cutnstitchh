@@ -31,7 +31,7 @@ export async function GET(
   } catch (error) {
     const status = (error as any)?.status ?? 500;
     return NextResponse.json(
-      { error: (error as Error).message ?? "Unable to load stock entry" },
+      { error: (error as Error).message ?? "Unable to load stock entry", dbStatus: "disconnected" },
       { status },
     );
   }
@@ -87,7 +87,7 @@ export async function PATCH(
   } catch (error) {
     const status = (error as any)?.status ?? 500;
     return NextResponse.json(
-      { error: (error as Error).message ?? "Unable to update stock entry" },
+      { error: (error as Error).message ?? "Unable to update stock entry", dbStatus: "disconnected" },
       { status },
     );
   }
