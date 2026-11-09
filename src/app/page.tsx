@@ -16,17 +16,17 @@ import type { Metadata } from "next";
 import { MASTER_GLOBAL_KEYWORDS } from "@/lib/seoKeywords";
 
 export const metadata: Metadata = {
-  title: "B2B Apparel & Custom Clothing Manufacturer in Bangalore | Cut N Stitch",
+  title: "B2B Apparel & Custom Clothing Manufacturer in Tiruppur | Cut N Stitch Apparel",
   description:
-    "Cut N Stitch Apparel is Bangalore's premier B2B custom clothing & apparel manufacturer. Low MOQ (100 pcs), direct Tirupur factory pricing, private label, bulk T-shirts, oversized tees, polo shirts, hoodies & corporate uniforms.",
+    "Cut N Stitch Apparel is a Tiruppur-based apparel manufacturer offering custom T-shirts, bulk clothing production and premium garment manufacturing solutions for fashion brands, startups and corporate businesses across India, including Bangalore.",
   keywords: MASTER_GLOBAL_KEYWORDS,
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "B2B Apparel & Custom Clothing Manufacturer in Bangalore | Cut N Stitch",
+    title: "B2B Apparel & Custom Clothing Manufacturer in Tiruppur | Cut N Stitch Apparel",
     description:
-      "Premier B2B custom clothing & apparel manufacturer in Bangalore & Tirupur. Low MOQ (100 pcs), private label, bulk T-shirts, oversized tees, hoodies & corporate uniforms.",
+      "Cut N Stitch Apparel is a Tiruppur-based apparel manufacturer offering custom T-shirts, bulk clothing production and premium garment manufacturing solutions for fashion brands, startups and corporate businesses across India, including Bangalore.",
     url: "https://cutnstitchapparel.com",
     type: "website",
   },
@@ -38,7 +38,7 @@ const websiteSchema = {
   name: "Cut N Stitch Apparel",
   url: "https://cutnstitchapparel.com",
   description:
-    "B2B custom apparel and clothing manufacturer in Bangalore, India. Low MOQ (100 pcs), private label clothing manufacturing, bulk T-shirts, polo shirts, and uniforms.",
+    "Cut N Stitch Apparel is a Tiruppur-based apparel manufacturer offering custom T-shirts, bulk clothing production and premium garment manufacturing solutions for fashion brands, startups and corporate businesses across India, including Bangalore.",
   keywords: MASTER_GLOBAL_KEYWORDS.slice(0, 30).join(", "),
   potentialAction: {
     "@type": "SearchAction",

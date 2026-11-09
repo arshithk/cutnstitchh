@@ -5,12 +5,35 @@
  */
 
 export const MASTER_GLOBAL_KEYWORDS = [
-  // Tier-1 Primary Head & Commercial B2B Terms
+  // Primary Target Keywords (Tiruppur Primary Location & Bangalore Targeting)
+  "Apparel Manufacturer in Tiruppur",
+  "Clothing Manufacturer in Tiruppur",
+  "Garment Manufacturer in Tiruppur",
+  "T-Shirt Manufacturer in Tiruppur",
+  "B2B Apparel Manufacturer",
+  "Custom Clothing Manufacturer",
+  "Apparel Manufacturer in Bangalore",
+  "Garment Manufacturer in Bangalore",
+  "T-Shirt Manufacturer in Bangalore",
+  "Bulk Clothing Manufacturer in Bangalore",
+  "Custom Apparel Supplier in Bangalore",
+
+  // Lowercase Search Variants
+  "apparel manufacturer in tiruppur",
+  "clothing manufacturer in tiruppur",
+  "garment manufacturer in tiruppur",
+  "t-shirt manufacturer in tiruppur",
+  "b2b apparel manufacturer",
+  "custom clothing manufacturer",
   "apparel manufacturer in bangalore",
-  "clothing manufacturer in bangalore",
+  "garment manufacturer in bangalore",
+  "t-shirt manufacturer in bangalore",
+  "bulk clothing manufacturer in bangalore",
+  "custom apparel supplier in bangalore",
+
+  // Tier-1 Primary Head & Commercial B2B Terms
   "custom apparel manufacturer india",
   "private label clothing manufacturer india",
-  "t-shirt manufacturer in bangalore",
   "oversized t-shirt manufacturer india",
   "custom hoodie manufacturer india",
   "polo t-shirt manufacturer bangalore",
@@ -40,6 +63,7 @@ export const MASTER_GLOBAL_KEYWORDS = [
   "acid wash oversized t-shirts bulk manufacturer",
   "dry fit sublimation t-shirts manufacturer",
   "apparel manufacturing factory in tirupur",
+  "apparel manufacturing factory in tiruppur",
   "custom clothing sampling before bulk order",
 
   // Hyper-Local Bangalore Terms
@@ -280,6 +304,15 @@ export function getKeywordsForProduct(name: string, fabric?: string, gsm?: strin
  * Structured Data (JSON-LD) knowsAbout topics for Organization Schema
  */
 export const ORGANIZATION_KNOWS_ABOUT = [
+  "Apparel Manufacturer in Tiruppur",
+  "Apparel Manufacturer in Bangalore",
+  "Clothing Manufacturer in Tiruppur",
+  "Garment Manufacturer in Tiruppur",
+  "T-Shirt Manufacturer in Tiruppur",
+  "B2B Apparel Manufacturer",
+  "Custom Clothing Manufacturer",
+  "Bulk Clothing Manufacturer in Bangalore",
+  "Custom Apparel Supplier in Bangalore",
   "Custom Apparel Manufacturing",
   "B2B Clothing Production",
   "Private Label Clothing",

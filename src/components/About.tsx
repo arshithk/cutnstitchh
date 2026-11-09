@@ -75,10 +75,10 @@ export default function About() {
               Redefining B2B Apparel Manufacturing.
             </h2>
             <p className="text-base text-muted-custom leading-relaxed">
-              Founded on the pillars of craftsmanship and technology, <span className="font-black text-lg whitespace-nowrap"><span className="text-foreground">Cut n</span> <span className="text-accent-custom">Stitch</span> <span className="text-foreground">Apparel</span></span> has grown to become a trusted manufacturing partner for top-tier fashion brands, scaling startups, and corporate entities.
+              Operating from the textile manufacturing capital of Tiruppur, <span className="font-black text-lg whitespace-nowrap"><span className="text-foreground">Cut n</span> <span className="text-accent-custom">Stitch</span> <span className="text-foreground">Apparel</span></span> has grown to become a trusted B2B custom clothing and garment manufacturing partner for top-tier fashion brands, scaling startups, and corporate entities. We power apparel production across India, with dedicated supply pipelines serving fashion labels and corporate businesses in Bangalore.
             </p>
             <p className="text-base text-muted-custom leading-relaxed">
-              We specialize in turning design concepts into high-grade retail merchandise. By maintaining strict control over fabric procurement, stitching, and finishing, we deliver unmatched garment feel and endurance.
+              We specialize in turning design concepts into high-grade retail merchandise—from custom T-shirts and oversized streetwear to corporate uniforms and bulk apparel runs. By combining Tiruppur&apos;s rich fabric sourcing network with modern machinery, low 100-piece MOQs, and rigorous quality control, we deliver unmatched garment feel and endurance with direct factory pricing.
             </p>
           </motion.div>
 

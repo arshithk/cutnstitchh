@@ -11,11 +11,11 @@ import { MASTER_GLOBAL_KEYWORDS, ORGANIZATION_KNOWS_ABOUT } from "@/lib/seoKeywo
 export const metadata: Metadata = {
   metadataBase: new URL("https://cutnstitchapparel.com"),
   title: {
-    default: "Cut n Stitch Apparel | Premium B2B Apparel Manufacturing Bangalore",
-    template: "%s | Cut n Stitch Apparel",
+    default: "B2B Apparel & Custom Clothing Manufacturer in Tiruppur | Cut N Stitch Apparel",
+    template: "%s | Cut N Stitch Apparel",
   },
   description:
-    "Cut N Stitch Apparel is Bangalore's premier B2B custom clothing & apparel manufacturer. Low MOQ (100 pcs), direct Tirupur factory pricing, private label manufacturing, bulk T-shirts, oversized tees, polo shirts, hoodies, corporate uniforms, and custom merchandise.",
+    "Cut N Stitch Apparel is a Tiruppur-based apparel manufacturer offering custom T-shirts, bulk clothing production and premium garment manufacturing solutions for fashion brands, startups and corporate businesses across India, including Bangalore.",
   keywords: MASTER_GLOBAL_KEYWORDS,
   authors: [{ name: "Cut N Stitch Apparel", url: "https://cutnstitchapparel.com" }],
   creator: "Cut N Stitch Apparel",
@@ -38,9 +38,9 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
   },
   openGraph: {
-    title: "Cut n Stitch Apparel | Premium B2B Apparel Manufacturing",
+    title: "B2B Apparel & Custom Clothing Manufacturer in Tiruppur | Cut N Stitch Apparel",
     description:
-      "Cut N Stitch Apparel is a premier B2B custom clothing & apparel manufacturer in Bangalore, India. Low MOQ, private label manufacturing, bulk T-shirts, polo shirts, hoodies, corporate uniforms, and custom merchandise.",
+      "Cut N Stitch Apparel is a Tiruppur-based apparel manufacturer offering custom T-shirts, bulk clothing production and premium garment manufacturing solutions for fashion brands, startups and corporate businesses across India, including Bangalore.",
     url: "https://cutnstitchapparel.com",
     siteName: "Cut N Stitch Apparel",
     locale: "en_IN",
@@ -50,15 +50,15 @@ export const metadata: Metadata = {
         url: "https://cutnstitchapparel.com/images/cut-n-stitch-apparel.jpeg",
         width: 1536,
         height: 1024,
-        alt: "Cut n Stitch Apparel - Premium B2B Apparel Manufacturing",
+        alt: "Cut N Stitch Apparel - Premium B2B Apparel Manufacturing in Tiruppur",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Cut n Stitch Apparel | Premium B2B Apparel Manufacturing",
+    title: "B2B Apparel & Custom Clothing Manufacturer in Tiruppur | Cut N Stitch Apparel",
     description:
-      "Cut N Stitch Apparel is a premier B2B custom clothing & apparel manufacturer in Bangalore, India. Low MOQ, private label manufacturing, and custom merchandise.",
+      "Cut N Stitch Apparel is a Tiruppur-based apparel manufacturer offering custom T-shirts, bulk clothing production and premium garment manufacturing solutions for fashion brands, startups and corporate businesses across India, including Bangalore.",
     images: ["https://cutnstitchapparel.com/images/cut-n-stitch-apparel.jpeg"],
   },
   robots: {
@@ -82,8 +82,8 @@ const organizationSchema = {
   logo: "https://cutnstitchapparel.com/images/cut-n-stitch-logo.png",
   image: "https://cutnstitchapparel.com/images/cut-n-stitch-apparel.jpeg",
   description:
-    "Premier B2B custom clothing and private label apparel manufacturer in Bangalore and Tirupur, India. Low MOQ of 100 pcs, bulk T-shirts, oversized tees, hoodies, and corporate uniforms.",
-  keywords: MASTER_GLOBAL_KEYWORDS.slice(0, 25).join(", "),
+    "Cut N Stitch Apparel is a Tiruppur-based apparel manufacturer offering custom T-shirts, bulk clothing production and premium garment manufacturing solutions for fashion brands, startups and corporate businesses across India, including Bangalore.",
+  keywords: MASTER_GLOBAL_KEYWORDS.slice(0, 30).join(", "),
   knowsAbout: ORGANIZATION_KNOWS_ABOUT,
   sameAs: [
     "https://www.instagram.com/cutnstitchapparel?stkn=MW9yemN2dm9xMW9lbA==",
@@ -113,7 +113,7 @@ const localBusinessSchema = {
   address: {
     "@type": "PostalAddress",
     streetAddress: "339/2, Thilaga Nagar, Anupparapalayam",
-    addressLocality: "Tirupur",
+    addressLocality: "Tiruppur",
     addressRegion: "Tamil Nadu",
     postalCode: "641652",
     addressCountry: "IN",
@@ -121,11 +121,11 @@ const localBusinessSchema = {
   areaServed: [
     {
       "@type": "City",
-      name: "Bangalore",
+      name: "Tiruppur",
     },
     {
       "@type": "City",
-      name: "Tirupur",
+      name: "Bangalore",
     },
     {
       "@type": "Country",
@@ -135,7 +135,7 @@ const localBusinessSchema = {
   knowsAbout: ORGANIZATION_KNOWS_ABOUT,
   keywords: MASTER_GLOBAL_KEYWORDS.slice(0, 30).join(", "),
   description:
-    "B2B apparel and custom clothing manufacturer in Bangalore and Tirupur, India. Providing bulk T-shirts, polo shirts, oversized tees, hoodies, and corporate uniforms.",
+    "Cut N Stitch Apparel is a Tiruppur-based apparel manufacturer offering custom T-shirts, bulk clothing production and premium garment manufacturing solutions for fashion brands, startups and corporate businesses across India, including Bangalore.",
 };
 
 export default function RootLayout({
