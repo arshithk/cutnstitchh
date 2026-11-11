@@ -46,6 +46,85 @@ const getProductTypes = () => {
     }));
 };
 
+function getAvailableVariantsForCategory(categorySlug: string, liveStock: any[]): VariantItem[] {
+  if (categorySlug === "All") return [];
+
+  const category = catalogCategories.find((item) => item.slug === categorySlug);
+  if (!category) return [];
+
+  const variants: VariantItem[] = [];
+
+  for (const variant of category.variants) {
+    // Find matching live stock entry in liveStock (which only contains saved items with quantity > 0)
+    const entry = liveStock.find(
+      (item: any) =>
+        item.slug === variant.slug ||
+        item.variantSlug === variant.slug ||
+        (item.productSlug === categorySlug && item.variantSlug === variant.slug),
+    );
+
+    // Only show if saved entry exists in liveStock and is available
+    if (!entry || entry.availableForBulk === false) {
+      continue;
+    }
+
+    // Filter colors to ONLY available stock colors (quantity > 0)
+    const colors: ColorItem[] = [];
+    const entryColors = Array.isArray(entry.colors) ? entry.colors : [];
+
+    for (const vc of variant.colors || []) {
+      const sc = entryColors.find(
+        (c: any) => (c.color || c.name)?.toLowerCase() === vc.name.toLowerCase(),
+      );
+      const qty = sc && typeof sc.quantity === "number" ? Math.max(0, sc.quantity) : 0;
+      if (qty > 0) {
+        colors.push({
+          color: vc.name,
+          hex: vc.hex,
+          quantity: qty,
+        });
+      }
+    }
+
+    // Also check any extra color entries in entry that have quantity > 0
+    for (const sc of entryColors) {
+      const colorName = sc.color || sc.name;
+      if (
+        colorName &&
+        typeof sc.quantity === "number" &&
+        sc.quantity > 0 &&
+        !colors.some((c) => c.color.toLowerCase() === colorName.toLowerCase())
+      ) {
+        colors.push({
+          color: colorName,
+          hex: sc.hex || "#111111",
+          quantity: sc.quantity,
+        });
+      }
+    }
+
+    const totalQuantity = colors.reduce((sum, c) => sum + c.quantity, 0);
+
+    // Only show variant if it has available stock colors and totalQuantity > 0
+    if (colors.length > 0 && totalQuantity > 0) {
+      variants.push({
+        slug: variant.slug,
+        gsm: variant.gsm,
+        fabric: variant.fabric,
+        name: variant.name,
+        quantity: totalQuantity,
+        colors,
+      });
+    }
+  }
+
+  return variants.sort((a, b) => {
+    const aNum = Number(a.gsm.replace(/\D/g, ""));
+    const bNum = Number(b.gsm.replace(/\D/g, ""));
+    return aNum - bNum;
+  });
+}
+
 function VariantCard({ variant }: { variant: VariantItem }) {
   const [selectedColor, setSelectedColor] = useState("All");
 
@@ -154,117 +233,80 @@ export default function LiveStockPage() {
     [selectedCategorySlug],
   );
 
-  const availableProductVariants = useMemo(() => {
-    if (selectedCategorySlug === "All") return [];
+  const availableProductVariants = useMemo(
+    () => getAvailableVariantsForCategory(selectedCategorySlug, liveStock),
+    [selectedCategorySlug, liveStock],
+  );
 
-    const category = catalogCategories.find((item) => item.slug === selectedCategorySlug);
-    if (!category) return [];
+  const overallTotalStock = useMemo(() => {
+    return getProductTypes().reduce((total, type) => {
+      const variants = getAvailableVariantsForCategory(type.value, liveStock);
+      return total + variants.reduce((sum, v) => sum + v.quantity, 0);
+    }, 0);
+  }, [liveStock]);
 
-    const variants: VariantItem[] = [];
-
-    for (const variant of category.variants) {
-      // Find matching live stock entry in liveStock (which only contains saved items with quantity > 0)
-      const entry = liveStock.find(
-        (item: any) =>
-          item.slug === variant.slug ||
-          item.variantSlug === variant.slug ||
-          (item.productSlug === selectedCategorySlug && item.variantSlug === variant.slug),
-      );
-
-      // Only show if saved entry exists in liveStock and is available
-      if (!entry || entry.availableForBulk === false) {
-        continue;
-      }
-
-      // Filter colors to ONLY available stock colors (quantity > 0)
-      const colors: ColorItem[] = [];
-      const entryColors = Array.isArray(entry.colors) ? entry.colors : [];
-
-      for (const vc of variant.colors || []) {
-        const sc = entryColors.find(
-          (c: any) => (c.color || c.name)?.toLowerCase() === vc.name.toLowerCase(),
-        );
-        const qty = sc && typeof sc.quantity === "number" ? Math.max(0, sc.quantity) : 0;
-        if (qty > 0) {
-          colors.push({
-            color: vc.name,
-            hex: vc.hex,
-            quantity: qty,
-          });
-        }
-      }
-
-      // Also check any extra color entries in entry that have quantity > 0
-      for (const sc of entryColors) {
-        const colorName = sc.color || sc.name;
-        if (
-          colorName &&
-          typeof sc.quantity === "number" &&
-          sc.quantity > 0 &&
-          !colors.some((c) => c.color.toLowerCase() === colorName.toLowerCase())
-        ) {
-          colors.push({
-            color: colorName,
-            hex: sc.hex || "#111111",
-            quantity: sc.quantity,
-          });
-        }
-      }
-
-      const totalQuantity = colors.reduce((sum, c) => sum + c.quantity, 0);
-
-      // Only show variant if it has available stock colors and totalQuantity > 0
-      if (colors.length > 0 && totalQuantity > 0) {
-        variants.push({
-          slug: variant.slug,
-          gsm: variant.gsm,
-          fabric: variant.fabric,
-          name: variant.name,
-          quantity: totalQuantity,
-          colors,
-        });
-      }
-    }
-
-    return variants.sort((a, b) => {
-      const aNum = Number(a.gsm.replace(/\D/g, ""));
-      const bNum = Number(b.gsm.replace(/\D/g, ""));
-      return aNum - bNum;
-    });
-  }, [selectedCategorySlug, liveStock]);
+  const categoryTotalStock = useMemo(
+    () => availableProductVariants.reduce((sum, v) => sum + v.quantity, 0),
+    [availableProductVariants],
+  );
 
   return (
     <div className="mx-auto max-w-7xl px-4 pb-24 pt-28 sm:px-6 lg:px-8">
       <div className="rounded-4xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-[0_24px_80px_rgba(15,23,42,0.06)] sm:p-8 lg:p-10 dark:border-slate-800/80 dark:bg-slate-900/95 dark:shadow-[0_24px_80px_rgba(2,6,23,0.55)] dark:backdrop-blur">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div className="mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-3 text-sm font-semibold text-slate-700 transition hover:text-accent-custom dark:text-slate-300"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Link>
+        </div>
+
+        <div className="flex items-start justify-between gap-3 sm:gap-6">
           <div>
-            <div className="mb-4">
-              <Link
-                href="/"
-                className="inline-flex items-center gap-3 text-sm font-semibold text-slate-700 transition hover:text-accent-custom dark:text-slate-300"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Home
-              </Link>
-            </div>
-            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#C8A64A] dark:text-[#F6D56A]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#C8A64A] sm:text-xs sm:tracking-[0.35em] dark:text-[#F6D56A]">
               Live Inventory
             </p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-slate-50">
+            <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:mt-3 sm:text-4xl dark:text-slate-50">
               Live Stock
             </h1>
-            <p className="mt-3 max-w-2xl text-[0.95rem] leading-7 text-slate-800 dark:text-slate-300">
-              Browse premium stock availability by product type and GSM with dynamic filters. Explore our
-              diverse range of apparel options.
+          </div>
+
+          <div
+            aria-label="Overall Stock Quantity"
+            className="shrink-0 rounded-2xl border border-[#D4AF37]/35 bg-[#FFF8E8] px-3.5 py-2 text-right shadow-sm sm:px-5 sm:py-3 dark:border-[#D4AF37]/35 dark:bg-[#D4AF37]/10"
+          >
+            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#8A6A1F] sm:text-[10px] dark:text-[#F6D56A]">
+              Overall Stock
+            </p>
+            <p className="mt-0.5 text-lg font-bold tracking-tight text-slate-950 tabular-nums sm:mt-1 sm:text-2xl dark:text-white">
+              {isLoading ? (
+                <span className="inline-block h-6 w-16 animate-pulse rounded bg-[#D4AF37]/20 align-middle" />
+              ) : (
+                <>
+                  {overallTotalStock.toLocaleString()}{" "}
+                  <span className="text-xs font-medium text-slate-600 sm:text-sm dark:text-slate-300">
+                    pcs
+                  </span>
+                </>
+              )}
             </p>
           </div>
-          <div className="flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#FFF8E8] px-4 py-2 text-sm font-semibold text-[#8A6A1F] dark:border-[#D4AF37]/30 dark:bg-[#D4AF37]/15 dark:text-[#F6D56A]">
-            <PackageCheck className="h-4 w-4" />
+        </div>
+
+        <div className="mt-3 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <p className="max-w-2xl text-[0.95rem] leading-7 text-slate-800 dark:text-slate-300">
+            Browse premium stock availability by product type and GSM with dynamic filters. Explore our
+            diverse range of apparel options.
+          </p>
+          <div className="flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#FFF8E8] px-4 py-2 text-sm font-semibold text-[#8A6A1F] dark:border-[#D4AF37]/30 dark:bg-[#D4AF37]/15 dark:text-[#F6D56A] lg:shrink-0">
+            <PackageCheck className="h-4 w-4 shrink-0" />
             {selectedCategorySlug === "All"
               ? "Select a product type to review fabric variants"
               : availableProductVariants.length === 1
-              ? "1 variant available in stock"
-              : `${availableProductVariants.length} variants available in stock`}
+              ? `1 variant (${categoryTotalStock.toLocaleString()} pcs) available in stock`
+              : `${availableProductVariants.length} variants (${categoryTotalStock.toLocaleString()} pcs) available in stock`}
           </div>
         </div>
 
